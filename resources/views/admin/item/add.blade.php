@@ -26,7 +26,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card card-info">
-                    <form class="form-horizontal" action="#" method="POST">
+                    <form class="form-horizontal" action="{{ route('item.store.admin') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="card-body pb-0">
                             <div class="row">
@@ -50,10 +50,10 @@
 
 
                                 <div class="col-md-3">
-                                    <label for="item_des">Item Description</label><br/>
-                                    <input type="text" name="item_des" class="form-control" id="item_des"
-                                            value="{{ old('item_des') }}">
-                                    <div class="text-danger">@error('item_des'){{ $message }}@enderror</div>
+                                    <label for="item_description">Item Description</label><br/>
+                                    <input type="text" name="item_description" class="form-control" id="item_description"
+                                            value="{{ old('item_description') }}">
+                                    <div class="text-danger">@error('item_description'){{ $message }}@enderror</div>
                                 </div>
 
                                 <div class="col-md-3">
@@ -102,11 +102,11 @@
                                 </div>
                             </div>
                             <div class="row mb-2">
-                                <label for="item_picture">Item Picture</label><br/>
+                                <label for="picture">Item Picture</label><br/>
                                 <div class="input-group mt-3">
-                                    <input name="item_picture" type="file"
+                                    <input name="picture" type="file"
                                            class="form-control-file" accept=".jpg,.jpeg,.png,.svg"
-                                           required="required">
+                                           required="required" >
                                 </div>
                             </div>
                             <div class="row mb-2">
@@ -123,31 +123,4 @@
         </div>
     </div>
 </section>
-@stop
-
-@section('extras')
-    <script type="text/javascript">
-        $(document).ready(function() {
-            var max_fields = 10;
-            var wrapper = $(".container1");
-            var add_button = $(".add_form_field");
-
-            var x = 1;
-            $(add_button).click(function(e) {
-                e.preventDefault();
-                if (x < max_fields) {
-                    x++;
-                    $(wrapper).append('<div class="row hello"><div class="col-md-3 container1"> <label for="item_category_id">Select Item Category</label><br/> <select name="item_category_id" class="form-control" id="item_category_id"> <option selected="selected" value>Select</option> <option value="#"></option> </select> </div><a href="#" class="delete"><i class="fas fa-trash-alt ml-2" aria-hidden="false"></i></a></div>'); //add input box
-                } else {
-                    alert('You Reached the limits')
-                }
-            });
-
-            $(wrapper).on("click", ".delete", function(e) {
-                e.preventDefault();
-                $(this).parent('.helllo').remove();
-                x--;
-            })
-        });
-    </script>
 @stop

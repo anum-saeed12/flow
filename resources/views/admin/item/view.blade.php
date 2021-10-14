@@ -63,16 +63,20 @@
                                     </div>
                                 </form>
                                 <a href="{{ route('item.add.admin') }}" class="btn btn-success"><i class="fa fa-plus-circle mr-1"></i> Add New</a>
-
                             </div>
+                        </div>
+                        <div class="row">
+                            <img src="{{asset('storage/picture/d5bc2b5a-ed91-49ec-aeea-037472ea0326.png')}}"  alt="" height="90" width="75" />
                         </div>
                         <div class="card-body table-responsive p-0">
                             <table class="table table-hover text-nowrap table-compact">
                                 <thead>
                                 <tr>
                                     <th>Sr.No.</th>
-                                    <th class="pl-0">Brand</th>
                                     <th class="pl-0">Item Name</th>
+                                    <th class="pl-0">Item Picture</th>
+                                    <th class="pl-0">Brand</th>
+                                    <th class="pl-0">Category</th>
                                     <th class="pl-0">Item Description</th>
                                     <th class="pl-0">Unit</th>
                                     <th class="pl-0">Price</th>
@@ -82,27 +86,31 @@
                                 </tr>
                                 </thead>
                                 <tbody id="myTable">
+                                @foreach($items as $item)
                                     <tr>
                                         <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
+                                        <td>{{ucfirst($item->item_name)}}</td>
+                                        <td><img src="{{ asset('storage/images/'.$item->picture) }}"  alt="" height="90" width="75" /></td>
+                                        <td>{{ucfirst($item->brand_name)}}</td>
+                                        <td>{{ucfirst($item->category_name)}}</td>
+                                        <td>{{ucfirst($item->item_description)}}</td>
+                                        <td>{{ucfirst($item->unit)}}</td>
+                                        <td>{{$item->price}}</td>
+                                        <td>{{$item->weight}}</td>
+                                        <td>{{$item->height}}</td>
+                                        <td>{{$item->width}}</td>
                                         <td class="text-right p-0">
                                             <a class="bg-primary list-btn"  href="#"><i class="fas fa-tools" aria-hidden="false"></i></a>
                                             <a class="bg-danger list-btn"  href="#"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
                                         </td>
                                     </tr>
+                                @endforeach
                                 </tbody>
                             </table>
                         </div>
                     </div>
                     <div class="d-flex flex-row-reverse">
-                      {{--  {!! $clients->links('pagination::bootstrap-4') !!}--}}
+                      {!! $items->links('pagination::bootstrap-4') !!}
                     </div>
                 </div>
             </div>

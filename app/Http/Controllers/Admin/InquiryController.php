@@ -36,12 +36,12 @@ class InquiryController extends Controller
         $brands    = Brand::orderBy('id','DESC')->paginate($this->count);
 
         $data = [
-            'title'    => 'Submit Inquiry',
-            'base_url' => env('APP_URL', 'http://127.0.0.1:8000'),
-            'user'     => Auth::user(),
-            'brands'    => $brands,
+            'title'      => 'Submit Inquiry',
+            'base_url'   => env('APP_URL', 'http://127.0.0.1:8000'),
+            'user'       => Auth::user(),
+            'brands'     => $brands,
             'categories' => $categories,
-            'customers' => $customers,
+            'customers'  => $customers,
         ];
         return view('admin.inquiry.add', $data);
     }

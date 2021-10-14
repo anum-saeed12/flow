@@ -49,32 +49,15 @@
 
                                 <div class="col-md-3">
                                     <label for="date">Date</label><br/>
-                                    <div class="input-group date" id="date" data-target-input="nearest">
-                                        <input type="text" id="date" name="date"
-                                               class="form-control datetimepicker-input"
-                                               data-target="#date" placeholder="yyyy/mm/dd"
-                                               value="{{ old('date')}}"
-                                               data-toggle="datetimepicker"/>
-                                        <div class="input-group-append" data-target="#date"
-                                             data-toggle="datetimepicker">
-                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                        </div>
-                                    </div>
+                                    <input type="date" name="date" class="form-control" id="date"
+                                           value="{{ old('date') }}">
                                     <div class="text-danger">@error('date'){{ $message }}@enderror</div>
                                 </div>
 
                                 <div class="col-md-3">
                                     <label for="timeline">Timeline</label><br/>
-                                    <div class="input-group date" id="timeline" data-target-input="nearest">
-                                        <input type="text" id="timeline" name="timeline"
-                                               class="form-control datetimepicker-input"
-                                               data-target="#timeline" placeholder="yyyy/mm/dd"
-                                               value="{{ old('timeline')}}"
-                                               data-toggle="datetimepicker"/>
-                                        <div class="input-group-append" data-target="#timeline"
-                                             data-toggle="datetimepicker">
-                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                        </div>
+                                    <input type="date" name="timeline" class="form-control" id="timeline"
+                                           value="{{ old('timeline') }}">
                                     </div>
                                     <div class="text-danger">@error('timeline'){{ $message }}@enderror</div>
                                 </div>

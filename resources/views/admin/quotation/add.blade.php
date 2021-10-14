@@ -26,7 +26,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card card-info">
-                    <form class="form-horizontal" action="#" method="POST">
+                    <form class="form-horizontal" action="{{ route('quotation.store.admin') }}" method="POST">
                         @csrf
                         <div class="card-body pb-0">
                             <div class="row">
@@ -49,17 +49,8 @@
 
                                 <div class="col-md-3">
                                     <label for="date">Date</label><br/>
-                                    <div class="input-group date" id="date" data-target-input="nearest">
-                                        <input type="text" id="date" name="date"
-                                               class="form-control datetimepicker-input"
-                                               data-target="#date" placeholder="yyyy/mm/dd"
-                                               value="{{ old('date')}}"
-                                               data-toggle="datetimepicker"/>
-                                        <div class="input-group-append" data-target="#date"
-                                             data-toggle="datetimepicker">
-                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                        </div>
-                                    </div>
+                                    <input type="date" name="date" class="form-control" id="date"
+                                           value="{{ old('date') }}">
                                     <div class="text-danger">@error('date'){{ $message }}@enderror</div>
                                 </div>
 
@@ -68,37 +59,41 @@
                             <div class="row">
                                 <div class="col-md-3 category-container">
                                     <label for="item_id">Select Item </label><br/>
-                                    <select name="item_id" class="form-control" id="item_id">
+                                    <select name="item_id[]" class="form-control" id="item_id">
                                         <option selected="selected" value>Select</option>
-                                        <option value="#"></option>
+                                        @foreach ($items as $item)
+                                            <option value="{{ $item->id }}">{{ ucfirst($item->item_name) }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div class="col-md-3 item-container">
                                     <label for="brand_id">Select Brand</label><br/>
-                                    <select name="brand_id" class="form-control" id="brand_id">
+                                    <select name="brand_id[]" class="form-control" id="brand_id">
                                         <option selected="selected" value>Select</option>
-                                        <option value="#"></option>
+                                        @foreach ($brands as $brand)
+                                            <option value="{{ $brand->id }}">{{ ucfirst($brand->brand_name) }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div class="col-md-1 quantity-container">
-                                    <label for="quantity">QTY</label><br/>
-                                    <input type="text" name="quantity" class="form-control" id="quantity"
-                                           value="{{ old('quantity') }}">
+                                    <label for="quantity">Quantity</label><br/>
+                                    <input type="text" name="quantity[]" class="form-control" id="quantity"
+                                           >
                                 </div>
                                 <div class="col-md-1 unit-container">
                                     <label for="unit">Unit</label><br/>
-                                    <input type="text" name="unit" class="form-control" id="unit"
-                                           value="{{ old('unit') }}">
+                                    <input type="text" name="unit[]" class="form-control" id="unit"
+                                           >
                                 </div>
                                 <div class="col-md-1 rate-container">
                                     <label for="rate">Rate</label><br/>
-                                    <input type="text" name="rate" class="form-control" id="rate"
-                                           value="{{ old('rate') }}">
+                                    <input type="text" name="rate[]" class="form-control" id="rate"
+                                           >
                                 </div>
                                 <div class="col-md-2 amount-container">
                                     <label for="amount">Amount</label><br/>
-                                    <input type="text" name="amount" class="form-control" id="amount"
-                                           value="{{ old('amount') }}">
+                                    <input type="text" name="amount[]" class="form-control" id="amount"
+                                           >
                                 </div>
                                 <div class="col-md-1">
                                     <label for="unit">&nbsp;</label><br/>
@@ -116,8 +111,8 @@
                                            value="{{ old('discount') }}">
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="terms">Terms & Conditions</label><br/>
-                                    <textarea class="form-control" name="terms" id="terms"></textarea>
+                                    <label for="terms_condition">Terms & Conditions</label><br/>
+                                    <textarea class="form-control" name="terms_condition" id="terms_condition"></textarea>
                                 </div>
                             </div>
                             <br/>
@@ -165,7 +160,7 @@
                         '<label for="item_id">Select Category</label><br/>' +
                         '<div class="row">' +
                             '<div class="col-10">' +
-                                '<select name="item_id" class="form-control" id="item_id">' +
+                                '<select name="item_id[]" class="form-control" id="item_id">' +
                                     '<option selected="selected" value>Select</option> <option value="#"></option>' +
                                 '</select>' +
                             '</div>' +
@@ -182,33 +177,37 @@
                 let $itemRow = '<div class="row mt-3">' +
                     '<div class="col-md-3 category-container">' +
                     '<label for="item_id">Select Item </label><br/>' +
-                    '<select name="item_id" class="form-control" id="item_id">' +
+                    '<select name="item_id[]" class="form-control" id="item_id">' +
                         '<option selected="selected" value>Select</option>' +
-                        '<option value="#"></option>' +
+                        @foreach ($items as $item)
+                            '<option value="{{ $item->id }}">{{ ucfirst($item->item_name) }}</option>' +
+                        @endforeach
                     '</select>' +
                     '</div>' +
                 '<div class="col-md-3 brand-container">' +
                     '<label for="brand_id">Select Brand</label><br/>' +
-                    '<select name="brand_id" class="form-control" id="brand_id">' +
+                    '<select name="brand_id[]" class="form-control" id="brand_id">' +
                         '<option selected="selected" value>Select</option>' +
-                        '<option value="#"></option>' +
+                        @foreach ($brands as $brand)
+                            '<option value="{{ $brand->id }}">{{ ucfirst($brand->brand_name) }}</option>' +
+                        @endforeach
                     '</select>' +
                 '</div>' +
                 '<div class="col-md-1 quantity-container">' +
                     '<label for="quantity">Quantity</label><br/>' +
-                    '<input type="text" name="quantity" class="form-control" id="quantity" value="{{ old('quantity') }}">' +
+                    '<input type="text" name="quantity[]" class="form-control" id="quantity" >' +
                 '</div>' +
                 '<div class="col-md-1 unit-container">' +
                     '<label for="unit">Unit</label><br/>' +
-                    '<input type="text" name="unit" class="form-control" id="unit" value="{{ old('unit') }}">' +
+                    '<input type="text" name="unit[]" class="form-control" id="unit" >' +
                 '</div>' +
                 '<div class="col-md-1 rate-container">' +
-                    '<label for="rate">Unit</label><br/>' +
-                    '<input type="text" name="rate" class="form-control" id="rate" value="{{ old('rate') }}">' +
+                    '<label for="rate">Rate</label><br/>' +
+                    '<input type="text" name="rate[]" class="form-control" id="rate" >' +
                 '</div>' +
                 '<div class="col-md-2 amount-container">' +
-                    '<label for="amount">Unit</label><br/>' +
-                    '<input type="text" name="amount" class="form-control" id="amount" value="{{ old('amount') }}">' +
+                    '<label for="amount">Amount</label><br/>' +
+                    '<input type="text" name="amount[]" class="form-control" id="amount" >' +
                 '</div>' +
                 '<div class="col-md-1">' +
                     '<label for="unit">&nbsp;</label><br/>' +
