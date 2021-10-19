@@ -9,8 +9,8 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard.client') }}">Home</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('purchase.list.client') }}">Purchases</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('dashboard.admin') }}">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('quotation.list.admin') }}">Quotation</a></li>
                         <li class="breadcrumb-item active">{{$title}}</li>
                     </ol>
                 </div>

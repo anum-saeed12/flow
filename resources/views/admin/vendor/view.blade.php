@@ -80,7 +80,7 @@
                                 <tbody id="myTable">
                                 @foreach($vendors as $vendor)
                                     <tr>
-                                        <td></td>
+                                        <td>{{ $loop->iteration }}</td>
                                         <td>{{ ucfirst($vendor->vendor_name) }}</td>
                                         <td>{{ ucfirst($vendor->attended_person) }}</td>
                                         <td>{{ ucfirst($vendor->address) }}</td>

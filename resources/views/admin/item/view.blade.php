@@ -85,7 +85,7 @@
                                 <tbody id="myTable">
                                 @foreach($items as $item)
                                     <tr>
-                                        <td></td>
+                                        <td>{{ $loop->iteration }}</td>
                                         <td>{{ucfirst($item->item_name)}}</td>
                                         <td>
                                             <a href="{{ asset('storage/images/'.$item->picture) }}" target="_blank">

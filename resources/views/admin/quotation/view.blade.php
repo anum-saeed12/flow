@@ -79,9 +79,9 @@
                                 </tr>
                                 </thead>
                                 <tbody id="myTable">
-                                @foreach($quotations as $quotation)
+                                @foreach($quotations as  $quotation)
                                     <tr>
-                                        <td></td>
+                                        <td>{{ $loop->iteration }}</td>
                                         <td>{{ ucfirst($quotation->customer->customer_name) }}</td>
                                         <td>{{ ucfirst($quotation->project_name) }}</td>
                                         <td>{{ ucfirst($quotation->project_name) }}</td>

@@ -83,7 +83,7 @@
                                 <tbody id="myTable">
                                 @foreach($inquires as $inquiry)
                                     <tr>
-                                        <td></td>
+                                        <td>{{ $loop->iteration }}</td>
                                         <td>{{ ucfirst($inquiry->customer_name) }}</td>
                                         <td>{{ ucfirst($inquiry->project_name) }}</td>
                                         <td>{{ ucfirst($inquiry->item_description) }}</td>

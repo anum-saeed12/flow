@@ -23,6 +23,13 @@
                     </a>
                 </li>
                 <li class="nav-item has-treeview">
+                    <a href="{{ route('inquiry.open.' . auth()->user()->user_role) }}" class="nav-link">
+                        <i class="fas fa-pen-square nav-icon"></i>
+                        <p>
+                            Open Inquiry
+                        </p>
+                    </a>
+                <li class="nav-item has-treeview">
                     <a href="{{ route('customer.list.' . auth()->user()->user_role) }}" class="nav-link">
                         <i class="fas fa-users nav-icon"></i>
                         <p>
@@ -56,16 +63,16 @@
                 </li>
 
                 <li class="nav-item has-treeview">
-                    <a href="{{ route('quotation.add.' . auth()->user()->user_role) }}" class="nav-link">
+                    <a href="{{ route('customerquotation.list.' . auth()->user()->user_role) }}" class="nav-link">
                         <i class="fas fa-receipt nav-icon"></i>
                         <p>
-                            Quotation
+                            Customer Quotation
                         </p>
                     </a>
                 </li>
 
                 <li class="nav-item has-treeview">
-                    <a href="{{ route('vendorquotation.add.' . auth()->user()->user_role) }}" class="nav-link">
+                    <a href="{{ route('vendorquotation.list.' . auth()->user()->user_role) }}" class="nav-link">
                         <i class="fas fa-paste nav-icon"></i>
                         <p>
                             Vendor Quotation
@@ -80,22 +87,7 @@
                         </p>
                     </a>
                 </li>
-                <li class="nav-item has-treeview">
-                    <a href="{{ route('customerquotation.list.' . auth()->user()->user_role) }}" class="nav-link">
-                        <i class="fas fa-list-alt nav-icon"></i>
-                        <p>
-                            Customer Quotation
-                        </p>
-                    </a>
-                </li>
-                <li class="nav-item has-treeview">
-                    <a href="{{ route('inquiry.open.' . auth()->user()->user_role) }}" class="nav-link">
-                        <i class="fas fa-pen-square nav-icon"></i>
-                        <p>
-                            Open Inquiry
-                        </p>
-                    </a>
-                </li>
+
 
                 @endadmin
 

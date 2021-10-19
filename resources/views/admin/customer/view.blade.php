@@ -79,7 +79,7 @@
                                 <tbody id="myTable">
                                 @foreach($customer as $cus)
                                     <tr>
-                                        <td></td>
+                                        <td>{{ $loop->iteration }}</td>
                                         <td>{{ ucfirst($cus->customer_name) }}</td>
                                         <td>{{ ucfirst($cus->attended_person) }}</td>
                                         <td>{{ ucfirst($cus->address) }}</td>

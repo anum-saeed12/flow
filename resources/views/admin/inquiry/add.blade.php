@@ -85,7 +85,7 @@
                                     </select>
                                     <div class="text-danger">@error('item_id'){{ $message }}@enderror</div>
                                 </div>
-                                <div class="col-md-3 brand-container">
+                                <div class="col-md-2 brand-container">
                                     <label for="brand_id">Select Brand</label><br/>
                                     <select name="brand_id[]" class="form-control" id="brand_id">
                                         <option selected="selected" value>Select</option>
@@ -104,6 +104,11 @@
                                     <label for="unit">Unit</label><br/>
                                     <input type="text" name="unit[]" class="form-control" id="unit"
                                            value="{{ old('unit') }}">
+                                </div>
+                                <div class="col-md-1 amount-container">
+                                    <label for="amount">Amount</label><br/>
+                                    <input type="text" name="amount[]" class="form-control" id="amount"
+                                           value="{{ old('amount') }}">
                                 </div>
                                 <div class="col-md-1">
                                     <label for="button">&nbsp;</label><br/>
@@ -152,6 +157,7 @@
                 item_container = $('.item-container'),
                 brand_container = $('.brand-container'),
                 quantity_container = $('.quantity-container'),
+                amount_container = $('.amount-container'),
                 unit_container = $('.unit-container'),
                 add_button = $(".add_form_field"),
                 max_fields = 10,
@@ -203,7 +209,7 @@
                 @endforeach
                     '</select>' +
                 '</div>' +
-                '<div class="col-md-3 brand-container">' +
+                '<div class="col-md-2 brand-container">' +
                     '<label for="brand_id">Select Brand</label><br/>' +
                     '<select name="brand_id[]" class="form-control" id="brand_id">' +
                         '<option selected="selected" value>Select</option>' +
@@ -219,6 +225,10 @@
                 '<div class="col-md-1 unit-container">' +
                     '<label for="unit">Unit</label><br/>' +
                     '<input type="text" name="unit[]" class="form-control" id="unit" value="{{ old('unit') }}">' +
+                '</div>' +
+                    '<div class="col-md-1 amount-container">' +
+                    '<label for="amount">Amount</label><br/>' +
+                    '<input type="text" name="amount[]" class="form-control" id="amount" value="{{ old('amount') }}">' +
                 '</div>' +
                 '<div class="col-md-1">' +
                     '<label for="unit">&nbsp;</label><br/>' +

@@ -12,7 +12,7 @@ class InquiryOrder extends Model
     use SoftDeletes;
 
     protected $table = 'inquiry_order';
-    protected $fillable = ['category_id','item_id','brand_id','quantity','inquiry_id','unit','price','created_at','updated_at'];
+    protected $fillable = ['category_id','item_id','brand_id','quantity','amount','inquiry_id','unit','price','created_at','updated_at'];
 
     public function category()
     {

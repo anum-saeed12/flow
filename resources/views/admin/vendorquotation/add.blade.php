@@ -83,6 +83,11 @@
                                     <input type="text" name="unit[]" class="form-control" id="unit"
                                            value="{{ old('unit') }}">
                                 </div>
+                                <div class="col-md-2 amount-container">
+                                    <label for="amount">Amount</label><br/>
+                                    <input type="text" name="amount[]" class="form-control" id="amount"
+                                           value="{{ old('amount') }}">
+                                </div>
                                 <div class="col-md-1">
                                     <label for="button">&nbsp;</label><br/>
                                     <button class="add_form_field btn btn-info"><span><i class="fas fa-plus-circle" aria-hidden="false"></i></span></button>
@@ -97,7 +102,7 @@
                                 <div class="input-group mt-3">
                                     <input name="quotation_pdf" type="file"
                                            class="form-control-file"
-                                           required="required">
+                                           required="required" >
                                 </div>
                             </div>
                             <br/>
@@ -185,8 +190,12 @@
                     '<label for="unit">Unit</label><br/>' +
                     '<input type="text" name="unit" class="form-control" id="unit" value="{{ old('unit') }}">' +
                 '</div>' +
+                    '<div class="col-md-2 amount-container">' +
+                    '<label for="amount">Amount</label><br/>' +
+                    '<input type="text" name="amount" class="form-control" id="amount" value="{{ old('amount') }}">' +
+                '</div>' +
                 '<div class="col-md-1">' +
-                    '<label for="unit">&nbsp;</label><br/>' +
+                    '<label for="button">&nbsp;</label><br/>' +
                     '<button class="delete btn btn-danger"><span><i class="fas fa-trash-alt" aria-hidden="false"></i></span></button>' +
                 '</div>' +
             '</div>';
