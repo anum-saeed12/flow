@@ -86,8 +86,10 @@
                                         <td>{{ ucfirst($vendor->address) }}</td>
                                         <td>{{ ucfirst($vendor->country) }}</td>
                                         <td class="text-right p-0">
-                                            <a class="bg-primary list-btn"  href="{{ route('vendor.edit.admin',$vendor->id) }}"><i class="fas fa-tools" aria-hidden="false"></i></a>
-                                            <a class="bg-danger list-btn"  href="{{ route('vendor.delete.admin',$vendor->id) }}"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
+                                            <a class="bg-primary list-btn"  href="{{ route('vendor.edit.admin',$vendor->id) }}" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
+
+                                            <a class="bg-danger list-btn"  href="{{ route('vendor.delete.admin',$vendor->id) }}" title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
+
                                         </td>
                                     </tr>
                                 </tbody>
@@ -96,7 +98,7 @@
                         </div>
                     </div>
                     <div class="d-flex flex-row-reverse">
-                      {{--  {!! $clients->links('pagination::bootstrap-4') !!}--}}
+                        {!! $vendors->links('pagination::bootstrap-4') !!}
                     </div>
                 </div>
             </div>

@@ -12,17 +12,11 @@ class VendorQuotation extends Model
     use SoftDeletes;
 
     protected $table = 'vendor_quotation';
-    protected $fillable = ['vendor_id','quotation_ref','vendor_quotation_item_id','quotation_pdf','created_at','updated_at'];
+    protected $fillable = ['vendor_id','quotation_ref','quotation_pdf','created_at','updated_at'];
 
-    public function vendors()
+    public function vendor()
     {
         return $this->hasOne(Vendor::class, 'id', 'vendor_id');
     }
-
-    public function vendorquotation()
-    {
-        return $this->hasMany(VendorQuotation::class, 'id', 'vendor_quotation_item_id');
-    }
-
 
 }

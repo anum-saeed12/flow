@@ -81,26 +81,28 @@
                                 </tr>
                                 </thead>
                                 <tbody id="myTable">
+                                @foreach($inquires as $inquiry)
                                     <tr>
                                         <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
+                                        <td>{{ ucfirst($inquiry->customer_name) }}</td>
+                                        <td>{{ ucfirst($inquiry->project_name) }}</td>
+                                        <td>{{ ucfirst($inquiry->item_description) }}</td>
+                                        <td>{{ $inquiry->amount }}</td>
+                                        <td>{{ 'saleperson' }}</td>
+                                        <td>{{ ucfirst($inquiry->date) }}</td>
+                                        <td>{{ ucfirst($inquiry->timeline) }}</td>
                                         <td class="text-right p-0">
-                                            <a class="bg-primary list-btn"  href="#"><i class="fas fa-tools" aria-hidden="false"></i></a>
-                                            <a class="bg-danger list-btn"  href="#"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
+                                            <a class="bg-primary list-btn"  href="#" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
+                                            <a class="bg-danger list-btn"  href="#"  title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
                                         </td>
                                     </tr>
+                                @endforeach
                                 </tbody>
                             </table>
                         </div>
                     </div>
                     <div class="d-flex flex-row-reverse">
-                      {{--  {!! $clients->links('pagination::bootstrap-4') !!}--}}
+                      {!! $inquires->links('pagination::bootstrap-4') !!}
                     </div>
                 </div>
             </div>

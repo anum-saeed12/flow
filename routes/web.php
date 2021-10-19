@@ -90,8 +90,6 @@ Route::prefix('/admin')->middleware('admin')->group(function() {
     });
 
     Route::prefix('/quotation')->group(function() {
-        Route::get('/', '\App\Http\Controllers\Admin\QuotationController@index')->name('quotation.index.admin');
-        Route::get('/index', '\App\Http\Controllers\Admin\QuotationController@index')->name('quotation.list.admin');
         Route::get('/customer', '\App\Http\Controllers\Admin\QuotationController@customer')->name('customerquotation.list.admin');
         Route::get('/add', '\App\Http\Controllers\Admin\QuotationController@add')->name('quotation.add.admin');
         Route::post('/store', '\App\Http\Controllers\Admin\QuotationController@store')->name('quotation.store.admin');

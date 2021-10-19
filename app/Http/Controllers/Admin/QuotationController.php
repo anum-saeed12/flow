@@ -8,25 +8,25 @@ use App\Models\Customer;
 use App\Models\Item;
 use App\Models\Quotation;
 use App\Models\QuotationItem;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Ramsey\Uuid\Uuid;
 
 class QuotationController extends Controller
 {
-    public function index()
-    {
-        $data = [
-            'title'   => 'Quotations',
-            'user'    => Auth::user(),
-        ];
-        return view('admin.quotation.view',$data);
-    }
     public function customer()
     {
+        $quotations = Quotation::select('*')
+            ->leftJoin('quotation_item', 'quotation_item.quotation_id', '=', 'quotations.id')
+            ->leftJoin('brands', 'brands.id', '=', 'quotation_item.brand_id')
+            ->leftJoin('items', 'items.id', '=', 'quotation_item.item_id')
+            ->leftJoin('customers', 'customers.id', '=', 'quotations.customer_id')
+            ->paginate($this->count);
         $data = [
-            'title'   => 'Customer Quotation',
-            'user'    => Auth::user(),
+            'title'     => 'Quotations',
+            'user'      => Auth::user(),
+            'quotations' => $quotations
         ];
         return view('admin.quotation.customer',$data);
     }
@@ -55,8 +55,8 @@ class QuotationController extends Controller
             'customer_id'    => 'required',
             'project_name'   => 'required',
             'date'           => 'required',
-            'discount'       => 'sometimes|required',
-            'terms_condition'=> 'sometimes|required',
+            'discount'       => 'sometimes',
+            'terms_condition'=> 'sometimes',
             'item_id'        => 'required|array',
             'item_id.*'      => 'required',
             'brand_id'       => 'required|array',
@@ -82,37 +82,29 @@ class QuotationController extends Controller
         $rates = $request->rate;
         $amounts = $request->amount;
 
-        $quotation_id = 99;
+        $data = $request->all();
+        $data['date'] = Carbon::parse($request->date)->format('Y-m-d');
+        $quotation = new Quotation($data);
+        $quotation->save();
 
         $save = [];
 
         foreach($items as $index => $item) {
             $quotation_item = [
-                'item_id' => $item,
+                'quotation_id' => $quotation->id,
+                'item_id'  => $item,
                 'brand_id' => $brands[$index],
                 'quantity' => $quantities[$index],
-                'unit' => $units[$index],
-                'rate' => $rates[$index],
-                'amount' => $amounts[$index]
+                'unit'     => $units[$index],
+                'rate'     => $rates[$index],
+                'amount'   => $amounts[$index]
             ];
             $save[] = (new QuotationItem($quotation_item))->save();
-            # Mae araha hu December me
-            # Clean your pussy
-            # And I dont care tum periods pe ho ya na ho!
-            # I Want to finger you and I want to make you cum
-            # Phir to tumhe bht ziada maza ayega ! I'll insert my phone and put it on vibrate
+
         }
-
-        dd($save);
-
-        #$item    =  $request->all();
-        #$item['picture']     =  $this->uploadPicture($request->file('picture'));
-        #$user = new Item($item);
-
-        #$user->save() ;
-        /*return redirect(
-            route('item.list.admin')
-        )->with('success', 'Item was added successfully!');*/
+        return redirect(
+            route('quotation.list.admin')
+        )->with('success', 'Quotation was added successfully!');
     }
 
     public function edit($id)

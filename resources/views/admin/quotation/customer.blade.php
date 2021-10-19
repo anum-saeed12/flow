@@ -24,7 +24,7 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-                @include('admin.quotation.components.filters')
+                    @include('admin.quotation.components.filters')
                 <div class="col-12">
                     @if(session()->has('success'))
                         <div class="callout callout-success" style="color:green">
@@ -79,18 +79,22 @@
                                 </tr>
                                 </thead>
                                 <tbody id="myTable">
+                                @foreach($quotations as $quotation)
                                     <tr>
                                         <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
+                                        <td>{{ ucfirst($quotation->customer->customer_name) }}</td>
+                                        <td>{{ ucfirst($quotation->project_name) }}</td>
+                                        <td>{{ ucfirst($quotation->item_description) }}</td>
+                                        <td>{{ ucfirst($quotation->amount) }}</td>
+                                        <td>{{ 'saleperson'  }}</td>
                                         <td></td>
                                         <td class="text-right p-0">
-                                            <a class="bg-primary list-btn"  href="#"><i class="fas fa-tools" aria-hidden="false"></i></a>
-                                            <a class="bg-danger list-btn"  href="#"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
+                                            <a class="bg-warning list-btn"  href="#" title="View"><i class="fas fa-file-pdf" aria-hidden="false"></i></a>
+                                            <a class="bg-primary list-btn"  href="{{ route('quotation.edit.admin',$quotation->id) }}" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
+                                            <a class="bg-danger list-btn"  href="#" title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
                                         </td>
                                     </tr>
+                                @endforeach
                                 </tbody>
                             </table>
                         </div>

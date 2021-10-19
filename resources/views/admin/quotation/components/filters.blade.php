@@ -1,16 +1,16 @@
-<div class="omni-filters">
+<div class="omni-filters col ml-2 mr-2">
     <h2>Filters</h2>
     <form action="{{ route('customerquotation.list.admin') }}" method="get">
         <input type="hidden" name="filters" value="go"/>
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <label for="sales_person" class="normal">Sales Person</label>
                 <select name="sales_person" class="form-control" id="sales_person">
                     <option selected="selected" value>Select</option>
                     <option value="#"></option>
                 </select>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <label for="customer_id" class="normal">Customer</label>
                 <select name="sales_person" class="form-control" id="sales_person">
                     <option selected="selected" value>Select</option>

@@ -26,7 +26,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card card-info">
-                    <form class="form-horizontal" action="#" method="POST">
+                    <form class="form-horizontal" action="{{ route('vendorquotation.store.admin') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="card-body pb-0">
                             <div class="row">
@@ -41,10 +41,10 @@
                                     <div class="text-danger">@error('vendor_id'){{ $message }}@enderror</div>
                                 </div>
                                 <div class="col-md-3">
-                                    <label for="quotation_id">Quotation Ref#</label><br/>
-                                    <input type="text" name="quotation_id" class="form-control" id="quotation_id"
-                                            value="{{ old('project_name') }}">
-                                    <div class="text-danger">@error('quotation_id'){{ $message }}@enderror</div>
+                                    <label for="quotation_ref">Quotation Ref#</label><br/>
+                                    <input type="text" name="quotation_ref" class="form-control" id="quotation_ref"
+                                            value="{{ old('quotation_ref') }}">
+                                    <div class="text-danger">@error('quotation_ref'){{ $message }}@enderror</div>
                                 </div>
 
                                 <div class="offset-4 col-md-2">
@@ -56,7 +56,7 @@
                             <div class="row">
                                 <div class="col-md-3 category-container">
                                     <label for="category_id">Select Category</label><br/>
-                                    <select name="category_id" class="form-control" id="category_id">
+                                    <select name="category_id[]" class="form-control" id="category_id">
                                         <option selected="selected" value>Select</option>
                                         @foreach ($categories as $category)
                                             <option value="{{ $category->id }}">{{ ucfirst($category->category_name) }}</option>
@@ -64,22 +64,27 @@
                                     </select>
                                 </div>
                                 <div class="col-md-3 description-container">
-                                    <label for="description">Item Description</label><br/>
-                                    <input type="text" name="description" class="form-control" id="description"
-                                           value="{{ old('description') }}">
+                                    <label for="item_description">Item Description</label><br/>
+                                    <input type="text" name="item_description[]" class="form-control" id="item_description"
+                                           value="{{ old('item_description') }}">
                                 </div>
                                 <div class="col-md-1 quantity-container">
-                                    <label for="quantity">QTY</label><br/>
-                                    <input type="text" name="quantity" class="form-control" id="quantity"
+                                    <label for="quantity">Quantity</label><br/>
+                                    <input type="text" name="quantity[]" class="form-control" id="quantity"
                                            value="{{ old('quantity') }}">
+                                </div>
+                                <div class="col-md-1 price-container">
+                                    <label for="price">Price</label><br/>
+                                    <input type="text" name="price[]" class="form-control" id="price"
+                                           value="{{ old('price') }}">
                                 </div>
                                 <div class="col-md-1 unit-container">
                                     <label for="unit">Unit</label><br/>
-                                    <input type="text" name="unit" class="form-control" id="unit"
+                                    <input type="text" name="unit[]" class="form-control" id="unit"
                                            value="{{ old('unit') }}">
                                 </div>
                                 <div class="col-md-1">
-                                    <label for="unit">&nbsp;</label><br/>
+                                    <label for="button">&nbsp;</label><br/>
                                     <button class="add_form_field btn btn-info"><span><i class="fas fa-plus-circle" aria-hidden="false"></i></span></button>
                                 </div>
                             </div>
@@ -88,9 +93,9 @@
                             </div>
                             <br/>
                             <div class="row">
-                                <label for="quotation_file">Upload Quotation PDF</label><br/>
+                                <label for="quotation_pdf">Upload Quotation PDF</label><br/>
                                 <div class="input-group mt-3">
-                                    <input name="quotation_file" type="file"
+                                    <input name="quotation_pdf" type="file"
                                            class="form-control-file"
                                            required="required">
                                 </div>
@@ -124,7 +129,7 @@
                 rate_container = $('.rate-container'),
                 amount_container = $('.amount-container'),
                 add_button = $(".add_form_field"),
-                max_fields = 10,
+                max_fields = 1000,
                 wrapper = $('.additional-products');
 
             var x = 1;
@@ -137,10 +142,10 @@
 
                 let $categorySelector = //'<div class="row hello">' +
                     '<div class="col-md-3 mt-3">' +
-                        '<label for="item_id">Select Category</label><br/>' +
+                        '<label for="category_id">Select Category</label><br/>' +
                         '<div class="row">' +
                             '<div class="col-10">' +
-                                '<select name="item_id" class="form-control" id="item_id">' +
+                                '<select name="category_id[]" class="form-control" id="category_id">' +
                                     '<option selected="selected" value>Select</option> <option value="#"></option>' +
                                 '</select>' +
                             '</div>' +
@@ -156,34 +161,29 @@
 
                 let $itemRow = '<div class="row mt-3">' +
                     '<div class="col-md-3 category-container">' +
-                    '<label for="item_id">Select Item </label><br/>' +
-                    '<select name="item_id" class="form-control" id="item_id">' +
+                    '<label for="category_id">Select Category </label><br/>' +
+                    '<select name="category_id[]" class="form-control" id="category_id">' +
                         '<option selected="selected" value>Select</option>' +
-                        '<option value="#"></option>' +
+                    @foreach ($categories as $category)
+                        '<option value="{{ $category->id }}">{{ ucfirst($category->category_name) }}</option>' +
+                    @endforeach
                     '</select>' +
                     '</div>' +
-                '<div class="col-md-3 brand-container">' +
-                    '<label for="brand_id">Select Brand</label><br/>' +
-                    '<select name="brand_id" class="form-control" id="brand_id">' +
-                        '<option selected="selected" value>Select</option>' +
-                        '<option value="#"></option>' +
-                    '</select>' +
+                '<div class="col-md-3 description-container">' +
+                    '<label for="item_description">Item Description</label><br/>' +
+                    '<input type="text" name="item_description[]" class="form-control" id="item_description" value="{{ old('item_description') }}">' +
                 '</div>' +
                 '<div class="col-md-1 quantity-container">' +
                     '<label for="quantity">Quantity</label><br/>' +
                     '<input type="text" name="quantity" class="form-control" id="quantity" value="{{ old('quantity') }}">' +
                 '</div>' +
+                '<div class="col-md-1 price-container">' +
+                    '<label for="price">Price</label><br/>' +
+                    '<input type="text" name="price" class="form-control" id="price" value="{{ old('price') }}">' +
+                '</div>' +
                 '<div class="col-md-1 unit-container">' +
                     '<label for="unit">Unit</label><br/>' +
                     '<input type="text" name="unit" class="form-control" id="unit" value="{{ old('unit') }}">' +
-                '</div>' +
-                '<div class="col-md-1 rate-container">' +
-                    '<label for="rate">Unit</label><br/>' +
-                    '<input type="text" name="rate" class="form-control" id="rate" value="{{ old('rate') }}">' +
-                '</div>' +
-                '<div class="col-md-2 amount-container">' +
-                    '<label for="amount">Unit</label><br/>' +
-                    '<input type="text" name="amount" class="form-control" id="amount" value="{{ old('amount') }}">' +
                 '</div>' +
                 '<div class="col-md-1">' +
                     '<label for="unit">&nbsp;</label><br/>' +

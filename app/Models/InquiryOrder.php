@@ -12,7 +12,7 @@ class InquiryOrder extends Model
     use SoftDeletes;
 
     protected $table = 'inquiry_order';
-    protected $fillable = ['category_id','item_id','brand_id','quantity','unit','price','created_at','updated_at'];
+    protected $fillable = ['category_id','item_id','brand_id','quantity','inquiry_id','unit','price','created_at','updated_at'];
 
     public function category()
     {
@@ -27,6 +27,11 @@ class InquiryOrder extends Model
     public function brand()
     {
         return $this->hasOne(Brand::class, 'id', 'brand_id');
+    }
+
+    public function inquiry()
+    {
+        return $this->hasOne(Inquiry::class, 'id', 'inquiry_id');
     }
 
 

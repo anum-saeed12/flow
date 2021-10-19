@@ -12,7 +12,7 @@ class Quotation extends Model
     use SoftDeletes;
 
     protected $table = 'quotations';
-    protected $fillable = ['customer_id','project_name','date','quotation_item_id','discount','terms_condition',
+    protected $fillable = ['customer_id','project_name','date','discount','terms_condition',
                            'created_at','updated_at'];
 
     public function customer()
@@ -22,6 +22,7 @@ class Quotation extends Model
 
     public function items()
     {
-        return $this->hasMany(QuotationItem::class, 'id', 'quotation_item_id');
+        return $this->hasMany(QuotationItem::class,'quotation_id','id')->with('product')->with('brand');
     }
+
 }

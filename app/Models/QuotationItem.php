@@ -13,10 +13,10 @@ class QuotationItem extends Model
     use SoftDeletes;
 
     protected $table = 'quotation_item';
-    protected $fillable = ['item_id','brand_id','quantity','unit','rate','amount',
+    protected $fillable = ['item_id','brand_id','quantity','unit','rate','amount','quotation_id',
         'created_at','updated_at'];
 
-    public function item()
+    public function product()
     {
         return $this->hasOne(Item::class, 'id', 'item_id');
     }
@@ -26,4 +26,8 @@ class QuotationItem extends Model
         return $this->hasOne(Brand::class, 'id', 'brand_id');
     }
 
+    public function quotation()
+    {
+        return $this->hasOne(Quotation::class, 'id', 'quotation_id');
+    }
 }

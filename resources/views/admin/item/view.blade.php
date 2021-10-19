@@ -65,9 +65,6 @@
                                 <a href="{{ route('item.add.admin') }}" class="btn btn-success"><i class="fa fa-plus-circle mr-1"></i> Add New</a>
                             </div>
                         </div>
-                        <div class="row">
-                            <img src="{{asset('storage/picture/d5bc2b5a-ed91-49ec-aeea-037472ea0326.png')}}"  alt="" height="90" width="75" />
-                        </div>
                         <div class="card-body table-responsive p-0">
                             <table class="table table-hover text-nowrap table-compact">
                                 <thead>
@@ -90,7 +87,12 @@
                                     <tr>
                                         <td></td>
                                         <td>{{ucfirst($item->item_name)}}</td>
-                                        <td><img src="{{ asset('storage/images/'.$item->picture) }}"  alt="" height="90" width="75" /></td>
+                                        <td>
+                                            <a href="{{ asset('storage/images/'.$item->picture) }}" target="_blank">
+                                                <div class="list-img-thumbnail" style="background-image:url('{{ asset('storage/images/'.$item->picture) }}');"></div>
+                                            </a>
+                                            {{--<img src="{{ asset('storage/images/'.$item->picture) }}"  alt="" height="90" width="75"/>--}}
+                                        </td>
                                         <td>{{ucfirst($item->brand_name)}}</td>
                                         <td>{{ucfirst($item->category_name)}}</td>
                                         <td>{{ucfirst($item->item_description)}}</td>
@@ -100,8 +102,8 @@
                                         <td>{{$item->height}}</td>
                                         <td>{{$item->width}}</td>
                                         <td class="text-right p-0">
-                                            <a class="bg-primary list-btn"  href="#"><i class="fas fa-tools" aria-hidden="false"></i></a>
-                                            <a class="bg-danger list-btn"  href="#"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
+                                            <a class="bg-primary list-btn"  href="#" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
+                                            <a class="bg-danger list-btn"  href="#"  title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
                                         </td>
                                     </tr>
                                 @endforeach

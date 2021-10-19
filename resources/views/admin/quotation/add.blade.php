@@ -57,7 +57,7 @@
                             </div>
                             <br/>
                             <div class="row">
-                                <div class="col-md-3 category-container">
+                                <div class="col-md-3 item-container">
                                     <label for="item_id">Select Item </label><br/>
                                     <select name="item_id[]" class="form-control" id="item_id">
                                         <option selected="selected" value>Select</option>
@@ -157,7 +157,7 @@
 
                 let $categorySelector = //'<div class="row hello">' +
                     '<div class="col-md-3 mt-3">' +
-                        '<label for="item_id">Select Category</label><br/>' +
+                        '<label for="item_id">Select Item</label><br/>' +
                         '<div class="row">' +
                             '<div class="col-10">' +
                                 '<select name="item_id[]" class="form-control" id="item_id">' +
@@ -175,7 +175,7 @@
                     //'</div>';
 
                 let $itemRow = '<div class="row mt-3">' +
-                    '<div class="col-md-3 category-container">' +
+                    '<div class="col-md-3 item-container">' +
                     '<label for="item_id">Select Item </label><br/>' +
                     '<select name="item_id[]" class="form-control" id="item_id">' +
                         '<option selected="selected" value>Select</option>' +
