@@ -136,6 +136,7 @@
                 add_button = $(".add_form_field"),
                 max_fields = 1000,
                 wrapper = $('.additional-products');
+            $uid = $('.quantity').length;
 
             var x = 1;
             $(add_button).click(function(e) {
@@ -161,7 +162,7 @@
                             '</div>' +
                         '</div>' +
                     '</div>';// +
-                    ;// +
+                    //;// +
                     //'</div>';
 
                 let $itemRow = '<div class="row mt-3">' +
@@ -205,10 +206,41 @@
             });
 
             $(wrapper).on("click", ".delete", function(e) {
-                e.preventDefault();
+                e.preventDefault()
                 $(this).parent().parent().remove();
                 x--;
             })
+            $('.with_out').keyup(function() {
+                var txtFirstNumberValue = document.getElementById('quantity').value;
+                var txtSecondNumberValue = document.getElementById('rate').value;
+                var result = parseInt(txtFirstNumberValue) * parseInt(txtSecondNumberValue);
+                if (!isNaN(result)) {
+                    document.getElementById('amount').value = result;
+                }
+            })
+
+            function sumIt() {
+                var total = 0, val;
+                $('.common').each(function() {
+                    val = $(this).val()
+                    val = isNaN(val) || $.trim(val) === "" ? 0 : parseFloat(val);
+                    total += val;
+                });
+                $('#total_amount').val(Math.round(total));
+            }
+
+            $(document).on('keyup', '.common', sumIt,total);
+            sumIt() // run when loading
         });
+        function calculate(ele) {
+            let total = 0,sum = 0, result, target=$(ele.data('target')),
+                first = ele.val(), second = $(ele.data('into')).val();
+            result = parseFloat(first) * parseFloat(second);
+            if (!isNaN(result)) {
+                $(target).val(Math.round(result));
+                return false;
+            }
+            $(target).val(0);
+        }
     </script>
 @stop

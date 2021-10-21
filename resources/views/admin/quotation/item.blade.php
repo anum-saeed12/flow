@@ -47,23 +47,25 @@
                         <div class="invoice p-3 mb-3">
                             <div class="row">
                                 <div class="col-12">
-                                    <h4>
+                                   <strong> <h2 style="text-align: center; text-decoration: underline" class="mb-4">
                                         {{ ucwords('Build Con') }}
+                                    </h2></strong>
+                                    <h4 style="text-align: center" class="mb-4">
+                                        {{ ucwords('Quotation') }}
                                     </h4>
                                 </div>
                             </div>
                             <div class="row invoice-info">
                                 <div class="col-sm-4 invoice-col">
                                     <address>
+                                        <p><b>Ref: </b>{{ strtoupper(substr($quotation[0]->quotation,0,4)) }}-{{ strtoupper(substr($quotation[0]->quotation,4,4)) }}-{{ \Carbon\Carbon::createFromTimeStamp(strtotime($quotation[0]->created_at))->format('dm') }}-{{ \Carbon\Carbon::createFromTimeStamp(strtotime($quotation[0]->created_at))->format('Y') }}</p>
                                         <p><b>Attention: </b>{{ ucwords($quotation[0]->attention_person) }}</p>
                                         <p><b>Customer Name: </b>{{ ucwords($quotation[0]->customer_name) }}</p>
-                                        <p><b>Address: </b>{{ ucwords($quotation[0]->address) }}</p>
+                                        <p><b>Project Name: </b>{{ ucwords($quotation[0]->project_name) }}</p>
                                     </address>
                                 </div>
-                                <div class="offset-2 col-sm-4 invoice-col">
+                                <div class="offset-6 col-sm-2 invoice-col">
                                     <address>
-                                        <p><b>Quotation Ref: </b>{{ strtoupper(substr($quotation[0]->quotation,-6,6)) }}</p>
-                                        <p><b>Project Name: </b>{{ ucwords($quotation[0]->project_name) }}</p>
                                         <p><b>Date: </b>{{ ucwords(\Carbon\Carbon::createFromTimeStamp(strtotime($quotation[0]->date))->format('Y-m-d')) }}</p>
                                     </address>
                                 </div>
@@ -74,11 +76,11 @@
                                         <thead>
                                         <tr>
                                             <th>Sr.no</th>
-                                            <th>Item</th>
+                                            <th>Item Description</th>
                                             <th>Brand</th>
                                             <th>Quantity</th>
                                             <th>Unit</th>
-                                            <th>Unit Price ( {{ $quotation[0]->currency }})</th>
+                                            <th>Unit Price ( {{ $quotation[0]->currency }} )</th>
                                             <th>Total</th>
                                         </tr>
                                         </thead>
@@ -86,7 +88,7 @@
                                         @foreach($quotation as $item)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ ucwords($item->item_name) }}</td>
+                                            <td>{{ ucwords($item->item_description) }}</td>
                                             <td>{{ ucwords($item->brand_name) }}</td>
                                             <td>{{ ucwords($item->quantity) }}</td>
                                             <td>{{ ucwords($item->unit) }}</td>

@@ -22,6 +22,7 @@ class QuotationController extends Controller
             ->leftJoin('brands', 'brands.id', '=', 'quotation_item.brand_id')
             ->leftJoin('items', 'items.id', '=', 'quotation_item.item_id')
             ->leftJoin('customers', 'customers.id', '=', 'quotations.customer_id')
+            ->groupBy('quotations.id')
             ->paginate($this->count);
         $data = [
             'title'     => 'Quotations',
@@ -69,8 +70,7 @@ class QuotationController extends Controller
             'rate.*'         => 'required',
             'amount'         => 'required|array',
             'amount.*'       => 'required',
-            'total'          => 'required',
-            'currency'          => 'required'
+            'total'          => 'required'
         ],[
             'customer_id.required'     => 'The customer field is required.',
             'project_name.required'    => 'The project name field is required.',

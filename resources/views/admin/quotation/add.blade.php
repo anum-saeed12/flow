@@ -93,7 +93,7 @@
                                 </div>
                                 <div class="col-md-2 amount-container">
                                     <label for="amount">Sub-Total</label><br/>
-                                    <input type="text" name="amount[]" class="form-control" id="amount"
+                                    <input type="text" name="amount[]" class="form-control total" id="amount"
                                            >
                                 </div>
                                 <div class="col-md-1">
@@ -149,7 +149,7 @@
                 rate_container = $('.rate-container'),
                 amount_container = $('.amount-container'),
                 add_button = $(".add_form_field"),
-                max_fields = 10,
+                max_fields = 1000,
                 wrapper = $('.additional-products'),
                 $uid = $('.quantity').length;
 
@@ -216,7 +216,7 @@
                 '</div>' +
                 '<div class="col-md-2 amount-container">' +
                     `<label for="amount_${$uid}">Sub-Total</label><br/>` +
-                    `<input type="text" name="amount[]" class="form-control" id="total_amount_${$uid}">` +
+                    `<input type="text" name="amount[]" class="form-control total" id="total_amount_${$uid}">` +
                 '</div>' +
                 '<div class="col-md-1">' +
                     '<label for="unit">&nbsp;</label><br/>' +
@@ -251,14 +251,11 @@
                 $('#total_amount').val(Math.round(total));
             }
 
-
-
-            $(document).on('keyup', '.common', sumIt);
+            $(document).on('keyup', '.common', sumIt,total);
                 sumIt() // run when loading
-
         });
         function calculate(ele) {
-            let total = 0, result, target=$(ele.data('target')),
+            let total = 0,sum = 0, result, target=$(ele.data('target')),
                 first = ele.val(), second = $(ele.data('into')).val();
             result = parseFloat(first) * parseFloat(second);
             if (!isNaN(result)) {
@@ -266,6 +263,8 @@
                 return false;
             }
             $(target).val(0);
+
         }
+
     </script>
 @stop
