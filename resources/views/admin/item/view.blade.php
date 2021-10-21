@@ -91,7 +91,6 @@
                                             <a href="{{ asset('storage/images/'.$item->picture) }}" target="_blank">
                                                 <div class="list-img-thumbnail" style="background-image:url('{{ asset('storage/images/'.$item->picture) }}');"></div>
                                             </a>
-                                            {{--<img src="{{ asset('storage/images/'.$item->picture) }}"  alt="" height="90" width="75"/>--}}
                                         </td>
                                         <td>{{ucfirst($item->brand_name)}}</td>
                                         <td>{{ucfirst($item->category_name)}}</td>

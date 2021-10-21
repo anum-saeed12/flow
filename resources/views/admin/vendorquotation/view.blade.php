@@ -79,18 +79,21 @@
                                 </tr>
                                 </thead>
                                 <tbody id="myTable">
+                                @foreach($vendor_quotation as $quotation)
                                     <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ucfirst($quotation->vendor_name) }}</td>
+                                        <td>{{ ucfirst($quotation->project_name) }}</td>
+                                        <td>{{ ucfirst($quotation->item_description) }}</td>
+                                        <td>{{ ucfirst($quotation->amount) }}</td>
+                                        <td>{{ 'saleperson' }}</td>
                                         <td class="text-right p-0">
+                                            <a class="bg-warning list-btn"  href="{{ asset('storage/file/'.$quotation->quotation_pdf) }}" title="Quotation PDF" target="_blank"><i class="fas fa-file-pdf" aria-hidden="false"></i></a>
                                             <a class="bg-primary list-btn"  href="#" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
                                             <a class="bg-danger list-btn"  href="#" title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
                                         </td>
                                     </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>

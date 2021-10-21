@@ -72,7 +72,7 @@
                                 <tr>
                                     <th>Sr.No.</th>
                                     <th class="pl-0">Brand Name</th>
-                                    <th class="pl-0">Attended Person</th>
+                                    <th class="pl-0">Attention Person</th>
                                     <th class="pl-0">Counytry</th>
                                 </tr>
                                 </thead>
@@ -81,7 +81,7 @@
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ ucfirst($brand->brand_name) }}</td>
-                                        <td>{{ ucfirst($brand->attended_person) }}</td>
+                                        <td>{{ ucfirst($brand->attention_person) }}</td>
                                         <td>{{ ucfirst($brand->country) }}</td>
                                         <td class="text-right p-0">
                                             <a class="bg-primary list-btn"  href="{{ route('brand.edit.admin',$brand->id) }}" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>

@@ -50,8 +50,8 @@ class QuotationController extends Controller
 
     public function store(Request $request)
     {
-
         $request->validate([
+            'currency'       =>'required',
             'customer_id'    => 'required',
             'project_name'   => 'required',
             'date'           => 'required',
@@ -68,7 +68,9 @@ class QuotationController extends Controller
             'rate'           => 'required|array',
             'rate.*'         => 'required',
             'amount'         => 'required|array',
-            'amount.*'       => 'required'
+            'amount.*'       => 'required',
+            'total'          => 'required',
+            'currency'          => 'required'
         ],[
             'customer_id.required'     => 'The customer field is required.',
             'project_name.required'    => 'The project name field is required.',
@@ -84,6 +86,7 @@ class QuotationController extends Controller
 
         $data = $request->all();
         $data['date'] = Carbon::parse($request->date)->format('Y-m-d');
+        $data['quotation'] = Uuid::uuid4()->getHex();
         $quotation = new Quotation($data);
         $quotation->save();
 
@@ -116,4 +119,26 @@ class QuotationController extends Controller
         ];
         return view('admin.quotation.edit', $data);
     }
+
+    public function view ($id)
+    {
+        $quotation = Quotation::select('*')
+            ->where('quotations.id',$id)
+            ->leftJoin('quotation_item', 'quotation_item.quotation_id', '=', 'quotations.id')
+            ->leftJoin('brands', 'brands.id', '=', 'quotation_item.brand_id')
+            ->leftJoin('items', 'items.id', '=', 'quotation_item.item_id')
+            ->leftJoin('customers', 'customers.id', '=', 'quotations.customer_id')
+            ->get();
+
+        #return $quotation[0]->date;
+
+        $data = [
+            'title'      => 'Quotations',
+            'base_url'   => env('APP_URL', 'http://omnibiz.local'),
+            'user'       => Auth::user(),
+            'quotation'  => $quotation
+        ];
+        return view('admin.quotation.item', $data);
+    }
+
 }

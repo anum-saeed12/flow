@@ -16,9 +16,15 @@ class VendorQuotationController extends Controller
 {
     public function index()
     {
+        $vendors_quotation = VendorQuotation::select('*')
+            ->leftJoin('vendors', 'vendor_quotation.vendor_id', '=', 'vendors.id')
+            ->leftJoin('vendor_quotation_item', 'vendor_quotation_item.vendor_quotation_id', '=', 'vendor_quotation.id')
+            ->leftJoin('categories', 'categories.id', '=', 'vendor_quotation_item.category_id')
+            ->paginate($this->count);
         $data = [
-            'title'   => 'Vendor Quotation',
-            'user'    => Auth::user(),
+            'title'            => 'Vendor Quotation',
+            'vendor_quotation' => $vendors_quotation,
+            'user'             => Auth::user(),
         ];
         return view('admin.vendorquotation.view',$data);
     }
@@ -65,6 +71,7 @@ class VendorQuotationController extends Controller
 
         $data = $request->all();
         $vendor_quotation = new VendorQuotation($data);
+        $data['vendor'] = Uuid::uuid4()->getHex();
         $vendor_quotation['quotation_pdf']     =  $this->uploadPDF($request->file('quotation_pdf'));
         $vendor_quotation->save();
 

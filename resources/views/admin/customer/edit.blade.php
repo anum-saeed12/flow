@@ -37,10 +37,10 @@
                                         <div class="text-danger">@error('customer_name'){{ $message }}@enderror</div>
                                     </div>
                                     <div class="col-md-4">
-                                        <label for="attended_person">Attended Person</label><br/>
-                                        <input type="text" name="attended_person" class="form-control" id="attended_person"
-                                               value="{{ ucfirst($customer->attended_person) }}">
-                                        <div class="text-danger">@error('attended_person'){{ $message }}@enderror</div>
+                                        <label for="attention_person">Attention Person</label><br/>
+                                        <input type="text" name="attention_person" class="form-control" id="attention_person"
+                                               value="{{ ucfirst($customer->attention_person) }}">
+                                        <div class="text-danger">@error('attention_person'){{ $message }}@enderror</div>
                                     </div>
                                 </div>
                                 <div class="row">

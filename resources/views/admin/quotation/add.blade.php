@@ -53,7 +53,11 @@
                                            value="{{ old('date') }}">
                                     <div class="text-danger">@error('date'){{ $message }}@enderror</div>
                                 </div>
-
+                                <div class="col-md-2 ">
+                                    <label for="currency">Currency</label><br/>
+                                    <input type="text" name="currency" class="form-control" id="currency"
+                                    >
+                                </div>
                             </div>
                             <br/>
                             <div class="row">
@@ -77,21 +81,18 @@
                                 </div>
                                 <div class="col-md-1 quantity-container">
                                     <label for="quantity">Quantity</label><br/>
-                                    <input type="text" name="quantity[]" class="form-control" id="quantity"
-                                           >
+                                    <input type="text" name="quantity[]" class="form-control with_out" id="quantity" >
                                 </div>
                                 <div class="col-md-1 unit-container">
                                     <label for="unit">Unit</label><br/>
-                                    <input type="text" name="unit[]" class="form-control" id="unit"
-                                           >
+                                    <input type="text" name="unit[]" class="form-control" id="unit">
                                 </div>
                                 <div class="col-md-1 rate-container">
                                     <label for="rate">Rate</label><br/>
-                                    <input type="text" name="rate[]" class="form-control" id="rate"
-                                           >
+                                    <input type="text" name="rate[]" class="form-control with_out" id="rate">
                                 </div>
                                 <div class="col-md-2 amount-container">
-                                    <label for="amount">Amount</label><br/>
+                                    <label for="amount">Sub-Total</label><br/>
                                     <input type="text" name="amount[]" class="form-control" id="amount"
                                            >
                                 </div>
@@ -109,6 +110,11 @@
                                     <label for="discount">Discount</label><br/>
                                     <input type="text" name="discount" class="form-control" id="discount"
                                            value="{{ old('discount') }}">
+                                </div>
+                                <div class="col-md-2 ">
+                                    <label for="total">Total Amount</label><br/>
+                                    <input type="text" name="total" class="form-control" id="total"
+                                           value="{{ old('total') }}">
                                 </div>
                                 <div class="col-md-6">
                                     <label for="terms_condition">Terms & Conditions</label><br/>
@@ -135,7 +141,6 @@
 @section('extras')
     <script type="text/javascript">
         $(document).ready(function() {
-
             let category_container = $('.category-container'),
                 item_container = $('.item-container'),
                 brand_container = $('.brand-container'),
@@ -195,7 +200,7 @@
                 '</div>' +
                 '<div class="col-md-1 quantity-container">' +
                     '<label for="quantity">Quantity</label><br/>' +
-                    '<input type="text" name="quantity[]" class="form-control" id="quantity" >' +
+                    '<input type="text" name="quantity[]" class="form-control common" id="quantity">' +
                 '</div>' +
                 '<div class="col-md-1 unit-container">' +
                     '<label for="unit">Unit</label><br/>' +
@@ -203,11 +208,11 @@
                 '</div>' +
                 '<div class="col-md-1 rate-container">' +
                     '<label for="rate">Rate</label><br/>' +
-                    '<input type="text" name="rate[]" class="form-control" id="rate" >' +
+                    '<input type="text" name="rate[]" class="form-control common" id="rate">' +
                 '</div>' +
                 '<div class="col-md-2 amount-container">' +
-                    '<label for="amount">Amount</label><br/>' +
-                    '<input type="text" name="amount[]" class="form-control" id="amount" >' +
+                    '<label for="amount">Sub-Total</label><br/>' +
+                    '<input type="text" name="amount[]" class="form-control" id="total_amount" >' +
                 '</div>' +
                 '<div class="col-md-1">' +
                     '<label for="unit">&nbsp;</label><br/>' +
@@ -218,12 +223,33 @@
                 x++;
                 $(wrapper).append($itemRow); // add input box
             });
-
             $(wrapper).on("click", ".delete", function(e) {
-                e.preventDefault();
+                e.preventDefault()
                 $(this).parent().parent().remove();
                 x--;
             })
+            $('.with_out').keyup(function() {
+                var txtFirstNumberValue = document.getElementById('quantity').value;
+                var txtSecondNumberValue = document.getElementById('rate').value;
+                var result = parseInt(txtFirstNumberValue) * parseInt(txtSecondNumberValue);
+                if (!isNaN(result)) {
+                    document.getElementById('amount').value = result;
+                }
+            })
+
+            function sumIt() {
+                var total = 0, val;
+                $('.common').each(function() {
+                    val = $(this).val()
+                    val = isNaN(val) || $.trim(val) === "" ? 0 : parseFloat(val);
+                    total += val;
+                });
+                $('#total_amount').val(Math.round(total));
+            }
+
+            $(document).on('keyup', '.common', sumIt);
+                sumIt() // run when loading
+
         });
     </script>
 @stop

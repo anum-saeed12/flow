@@ -83,6 +83,8 @@ class InquiryController extends Controller
             'quantity.*'     => 'required',
             'unit'           => 'required|array',
             'unit.*'         => 'required',
+            'amount'           => 'required|array',
+            'amount.*'         => 'required',
             'inquiry_file'   => 'required|array',
             'inquiry_file.*' => 'required|',
         ],[
@@ -96,10 +98,12 @@ class InquiryController extends Controller
         $brands     = $request->brand_id;
         $quantities = $request->quantity;
         $units      = $request->unit;
+        $amounts    = $request->amount;
 
         $data = $request->all();
         $data['date'] = Carbon::parse($request->date)->format('Y-m-d');
         $data['timeline'] = Carbon::parse($request->timeline)->format('Y-m-d');
+        $data['inquiry'] = Uuid::uuid4()->getHex();
         $inquiry = new Inquiry($data);
         $inquiry->save();
 
@@ -122,6 +126,7 @@ class InquiryController extends Controller
                 'brand_id'     => $brands[$index],
                 'quantity'     => $quantities[$index],
                 'unit'         => $units[$index],
+                'amount'       => $amounts[$index],
             ];
             $save[] = (new InquiryOrder($inquiry_item))->save();
         }

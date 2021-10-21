@@ -10,7 +10,7 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard.admin') }}">Home</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('quotation.list.admin') }}">Quotation</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('customerquotation.list.admin') }}">Quotation</a></li>
                         <li class="breadcrumb-item active">{{$title}}</li>
                     </ol>
                 </div>
@@ -24,8 +24,8 @@
     <div class="container-fluid">
         <div class="row mb-3">
             <div class="col-12">
-                <a href="{{ route('purchase.invoice.print.client', $purchase->invoice_id) }}" type="submit" class="btn btn-info toastrDefaultSuccess mr-2 btn-sm" target="btnActionIframe"><i class="fa fa-print mr-1"></i> Print Invoice</a>
-                <a href="{{ route('purchase.invoice.client', $purchase->invoice_id) }}" type="submit" class="btn btn-info toastrDefaultSuccess btn-sm" target="btnActionIframe"><i class="far fa-file-alt mr-1"></i> Create Invoice Pdf</a>
+                <a href="#" type="submit" class="btn btn-info toastrDefaultSuccess mr-2 btn-sm" target="btnActionIframe"><i class="fa fa-print mr-1"></i> Print Quotation</a>
+                <a href="#" type="submit" class="btn btn-info toastrDefaultSuccess btn-sm" target="btnActionIframe"><i class="far fa-file-alt mr-1"></i> Create Quotation Pdf</a>
                 <iframe name="btnActionIframe" style="display:none;" onload="setTimeout(function(){this.src=''},1000)"></iframe>
             </div>
         </div>
@@ -48,58 +48,24 @@
                             <div class="row">
                                 <div class="col-12">
                                     <h4>
-                                        {{ ucwords($client->name) }}
-                                        <small class="float-right">Date: {{ $purchase->creation }}</small>
+                                        {{ ucwords('Build Con') }}
                                     </h4>
                                 </div>
                             </div>
                             <div class="row invoice-info">
                                 <div class="col-sm-4 invoice-col">
-                                    From
                                     <address>
-                                        <strong>{{ ucwords($purchase->supplier_name) }}</strong><br>
-                                        @if( ($purchase->vendor == NULL))
-                                        {{ "N/A" }}<br>
-                                        {{ "N/A" }}<br>
-                                        Phone:  {{ "N/A" }}<br>
-                                        Email:  {{ "N/A" }}
-                                        @endif
-
-                                        @if( ($purchase->vendor != NULL))
-                                        {{ ($purchase->vendor->address_1 ) ?? "N/A" }}<br>
-                                        {{ ($purchase->vendor->address_2 ) ?? "N/A" }}<br>
-                                        Phone: {{ ($purchase->vendor->phone_num ) ?? "N/A" }}<br>
-                                        Email: {{ ($purchase->vendor->personal_email ) ?? "N/A" }}
-                                        @endif
-
+                                        <p><b>Attention: </b>{{ ucwords($quotation[0]->attention_person) }}</p>
+                                        <p><b>Customer Name: </b>{{ ucwords($quotation[0]->customer_name) }}</p>
+                                        <p><b>Address: </b>{{ ucwords($quotation[0]->address) }}</p>
                                     </address>
                                 </div>
-                                <div class="col-sm-4 invoice-col">
-                                    To
+                                <div class="offset-2 col-sm-4 invoice-col">
                                     <address>
-                                        <strong>{{ ucwords($client->name) }}</strong><br>
-                                        {{ ucwords($client->address_1) }}<br>
-                                        {{ ucwords($client->address_2) }}<br>
-                                        Phone: {{ $client->landline }}<br>
-                                        Email: {{ $client->official_email }}
+                                        <p><b>Quotation Ref: </b>{{ strtoupper(substr($quotation[0]->quotation,-6,6)) }}</p>
+                                        <p><b>Project Name: </b>{{ ucwords($quotation[0]->project_name) }}</p>
+                                        <p><b>Date: </b>{{ ucwords(\Carbon\Carbon::createFromTimeStamp(strtotime($quotation[0]->date))->format('Y-m-d')) }}</p>
                                     </address>
-                                </div>
-                                <div class="col-sm-4 invoice-col">
-                                    <label for="approved"> Purchase Order Status</label> <br/>
-
-                                    Status:
-                                    @if( (\Carbon\Carbon::now()->toDateString() ) > (\Carbon\Carbon::createFromTimeStamp(strtotime($purchase->due_date))->format('Y-m-d')))
-                                    <b class="text-success"> Completed</b><br/>
-                                    @endif
-
-                                    @if( (\Carbon\Carbon::now()->toDateString() ) < (\Carbon\Carbon::createFromTimeStamp(strtotime($purchase->due_date))->format('Y-m-d')))
-                                    <b class="text-warning"> Pending</b><br/>
-                                    @endif
-
-                                    @if( (\Carbon\Carbon::now()->toDateString() ) == (\Carbon\Carbon::createFromTimeStamp(strtotime($purchase->due_date))->format('Y-m-d')))
-                                    <b class="text-danger"> Due Today</b><br/>
-                                    @endif
-
                                 </div>
                             </div>
                             <div class="row" >
@@ -107,23 +73,25 @@
                                     <table class="table table-striped table-sm">
                                         <thead>
                                         <tr>
-                                            <th>Qty</th>
-                                            <th>Product</th>
-                                            <th>Serial #</th>
-                                            <th>Discount</th>
-                                            <th>Price</th>
-                                            <th>Subtotal</th>
+                                            <th>Sr.no</th>
+                                            <th>Item</th>
+                                            <th>Brand</th>
+                                            <th>Quantity</th>
+                                            <th>Unit</th>
+                                            <th>Unit Price ( {{ $quotation[0]->currency }})</th>
+                                            <th>Total</th>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        @foreach($purchase->items as $product)
+                                        @foreach($quotation as $item)
                                         <tr>
-                                            <td>{{ $product->quantity }}</td>
-                                            <td>{{ ucwords($product->product->name) }}</td>
-                                            <td>{{ sprintf("%05d",$product->product_id) }}</td>
-                                            <td>{{ number_format($product->discount)}}%</td>
-                                            <td>{{ $product->unit_price }}</td>
-                                            <td>{{ $product->total_price }}</td>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ ucwords($item->item_name) }}</td>
+                                            <td>{{ ucwords($item->brand_name) }}</td>
+                                            <td>{{ ucwords($item->quantity) }}</td>
+                                            <td>{{ ucwords($item->unit) }}</td>
+                                            <td>{{ ucwords($item->rate) }}</td>
+                                            <td>{{ ucwords($item->amount) }}</td>
                                         </tr>
                                         @endforeach
                                         </tbody>
@@ -133,28 +101,12 @@
                             <div class="row">
                                 <div class="col-6"></div>
                                 <div class="col-6">
-                                    <p class="lead">Amount</p>
+                                    <p class="lead"></p>
                                     <div class="table-responsive table-sm">
                                         <table class="table">
-                                            <tr>
-                                                <th style="width:50%">Subtotal:</th>
-                                                <td>{{ $currency }}{{number_format($purchase->total_amount) }}</td>
-                                            </tr>
-                                            <tr>
-                                                <th style="width:50%">After Discount Total:</th>
-                                                <td>{{ $currency }}{{number_format($purchase->original_amount) }}</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Tax ({{$gst}}%)</th>
-                                                <td>{{ $currency  }}{{  number_format($tax) }}</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Shipping:</th>
-                                                <td>{{ $currency }}0.00</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Total:</th>
-                                                <td>{{ $currency }}{{number_format($purchase->total_amount + $tax)}}</td>
+                                           <tr>
+                                                <th style="width:50%">Total Amount:</th>
+                                                <td></td>
                                             </tr>
                                         </table>
                                     </div>

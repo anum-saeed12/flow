@@ -12,6 +12,6 @@ class Customer extends Model
     use SoftDeletes;
 
     protected $table = 'customers';
-    protected $fillable = ['customer_name','attended_person','address','created_at','updated_at'];
+    protected $fillable = ['customer_name','attention_person','address','created_at','updated_at'];
 
 }

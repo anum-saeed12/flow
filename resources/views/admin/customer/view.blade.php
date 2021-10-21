@@ -72,7 +72,7 @@
                                 <tr>
                                     <th>Sr.No.</th>
                                     <th class="pl-0">Customer Name</th>
-                                    <th class="pl-0">Attended Person</th>
+                                    <th class="pl-0">Attention Person</th>
                                     <th class="pl-0">Address</th>
                                 </tr>
                                 </thead>
@@ -81,7 +81,7 @@
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ ucfirst($cus->customer_name) }}</td>
-                                        <td>{{ ucfirst($cus->attended_person) }}</td>
+                                        <td>{{ ucfirst($cus->attention_person) }}</td>
                                         <td>{{ ucfirst($cus->address) }}</td>
                                         <td class="text-right p-0">
                                             <a class="bg-primary list-btn"  href="{{ route('customer.edit.admin' ,$cus->id) }}" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>

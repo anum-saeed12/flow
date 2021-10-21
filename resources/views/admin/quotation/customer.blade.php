@@ -80,16 +80,15 @@
                                 </thead>
                                 <tbody id="myTable">
                                 @foreach($quotations as $quotation)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ ucfirst($quotation->customer->customer_name) }}</td>
-                                        <td>{{ ucfirst($quotation->project_name) }}</td>
-                                        <td>{{ ucfirst($quotation->item_description) }}</td>
-                                        <td>{{ ucfirst($quotation->amount) }}</td>
-                                        <td>{{ 'saleperson'  }}</td>
-                                        <td></td>
+                                    <tr style="cursor:pointer" class="no-select" data-toggle="modal"
+                                        data-href="{{ route('quotation.view.admin',$quotation->id) }}">
+                                        <td><a href="{{ route('quotation.view.admin',$quotation->id) }}">{{ $loop->iteration }}</td>
+                                        <td><a href="{{ route('quotation.view.admin',$quotation->id) }}">{{ ucfirst($quotation->customer_name) }}</td>
+                                        <td><a href="{{ route('quotation.view.admin',$quotation->id) }}">{{ ucfirst($quotation->project_name) }}</td>
+                                        <td><a href="{{ route('quotation.view.admin',$quotation->id) }}">{{ ucfirst($quotation->item_description) }}</td>
+                                        <td><a href="{{ route('quotation.view.admin',$quotation->id) }}">{{ ucfirst($quotation->total) }}</td>
+                                        <td><a href="{{ route('quotation.view.admin',$quotation->id) }}">{{ 'saleperson'  }}</td>
                                         <td class="text-right p-0">
-                                            <a class="bg-warning list-btn"  href="#" title="View"><i class="fas fa-file-pdf" aria-hidden="false"></i></a>
                                             <a class="bg-primary list-btn"  href="{{ route('quotation.edit.admin',$quotation->id) }}" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
                                             <a class="bg-danger list-btn"  href="#" title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
                                         </td>
@@ -100,7 +99,7 @@
                         </div>
                     </div>
                     <div class="d-flex flex-row-reverse">
-                      {{--  {!! $clients->links('pagination::bootstrap-4') !!}--}}
+                      {!! $quotations->links('pagination::bootstrap-4') !!}
                     </div>
                 </div>
             </div>

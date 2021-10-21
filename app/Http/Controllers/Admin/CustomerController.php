@@ -47,16 +47,16 @@ class CustomerController extends Controller
     {
         $request->validate([
             'customer_name'     => 'required',
-            'attended_person'   => 'required',
+            'attention_person'  => 'required',
             'address'           => 'required'
         ], [
                 'customer_name.required'      => 'The customer name field is required.',
-                'attended_person.required'    => 'The attended person name field is required.'
+                'attention_person.required'    => 'The attention person name field is required.'
             ]
         );
 
         $exist = Customer::where('customer_name',$request->customer_name)
-                         ->where('attended_person',$request->attended_person)
+                         ->where('attention_person',$request->attention_person)
                          ->where('address',$request->address)
                          ->first();
         if($exist)
@@ -81,15 +81,15 @@ class CustomerController extends Controller
 
         $request->validate([
             'customer_name'     =>  'sometimes',
-            'attended_person'   =>  'sometimes',
+            'attention_person'   =>  'sometimes',
             'address'           =>  'sometimes'
         ],[
             'customer_name.required'      => 'The customer name field is required.',
-            'attended_person.required'    => 'The attended person name field is required.'
+            'attention_person.required'    => 'The attention person name field is required.'
         ]);
         $exist = Customer::where('customer_name',$request->customer_name)
             ->where('address',$request->address)
-            ->where('attended_person',$request->attended_person)
+            ->where('attention_person',$request->attention_person)
             ->first();
 
         if($exist)
@@ -100,7 +100,7 @@ class CustomerController extends Controller
         }
 
         $request->input('customer_name')    &&  $customer->customer_name     = $request->input('customer_name');
-        $request->input('attended_person')  &&  $customer->attended_person   = $request->input('attended_person');
+        $request->input('attention_person') &&  $customer->attention_person  = $request->input('attention_person');
         $request->input('address')          &&  $customer->address           = $request->input('address');
         $customer->save();
 

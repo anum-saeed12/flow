@@ -47,11 +47,11 @@ class BrandController extends Controller
     {
         $request->validate([
             'brand_name'        => 'required',
-            'attended_person'   => 'required',
+            'attention_person'   => 'required',
             'country'           => 'required'
         ], [
                 'brand_name.required'      => 'The brand name field is required.',
-                'attended_person.required' => 'The attended person name field is required.'
+                'attention_person.required' => 'The attention person name field is required.'
             ]
         );
 
@@ -79,15 +79,15 @@ class BrandController extends Controller
 
         $request->validate([
             'brand_name'         => "required|unique:App\Models\Brand,brand_name,{$id}",
-            'attended_person'   =>  'sometimes|required',
-            'country'           =>  'sometimes|required'
+            'attention_person'   =>  'sometimes|required',
+            'country'            =>  'sometimes|required'
         ],[
             'brand_name.required'      => 'The brand name field is required.',
-            'attended_person.required' => 'The attended person name field is required.'
+            'attention_person.required' => 'The attended person name field is required.'
         ]);
 
         $request->input('brand_name')       &&  $brand->brand_name        = $request->input('brand_name');
-        $request->input('attended_person')  &&  $brand->attended_person   = $request->input('attended_person');
+        $request->input('attention_person') &&  $brand->attention_person  = $request->input('attention_person');
         $request->input('country')          &&  $brand->country           = $request->input('country');
         $brand->save();
 

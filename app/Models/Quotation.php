@@ -12,8 +12,8 @@ class Quotation extends Model
     use SoftDeletes;
 
     protected $table = 'quotations';
-    protected $fillable = ['customer_id','project_name','date','discount','terms_condition',
-                           'created_at','updated_at'];
+    protected $fillable = ['customer_id','project_name','quotation','date','discount','terms_condition',
+                           'currency','total','created_at','updated_at'];
 
     public function customer()
     {
