@@ -81,7 +81,7 @@
                                 </div>
                                 <div class="col-md-1 quantity-container">
                                     <label for="quantity">Quantity</label><br/>
-                                    <input type="text" name="quantity[]" class="form-control with_out" id="quantity" >
+                                    <input type="text" name="quantity[]" class="form-control with_out" id="quantity" data-target="#total_amount" data-into="#rate" onkeydown="calculate($(this))" onkeypress="calculate($(this))" onkeyup="calculate($(this))" onchange="calculate($(this))">
                                 </div>
                                 <div class="col-md-1 unit-container">
                                     <label for="unit">Unit</label><br/>
@@ -89,7 +89,7 @@
                                 </div>
                                 <div class="col-md-1 rate-container">
                                     <label for="rate">Rate</label><br/>
-                                    <input type="text" name="rate[]" class="form-control with_out" id="rate">
+                                    <input type="text" name="rate[]" class="form-control with_out" id="rate" data-target="#total_amount" data-into="#quantity" onkeydown="calculate($(this))" onkeypress="calculate($(this))" onkeyup="calculate($(this))" onchange="calculate($(this))">
                                 </div>
                                 <div class="col-md-2 amount-container">
                                     <label for="amount">Sub-Total</label><br/>
@@ -150,11 +150,15 @@
                 amount_container = $('.amount-container'),
                 add_button = $(".add_form_field"),
                 max_fields = 10,
-                wrapper = $('.additional-products');
+                wrapper = $('.additional-products'),
+                $uid = $('.quantity').length;
+
+
 
             var x = 1;
             $(add_button).click(function(e) {
                 e.preventDefault();
+                $uid = $('.quantity').length;
                 if (x >= max_fields) {
                     alert('You Reached the limits');
                     return false;
@@ -176,13 +180,13 @@
                             '</div>' +
                         '</div>' +
                     '</div>';// +
-                    ;// +
+                    //;// +
                     //'</div>';
 
                 let $itemRow = '<div class="row mt-3">' +
                     '<div class="col-md-3 item-container">' +
-                    '<label for="item_id">Select Item </label><br/>' +
-                    '<select name="item_id[]" class="form-control" id="item_id">' +
+                    `<label for="item_id_${$uid}">Select Item </label><br/>` +
+                    `<select name="item_id[]" class="form-control" id="item_id_${$uid}">` +
                         '<option selected="selected" value>Select</option>' +
                         @foreach ($items as $item)
                             '<option value="{{ $item->id }}">{{ ucfirst($item->item_name) }}</option>' +
@@ -190,8 +194,8 @@
                     '</select>' +
                     '</div>' +
                 '<div class="col-md-3 brand-container">' +
-                    '<label for="brand_id">Select Brand</label><br/>' +
-                    '<select name="brand_id[]" class="form-control" id="brand_id">' +
+                    `<label for="brand_id_${$uid}">Select Brand</label><br/>` +
+                    `<select name="brand_id[]" class="form-control" id="brand_id_${$uid}">` +
                         '<option selected="selected" value>Select</option>' +
                         @foreach ($brands as $brand)
                             '<option value="{{ $brand->id }}">{{ ucfirst($brand->brand_name) }}</option>' +
@@ -199,20 +203,20 @@
                     '</select>' +
                 '</div>' +
                 '<div class="col-md-1 quantity-container">' +
-                    '<label for="quantity">Quantity</label><br/>' +
-                    '<input type="text" name="quantity[]" class="form-control common" id="quantity">' +
+                    `<label for="quantity_${$uid}">Quantity</label><br/>` +
+                    `<input type="text" name="quantity[]" class="form-control common quantity" id="quantity_${$uid}" data-target="#total_amount_${$uid}" data-into="#rate_${$uid}" onkeydown="calculate($(this))" onkeypress="calculate($(this))" onkeyup="calculate($(this))" onchange="calculate($(this))">`+
                 '</div>' +
                 '<div class="col-md-1 unit-container">' +
-                    '<label for="unit">Unit</label><br/>' +
-                    '<input type="text" name="unit[]" class="form-control" id="unit" >' +
+                    `<label for="unit_${$uid}">Unit</label><br/>` +
+                    `<input type="text" name="unit[]" class="form-control" id="unit_${$uid}" >` +
                 '</div>' +
                 '<div class="col-md-1 rate-container">' +
-                    '<label for="rate">Rate</label><br/>' +
-                    '<input type="text" name="rate[]" class="form-control common" id="rate">' +
+                    `<label for="rate_${$uid}">Rate</label><br/>` +
+                    `<input type="text" name="rate[]" class="form-control common" id="rate_${$uid}" data-target="#total_amount_${$uid}" data-into="#quantity_${$uid}" onkeydown="calculate($(this))" onkeypress="calculate($(this))" onkeyup="calculate($(this))" onchange="calculate($(this))">` +
                 '</div>' +
                 '<div class="col-md-2 amount-container">' +
-                    '<label for="amount">Sub-Total</label><br/>' +
-                    '<input type="text" name="amount[]" class="form-control" id="total_amount" >' +
+                    `<label for="amount_${$uid}">Sub-Total</label><br/>` +
+                    `<input type="text" name="amount[]" class="form-control" id="total_amount_${$uid}">` +
                 '</div>' +
                 '<div class="col-md-1">' +
                     '<label for="unit">&nbsp;</label><br/>' +
@@ -247,9 +251,21 @@
                 $('#total_amount').val(Math.round(total));
             }
 
+
+
             $(document).on('keyup', '.common', sumIt);
                 sumIt() // run when loading
 
         });
+        function calculate(ele) {
+            let total = 0, result, target=$(ele.data('target')),
+                first = ele.val(), second = $(ele.data('into')).val();
+            result = parseFloat(first) * parseFloat(second);
+            if (!isNaN(result)) {
+                $(target).val(Math.round(result));
+                return false;
+            }
+            $(target).val(0);
+        }
     </script>
 @stop
