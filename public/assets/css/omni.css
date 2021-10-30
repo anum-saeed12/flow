@@ -4,7 +4,7 @@
 .ac-suggested > ul > li{margin:0;padding:8px 15px;list-style:none;border-bottom:1px solid #e0e0e0;cursor:pointer;transition:all .2s}
 .ac-suggested > ul > li:last-child{border-bottom:none}.ac-suggested > ul > li:hover{background:rgba(0, 0, 0, .06)}
 .clear-search{position:absolute;right:10px;color:#999;padding:8px 10px;margin-top:-36px;cursor:pointer;display:none}
-.total{padding:15px 0;margin:0 auto;display:inline-block;font-family:"Poppins", sans-serif;font-weight:600;color:#303040}
+.total:not(.n){padding:15px 0;margin:0 auto;display:inline-block;font-family:"Poppins", sans-serif;font-weight:600;color:#303040}
 .quotation-info:empty{min-height:200px;background:rgba(240, 240, 240, 0.5)}
 .quotation-info:empty:after{display:block;content:"Select quotation for details";position:absolute;font-size:2em;color:#ccc;font-family:"Poppins", sans-serif;left:50%;top:50%;transform:translate(-50%, -50%);text-align:center}
 .quotation-status:empty{text-align:left;padding:8px 0}

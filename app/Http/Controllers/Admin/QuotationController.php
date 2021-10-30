@@ -11,12 +11,19 @@ use App\Models\QuotationItem;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\Uuid;
 
 class QuotationController extends Controller
 {
     public function customer()
     {
+        $select = [
+            'customer_name',
+            'project_name',
+            'item_description',
+            'total'
+        ];
         $quotations = Quotation::select('*')
             ->leftJoin('quotation_item', 'quotation_item.quotation_id', '=', 'quotations.id')
             ->leftJoin('brands', 'brands.id', '=', 'quotation_item.brand_id')
@@ -24,6 +31,7 @@ class QuotationController extends Controller
             ->leftJoin('customers', 'customers.id', '=', 'quotations.customer_id')
             ->groupBy('quotations.id')
             ->paginate($this->count);
+
         $data = [
             'title'     => 'Quotations',
             'user'      => Auth::user(),
@@ -36,7 +44,9 @@ class QuotationController extends Controller
     {
         $customers = Customer::orderBy('id','DESC')->paginate($this->count);
         $brands    = Brand::orderBy('id','DESC')->paginate($this->count);
-        $items     = Item::orderBy('id','DESC')->paginate($this->count);
+        $items     = Item::select([
+            DB::raw("DISTINCT item_name"),
+        ])->orderBy('id','DESC')->paginate($this->count);
 
         $data = [
             'title'    => 'Submit Quotation',
@@ -93,9 +103,10 @@ class QuotationController extends Controller
         $save = [];
 
         foreach($items as $index => $item) {
+            $item_detail = Item::where('item_name',$item)->where('brand_id', $brands[$index])->first();
             $quotation_item = [
                 'quotation_id' => $quotation->id,
-                'item_id'  => $item,
+                'item_id'  => $item_detail->id,
                 'brand_id' => $brands[$index],
                 'quantity' => $quantities[$index],
                 'unit'     => $units[$index],
@@ -103,8 +114,8 @@ class QuotationController extends Controller
                 'amount'   => $amounts[$index]
             ];
             $save[] = (new QuotationItem($quotation_item))->save();
-
         }
+
         return redirect(
             route('quotation.list.admin')
         )->with('success', 'Quotation was added successfully!');

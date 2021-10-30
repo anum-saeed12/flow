@@ -126,7 +126,7 @@
     <script type="text/javascript">
         $(document).ready(function() {
 
-            let vendor_container = $('.vendor_container'),
+            let vendor_container = $('.vendor_container'),e
                 description_container = $('.description_container'),
                 brand_container = $('.brand-container'),
                 quantity_container = $('.quantity-container'),

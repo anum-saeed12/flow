@@ -83,6 +83,19 @@ class ItemController extends Controller
         )->with('success', 'Item was added successfully!');
     }
 
+    public function ajaxFetch(Request $request)
+    {
+        $request->validate([
+            'item' => 'required'
+        ]);
+        $item_name = $request->item;
+        $item_categories = Item::select(['brands.brand_name', 'brands.id'])
+            ->join('brands', 'brands.id', '=', 'items.brand_id')
+            ->where('items.item_name','like',"%{$item_name}%")
+            ->groupBy('brands.id')
+            ->get();
+        return response($item_categories, 200);
+    }
 
     private function uploadPicture($picture)
     {
@@ -90,7 +103,6 @@ class ItemController extends Controller
         $private_path = $picture->storeAs('public/images',$picturename);
         $public_path  = Storage::url("picture/$picturename");
         return $picturename;
-
     }
 
 }

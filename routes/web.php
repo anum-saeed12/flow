@@ -69,6 +69,7 @@ Route::prefix('/admin')->middleware('admin')->group(function() {
         Route::get('/edit/{id}', '\App\Http\Controllers\Admin\ItemController@edit')->name('item.edit.admin');
         Route::post('/update/{id}', '\App\Http\Controllers\Admin\ItemController@update')->name('item.update.admin');
         Route::get('/delete/{id}', '\App\Http\Controllers\Admin\ItemController@delete')->name('item.delete.admin');
+        Route::get('/ajax-fetch/', '\App\Http\Controllers\Admin\ItemController@ajaxFetch')->name('item.fetch.ajax.admin');
     });
     Route::prefix('/brand')->group(function() {
         Route::get('/', '\App\Http\Controllers\Admin\BrandController@index')->name('brand.index.admin');
@@ -97,7 +98,6 @@ Route::prefix('/admin')->middleware('admin')->group(function() {
         Route::post('/update/{id}', '\App\Http\Controllers\Admin\QuotationController@update')->name('quotation.update.admin');
         Route::get('/delete/{id}', '\App\Http\Controllers\Admin\QuotationController@delete')->name('quotation.delete.admin');
         Route::get('/view/{id}', '\App\Http\Controllers\Admin\QuotationController@view')->name('quotation.view.admin');
-
     });
     Route::prefix('/vendor')->group(function() {
         Route::get('/', '\App\Http\Controllers\Admin\VendorController@index')->name('vendor.index.admin');

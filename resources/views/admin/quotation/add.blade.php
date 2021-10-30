@@ -55,20 +55,20 @@
                                 </div>
                                 <div class="col-md-2 ">
                                     <label for="currency">Currency</label><br/>
-                                    <input type="text" name="currency" class="form-control" id="currency"
-                                    >
+                                    <input type="text" name="currency" class="form-control" id="currency">
                                 </div>
                             </div>
                             <br/>
                             <div class="row">
                                 <div class="col-md-3 item-container">
                                     <label for="item_id">Select Item </label><br/>
-                                    <select name="item_id[]" class="form-control" id="item_id">
+                                    <select name="item_id[]" class="form-control trigger" id="item_id" data-target="#brand_id" data-href="{{ route('item.fetch.ajax.admin') }}" data-spinner="#item_spinner" onchange="itemSelect($(this))">
                                         <option selected="selected" value>Select</option>
                                         @foreach ($items as $item)
-                                            <option value="{{ $item->id }}">{{ ucfirst($item->item_name) }}</option>
+                                            <option value="{{ $item->item_name }}">{{ ucfirst($item->item_name) }}</option>
                                         @endforeach
                                     </select>
+                                    <div id="item_spinner"></div>
                                 </div>
                                 <div class="col-md-3 item-container">
                                     <label for="brand_id">Select Brand</label><br/>
@@ -93,7 +93,7 @@
                                 </div>
                                 <div class="col-md-2 amount-container">
                                     <label for="amount">Sub-Total</label><br/>
-                                    <input type="text" name="amount[]" class="form-control total" id="amount"
+                                    <input type="text" name="amount[]" class="form-control total n" id="amount"
                                            >
                                 </div>
                                 <div class="col-md-1">
@@ -153,6 +153,8 @@
                 wrapper = $('.additional-products'),
                 $uid = $('.quantity').length;
 
+            // data-target="#brand_id" data-href="{{ route('item.fetch.ajax.admin') }}"
+
 
 
             var x = 1;
@@ -186,12 +188,13 @@
                 let $itemRow = '<div class="row mt-3">' +
                     '<div class="col-md-3 item-container">' +
                     `<label for="item_id_${$uid}">Select Item </label><br/>` +
-                    `<select name="item_id[]" class="form-control" id="item_id_${$uid}">` +
+                    `<select name="item_id[]" class="form-control" id="item_id_${$uid}" data-target="#brand_id_${$uid}" data-href="{{ route('item.fetch.ajax.admin') }}" data-spinner="#item_spinner_${$uid}" onchange="itemSelect($(this))">>` +
                         '<option selected="selected" value>Select</option>' +
                         @foreach ($items as $item)
-                            '<option value="{{ $item->id }}">{{ ucfirst($item->item_name) }}</option>' +
+                            '<option value="{{ $item->item_name }}">{{ ucfirst($item->item_name) }}</option>' +
                         @endforeach
                     '</select>' +
+                    `<span id="item_spinner_${$uid}"></span>` +
                     '</div>' +
                 '<div class="col-md-3 brand-container">' +
                     `<label for="brand_id_${$uid}">Select Brand</label><br/>` +
@@ -216,7 +219,7 @@
                 '</div>' +
                 '<div class="col-md-2 amount-container">' +
                     `<label for="amount_${$uid}">Sub-Total</label><br/>` +
-                    `<input type="text" name="amount[]" class="form-control total" id="total_amount_${$uid}">` +
+                    `<input type="text" name="amount[]" class="form-control total n" id="total_amount_${$uid}">` +
                 '</div>' +
                 '<div class="col-md-1">' +
                     '<label for="unit">&nbsp;</label><br/>' +
@@ -256,15 +259,41 @@
         });
         function calculate(ele) {
             let total = 0,sum = 0, result, target=$(ele.data('target')),
-                first = ele.val(), second = $(ele.data('into')).val();
-            result = parseFloat(first) * parseFloat(second);
+                first = ele.val(), second = $(ele.data('into')).val(),
+                sub_total, sum_of_sub_total = 0, sumOfTotal = $('#total');
+                result = parseFloat(first) * parseFloat(second);
             if (!isNaN(result)) {
                 $(target).val(Math.round(result));
+                // Lets loop through all the total inputs
+                sub_total = $('.total.n');
+                for(i=0;i<sub_total.length;i++) {
+                    sum_of_sub_total += parseFloat(sub_total[i].value);
+                }
+                sumOfTotal.val(sum_of_sub_total);
                 return false;
             }
             $(target).val(0);
-
+            sumOfTotal.val(0);
+            //$('#total').val(sum_of_sub_total);
         }
-
+        function itemSelect(ele) {
+            let target = ele.data('target'), href = ele.data('href'), item_id = ele.val(), spinner = ele.data('spinner'), brands;
+            $.ajax({
+                dataType: 'json',
+                url: `${href}?item=${item_id}`,
+                beforeSend: function() {
+                    $(spinner).text('Loading brands...');
+                },
+                success: function(data) {
+                    $(spinner).html('');
+                    brands += '<option>Select Brand</option>';
+                    $.each(data, function(index, json){
+                        brands += `<option value="${json.id}">${json.brand_name}</option>`;
+                    })
+                    $(target).html(brands);
+                }
+            });
+            // data-target="#brand_id" data-href="{{ route('item.fetch.ajax.admin') }}" onchange="itemSelect($(this))" onfocus="itemSelect($(this))" onblur="itemSelect($(this))">
+        }
     </script>
 @stop
