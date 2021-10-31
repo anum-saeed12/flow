@@ -9,8 +9,8 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard.admin') }}">Home</a></li>
-                        <li class="breadcrumb-item">Inquiry</li>
+                        <li class="breadcrumb-item"><a href="{{ route('dashboard.manager') }}">Home</a></li>
+                        <li class="breadcrumb-item">Item</li>
                         <li class="breadcrumb-item active">{{$title}}</li>
                     </ol>
                 </div>
@@ -62,8 +62,7 @@
                                         </div>
                                     </div>
                                 </form>
-                                <a href="{{ route('inquiry.add.admin') }}" class="btn btn-success"><i class="fa fa-plus-circle mr-1"></i> Add New</a>
-
+                                <a href="{{ route('item.add.manager') }}" class="btn btn-success"><i class="fa fa-plus-circle mr-1"></i> Add New</a>
                             </div>
                         </div>
                         <div class="card-body table-responsive p-0">
@@ -71,26 +70,36 @@
                                 <thead>
                                 <tr>
                                     <th>Sr.No.</th>
-                                    <th class="pl-0">Client</th>
-                                    <th class="pl-0">Project</th>
-                                    <th class="pl-0">Items Description</th>
-                                    <th class="pl-0">Amount</th>
-                                    <th class="pl-0">Sales Person</th>
-                                    <th class="pl-0">Date</th>
-                                    <th class="pl-0">Submission Timeline</th>
+                                    <th class="pl-0">Item Name</th>
+                                    <th class="pl-0">Item Picture</th>
+                                    <th class="pl-0">Brand</th>
+                                    <th class="pl-0">Category</th>
+                                    <th class="pl-0">Item Description</th>
+                                    <th class="pl-0">Unit</th>
+                                    <th class="pl-0">Price</th>
+                                    <th class="pl-0">Weight</th>
+                                    <th class="pl-0">Height</th>
+                                    <th class="pl-0">Width</th>
                                 </tr>
                                 </thead>
                                 <tbody id="myTable">
-                                @foreach($inquires as $inquiry)
+                                @foreach($items as $item)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ ucfirst($inquiry->customer_name) }}</td>
-                                        <td>{{ ucfirst($inquiry->project_name) }}</td>
-                                        <td>{{ ucfirst($inquiry->item_description) }}</td>
-                                        <td>{{ $inquiry->amount }}</td>
-                                        <td>{{ $inquiry->name }}</td>
-                                        <td>{{ ucfirst($inquiry->date) }}</td>
-                                        <td>{{ ucfirst($inquiry->timeline) }}</td>
+                                        <td>{{ucfirst($item->item_name)}}</td>
+                                        <td>
+                                            <a href="{{ asset('storage/images/'.$item->picture) }}" target="_blank">
+                                                <div class="list-img-thumbnail" style="background-image:url('{{ asset('storage/images/'.$item->picture) }}');"></div>
+                                            </a>
+                                        </td>
+                                        <td>{{ucfirst($item->brand_name)}}</td>
+                                        <td>{{ucfirst($item->category_name)}}</td>
+                                        <td>{{ucfirst($item->item_description)}}</td>
+                                        <td>{{ucfirst($item->unit)}}</td>
+                                        <td>{{$item->price}}</td>
+                                        <td>{{$item->weight}}</td>
+                                        <td>{{$item->height}}</td>
+                                        <td>{{$item->width}}</td>
                                         <td class="text-right p-0">
                                             <a class="bg-primary list-btn"  href="#" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
                                             <a class="bg-danger list-btn"  href="#"  title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
@@ -102,7 +111,7 @@
                         </div>
                     </div>
                     <div class="d-flex flex-row-reverse">
-                      {!! $inquires->links('pagination::bootstrap-4') !!}
+                      {!! $items->links('pagination::bootstrap-4') !!}
                     </div>
                 </div>
             </div>

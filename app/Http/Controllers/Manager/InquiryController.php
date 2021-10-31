@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Manager;
 
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
@@ -39,7 +39,7 @@ class InquiryController extends Controller
             'user'    => Auth::user(),
             'inquires'=> $inquires
         ];
-        return view('admin.inquiry.view',$data);
+        return view('manager.inquiry.view',$data);
     }
 
     public function open()
@@ -48,7 +48,7 @@ class InquiryController extends Controller
             'title'   => 'Open Inquires',
             'user'    => Auth::user(),
         ];
-        return view('admin.inquiry.open',$data);
+        return view('manager.inquiry.open',$data);
     }
 
     public function add()
@@ -67,7 +67,7 @@ class InquiryController extends Controller
             'customers'  => $customers,
             'items'      => $items
         ];
-        return view('admin.inquiry.add', $data);
+        return view('manager.inquiry.add', $data);
     }
 
     public function store(Request $request)
@@ -143,7 +143,7 @@ class InquiryController extends Controller
             $save[] = (new InquiryOrder($inquiry_item))->save();
         }
         return redirect(
-            route('inquiry.list.admin')
+            route('inquiry.list.manager')
         )->with('success', 'Inquiry was added successfully!');
     }
 
@@ -162,6 +162,6 @@ class InquiryController extends Controller
             'base_url' => env('APP_URL', 'http://127.0.0.1:8000'),
             'user'     => Auth::user(),
         ];
-        return view('admin.inquiry.edit', $data);
+        return view('manager.inquiry.edit', $data);
     }
 }

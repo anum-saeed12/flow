@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Manager;
 
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
@@ -40,7 +40,7 @@ class QuotationController extends Controller
             'user'      => Auth::user(),
             'quotations' => $quotations
         ];
-        return view('admin.quotation.customer',$data);
+        return view('manager.quotation.customer',$data);
     }
 
     public function add()
@@ -59,7 +59,7 @@ class QuotationController extends Controller
             'customers' => $customers,
             'items'     => $items
         ];
-        return view('admin.quotation.add', $data);
+        return view('manager.quotation.add', $data);
     }
 
     public function store(Request $request)
@@ -122,7 +122,7 @@ class QuotationController extends Controller
         }
 
         return redirect(
-            route('customerquotation.list.admin')
+            route('customerquotation.list.manager')
         )->with('success', 'Quotation was added successfully!');
     }
 
@@ -133,7 +133,7 @@ class QuotationController extends Controller
             'base_url' => env('APP_URL', 'http://omnibiz.local'),
             'user'     => Auth::user(),
         ];
-        return view('admin.quotation.edit', $data);
+        return view('manager.quotation.edit', $data);
     }
 
     public function view ($id)
@@ -154,7 +154,7 @@ class QuotationController extends Controller
             'user'       => Auth::user(),
             'quotation'  => $quotation
         ];
-        return view('admin.quotation.item', $data);
+        return view('manager.quotation.item', $data);
     }
 
 }

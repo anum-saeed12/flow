@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class EnsureUserIsAccountant
+class EnsureUserIsSourcingTeam
 {
     /**
      * Handle an incoming request.
@@ -20,7 +20,7 @@ class EnsureUserIsAccountant
         # 1st Step: Verify if user is logged in
         if (!Auth::check()) return redirect(route('login'));
         # 2nd Step: Check if user is admin or not
-        if (Auth::user()->user_role != 'accountant') return redirect(route('login'));
+        if (Auth::user()->user_role != 'sourcing_team') return redirect(route('login'));
         # If everything went perfect
         return $next($request);
     }

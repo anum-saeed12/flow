@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Sales;
 
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
@@ -31,6 +31,7 @@ class InquiryController extends Controller
             ->leftJoin('categories', 'categories.id' ,'=', 'inquiry_order.category_id')
             ->leftJoin('users', 'users.id' ,'=', 'inquiries.user_id')
             ->leftJoin( 'items','items.id' ,'=', 'inquiry_order.item_id')
+            ->where('inquires.user_id','=',Auth::user()->id)
             ->groupBy('inquiries.id','inquiry_order.inquiry_id')
             ->paginate($this->count);
 
@@ -39,7 +40,7 @@ class InquiryController extends Controller
             'user'    => Auth::user(),
             'inquires'=> $inquires
         ];
-        return view('admin.inquiry.view',$data);
+        return view('sales_person.inquiry.view',$data);
     }
 
     public function open()
@@ -48,7 +49,7 @@ class InquiryController extends Controller
             'title'   => 'Open Inquires',
             'user'    => Auth::user(),
         ];
-        return view('admin.inquiry.open',$data);
+        return view('sales_person.inquiry.open',$data);
     }
 
     public function add()
@@ -67,7 +68,7 @@ class InquiryController extends Controller
             'customers'  => $customers,
             'items'      => $items
         ];
-        return view('admin.inquiry.add', $data);
+        return view('sales_person.inquiry.add', $data);
     }
 
     public function store(Request $request)
@@ -143,7 +144,7 @@ class InquiryController extends Controller
             $save[] = (new InquiryOrder($inquiry_item))->save();
         }
         return redirect(
-            route('inquiry.list.admin')
+            route('inquiry.list.sales_person')
         )->with('success', 'Inquiry was added successfully!');
     }
 
@@ -162,6 +163,6 @@ class InquiryController extends Controller
             'base_url' => env('APP_URL', 'http://127.0.0.1:8000'),
             'user'     => Auth::user(),
         ];
-        return view('admin.inquiry.edit', $data);
+        return view('sales_person.inquiry.edit', $data);
     }
 }

@@ -87,7 +87,7 @@
                                         <td><a href="{{ route('quotation.view.admin',$quotation->id) }}">{{ ucfirst($quotation->project_name) }}</td>
                                         <td><a href="{{ route('quotation.view.admin',$quotation->id) }}">{{ ucfirst($quotation->item_description) }}</td>
                                         <td><a href="{{ route('quotation.view.admin',$quotation->id) }}">{{ ucfirst($quotation->total) }}</td>
-                                        <td><a href="{{ route('quotation.view.admin',$quotation->id) }}">{{ 'saleperson'  }}</td>
+                                        <td><a href="{{ route('quotation.view.admin',$quotation->id) }}">{{ ucfirst($quotation->name) }}</td>
                                         <td class="text-right p-0">
                                             <a class="bg-primary list-btn"  href="{{ route('quotation.edit.admin',$quotation->id) }}" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
                                             <a class="bg-danger list-btn"  href="#" title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>

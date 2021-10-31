@@ -74,7 +74,7 @@
                                     </select>
                                     <div class="text-danger">@error('category_id'){{ $message }}@enderror</div>
                                 </div>
-                                <div class="col-md-3 item-container">
+                                <div class="col-md-2 item-container">
                                     <label for="item_id">Select Item</label><br/>
                                     <select name="item_id[]" class="form-control" id="item_id">
 
@@ -97,18 +97,19 @@
                                 </div>
                                 <div class="col-md-1 quantity-container">
                                     <label for="quantity">Quantity</label><br/>
-                                    <input type="text" name="quantity[]" class="form-control" id="quantity"
-                                           value="{{ old('quantity') }}">
+                                    <input type="text" name="quantity[]" class="form-control with_out" id="quantity" data-target="#total_amount" data-into="#rate" onkeydown="calculate($(this))" onkeypress="calculate($(this))" onkeyup="calculate($(this))" onchange="calculate($(this))">
                                 </div>
                                 <div class="col-md-1 unit-container">
                                     <label for="unit">Unit</label><br/>
-                                    <input type="text" name="unit[]" class="form-control" id="unit"
-                                           value="{{ old('unit') }}">
+                                    <input type="text" name="unit[]" class="form-control" id="unit">
+                                </div>
+                                <div class="col-md-1 rate-container">
+                                    <label for="rate">Rate</label><br/>
+                                    <input type="text" name="rate[]" class="form-control with_out" id="rate" data-target="#total_amount" data-into="#quantity" onkeydown="calculate($(this))" onkeypress="calculate($(this))" onkeyup="calculate($(this))" onchange="calculate($(this))">
                                 </div>
                                 <div class="col-md-1 amount-container">
-                                    <label for="amount">Amount</label><br/>
-                                    <input type="text" name="amount[]" class="form-control" id="amount"
-                                           value="{{ old('amount') }}">
+                                    <label for="amount">Sub-Total</label><br/>
+                                    <input type="text" name="amount[]" class="form-control total n" id="amount">
                                 </div>
                                 <div class="col-md-1">
                                     <label for="button">&nbsp;</label><br/>
@@ -120,7 +121,7 @@
                             </div>
                             <br/>
                             <div class="row ml-3">
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                 <label for="inquiry_file">Upload Inquiry Files</label><br/>
                                 <div class="input-group mt-3">
                                     <input name="inquiry_file[]" type="file"
@@ -128,7 +129,12 @@
                                            required="required" multiple>
                                 </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
+                                    <label for="total">Total Amount</label><br/>
+                                    <input type="text" name="total[]" class="form-control" id="total"
+                                           value="{{ old('total') }}">
+                                </div>
+                                <div class="col-md-4">
                                     <label for="remarks">Remarks</label><br/>
                                     <textarea class="form-control" name="remarks" id="remarks"></textarea>
                                 </div>
@@ -158,7 +164,9 @@
                 brand_container = $('.brand-container'),
                 quantity_container = $('.quantity-container'),
                 amount_container = $('.amount-container'),
+                rate_container = $('.rate-container'),
                 unit_container = $('.unit-container'),
+                $uid = $('.quantity').length;
                 add_button = $(".add_form_field"),
                 max_fields = 10,
                 wrapper = $('.additional-products');
@@ -200,7 +208,7 @@
                 @endforeach
                     '</select>' +
                     '</div>' +
-                '<div class="col-md-3 item-container">' +
+                '<div class="col-md-2 item-container">' +
                     '<label for="item_id">Select Item</label><br/>' +
                     '<select name="item_id[]" class="form-control" id="item_id">' +
                         '<option selected="selected" value>Select</option>' +
@@ -218,33 +226,75 @@
                     @endforeach
                     '</select>' +
                 '</div>' +
-                '<div class="col-md-1 quantity-container">' +
-                    '<label for="quantity">Quantity</label><br/>' +
-                    '<input type="text" name="quantity[]" class="form-control" id="quantity" value="{{ old('quantity') }}">' +
-                '</div>' +
-                '<div class="col-md-1 unit-container">' +
-                    '<label for="unit">Unit</label><br/>' +
-                    '<input type="text" name="unit[]" class="form-control" id="unit" value="{{ old('unit') }}">' +
-                '</div>' +
-                    '<div class="col-md-1 amount-container">' +
-                    '<label for="amount">Amount</label><br/>' +
-                    '<input type="text" name="amount[]" class="form-control" id="amount" value="{{ old('amount') }}">' +
-                '</div>' +
+                    '<div class="col-md-1 quantity-container">' +
+                    `<label for="quantity_${$uid}">Quantity</label><br/>` +
+                    `<input type="text" name="quantity[]" class="form-control common quantity" id="quantity_${$uid}" data-target="#total_amount_${$uid}" data-into="#rate_${$uid}" onkeydown="calculate($(this))" onkeypress="calculate($(this))" onkeyup="calculate($(this))" onchange="calculate($(this))">`+
+                    '</div>' +
+                    '<div class="col-md-1 unit-container">' +
+                    `<label for="unit_${$uid}">Unit</label><br/>` +
+                    `<input type="text" name="unit[]" class="form-control" id="unit_${$uid}" >` +
+                    '</div>' +
+                    '<div class="col-md-1 rate-container">' +
+                    `<label for="rate_${$uid}">Rate</label><br/>` +
+                    `<input type="text" name="rate[]" class="form-control common" id="rate_${$uid}" data-target="#total_amount_${$uid}" data-into="#quantity_${$uid}" onkeydown="calculate($(this))" onkeypress="calculate($(this))" onkeyup="calculate($(this))" onchange="calculate($(this))">` +
+                    '</div>' +
+                    '<div class="col-md-2 amount-container">' +
+                    `<label for="amount_${$uid}">Sub-Total</label><br/>` +
+                    `<input type="text" name="amount[]" class="form-control total n" id="total_amount_${$uid}">` +
+                    '</div>' +
                 '<div class="col-md-1">' +
                     '<label for="unit">&nbsp;</label><br/>' +
                     '<button class="delete btn btn-danger"><span><i class="fas fa-trash-alt" aria-hidden="false"></i></span></button>' +
                 '</div>' +
             '</div>';
-
                 x++;
                 $(wrapper).append($itemRow); // add input box
             });
-
             $(wrapper).on("click", ".delete", function(e) {
-                e.preventDefault();
+                e.preventDefault()
                 $(this).parent().parent().remove();
                 x--;
             })
+            $('.with_out').keyup(function() {
+                var txtFirstNumberValue = document.getElementById('quantity').value;
+                var txtSecondNumberValue = document.getElementById('rate').value;
+                var result = parseInt(txtFirstNumberValue) * parseInt(txtSecondNumberValue);
+                if (!isNaN(result)) {
+                    document.getElementById('amount').value = result;
+                }
+            })
+
+            function sumIt() {
+                var total = 0, val;
+                $('.common').each(function() {
+                    val = $(this).val()
+                    val = isNaN(val) || $.trim(val) === "" ? 0 : parseFloat(val);
+                    total += val;
+                });
+                $('#total_amount').val(Math.round(total));
+            }
+
+            $(document).on('keyup', '.common', sumIt,total);
+            sumIt() // run when loading
         });
+        function calculate(ele) {
+            let total = 0,sum = 0, result, target=$(ele.data('target')),
+                first = ele.val(), second = $(ele.data('into')).val(),
+                sub_total, sum_of_sub_total = 0, sumOfTotal = $('#total');
+            result = parseFloat(first) * parseFloat(second);
+            if (!isNaN(result)) {
+                $(target).val(Math.round(result));
+                // Lets loop through all the total inputs
+                sub_total = $('.total.n');
+                for(i=0;i<sub_total.length;i++) {
+                    sum_of_sub_total += parseFloat(sub_total[i].value);
+                }
+                sumOfTotal.val(sum_of_sub_total);
+                return false;
+            }
+            $(target).val(0);
+            sumOfTotal.val(0);
+            //$('#total').val(sum_of_sub_total);
+        }
     </script>
 @stop

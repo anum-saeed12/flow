@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Manager;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
@@ -29,7 +29,7 @@ class VendorQuotationController extends Controller
             'vendor_quotation' => $vendors_quotation,
             'user'             => Auth::user(),
         ];
-        return view('admin.vendorquotation.view',$data);
+        return view('manager.vendorquotation.view',$data);
     }
 
     public function add()
@@ -43,7 +43,7 @@ class VendorQuotationController extends Controller
             'vendors'     => $vendors,
             'categories'  => $categories
         ];
-        return view('admin.vendorquotation.add', $data);
+        return view('manager.vendorquotation.add', $data);
     }
 
     public function store(Request $request)
@@ -103,7 +103,7 @@ class VendorQuotationController extends Controller
 
         }
         return redirect(
-            route('vendorquotation.list.admin')
+            route('vendorquotation.list.manager')
         )->with('success', 'Vendor Quotation was added successfully!');
     }
     private function uploadPDF($file)
@@ -121,6 +121,6 @@ class VendorQuotationController extends Controller
             'base_url' => env('APP_URL', 'http://127.0.0.1:8000'),
             'user'     => Auth::user(),
         ];
-        return view('admin.vendorquotation.edit', $data);
+        return view('manager.vendorquotation.edit', $data);
     }
 }

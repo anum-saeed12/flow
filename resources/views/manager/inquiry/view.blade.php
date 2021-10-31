@@ -9,7 +9,7 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard.admin') }}">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('dashboard.manager') }}">Home</a></li>
                         <li class="breadcrumb-item">Inquiry</li>
                         <li class="breadcrumb-item active">{{$title}}</li>
                     </ol>
@@ -62,7 +62,7 @@
                                         </div>
                                     </div>
                                 </form>
-                                <a href="{{ route('inquiry.add.admin') }}" class="btn btn-success"><i class="fa fa-plus-circle mr-1"></i> Add New</a>
+                                <a href="{{ route('inquiry.add.manager') }}" class="btn btn-success"><i class="fa fa-plus-circle mr-1"></i> Add New</a>
 
                             </div>
                         </div>

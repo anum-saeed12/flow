@@ -86,7 +86,7 @@
                                         <td>{{ ucfirst($quotation->project_name) }}</td>
                                         <td>{{ ucfirst($quotation->item_description) }}</td>
                                         <td>{{ ucfirst($quotation->amount) }}</td>
-                                        <td>{{ 'saleperson' }}</td>
+                                        <td>{{ ucfirst($quotation->name) }}</td>
                                         <td class="text-right p-0">
                                             <a class="bg-warning list-btn"  href="{{ asset('storage/file/'.$quotation->quotation_pdf) }}" title="Quotation PDF" target="_blank"><i class="fas fa-file-pdf" aria-hidden="false"></i></a>
                                             <a class="bg-primary list-btn"  href="#" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
@@ -99,7 +99,7 @@
                         </div>
                     </div>
                     <div class="d-flex flex-row-reverse">
-                      {{--  {!! $clients->links('pagination::bootstrap-4') !!}--}}
+                        {{--{!! $quotation->links('pagination::bootstrap-4') !!}--}}
                     </div>
                 </div>
             </div>

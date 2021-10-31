@@ -9,7 +9,7 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard.admin') }}">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('dashboard.manager') }}">Home</a></li>
                         <li class="breadcrumb-item">Quotation</li>
                         <li class="breadcrumb-item active">{{$title}}</li>
                     </ol>
@@ -26,7 +26,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card card-info">
-                    <form class="form-horizontal" action="{{ route('quotation.store.admin') }}" method="POST">
+                    <form class="form-horizontal" action="{{ route('quotation.store.manager') }}" method="POST">
                         @csrf
                         <div class="card-body pb-0">
                             <div class="row">
@@ -62,7 +62,7 @@
                             <div class="row">
                                 <div class="col-md-3 item-container">
                                     <label for="item_id">Select Item </label><br/>
-                                    <select name="item_id[]" class="form-control trigger" id="item_id" data-target="#brand_id" data-href="{{ route('item.fetch.ajax.admin') }}" data-spinner="#item_spinner" onchange="itemSelect($(this))">
+                                    <select name="item_id[]" class="form-control trigger" id="item_id" data-target="#brand_id" data-href="{{ route('item.fetch.ajax.manager') }}" data-spinner="#item_spinner" onchange="itemSelect($(this))">
                                         <option selected="selected" value>Select</option>
                                         @foreach ($items as $item)
                                             <option value="{{ $item->item_name }}">{{ ucfirst($item->item_name) }}</option>
@@ -152,7 +152,7 @@
                 wrapper = $('.additional-products'),
                 $uid = $('.quantity').length;
 
-            // data-target="#brand_id" data-href="{{ route('item.fetch.ajax.admin') }}"
+            // data-target="#brand_id" data-href="{{ route('item.fetch.ajax.manager') }}"
 
 
 
@@ -187,7 +187,7 @@
                 let $itemRow = '<div class="row mt-3">' +
                     '<div class="col-md-3 item-container">' +
                     `<label for="item_id_${$uid}">Select Item </label><br/>` +
-                    `<select name="item_id[]" class="form-control" id="item_id_${$uid}" data-target="#brand_id_${$uid}" data-href="{{ route('item.fetch.ajax.admin') }}" data-spinner="#item_spinner_${$uid}" onchange="itemSelect($(this))">>` +
+                    `<select name="item_id[]" class="form-control" id="item_id_${$uid}" data-target="#brand_id_${$uid}" data-href="{{ route('item.fetch.ajax.manager') }}" data-spinner="#item_spinner_${$uid}" onchange="itemSelect($(this))">>` +
                         '<option selected="selected" value>Select</option>' +
                         @foreach ($items as $item)
                             '<option value="{{ $item->item_name }}">{{ ucfirst($item->item_name) }}</option>' +
@@ -292,7 +292,7 @@
                     $(target).html(brands);
                 }
             });
-            // data-target="#brand_id" data-href="{{ route('item.fetch.ajax.admin') }}" onchange="itemSelect($(this))" onfocus="itemSelect($(this))" onblur="itemSelect($(this))">
+            // data-target="#brand_id" data-href="{{ route('item.fetch.ajax.manager') }}" onchange="itemSelect($(this))" onfocus="itemSelect($(this))" onblur="itemSelect($(this))">
         }
     </script>
 @stop

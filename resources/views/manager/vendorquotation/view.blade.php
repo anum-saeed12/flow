@@ -9,8 +9,8 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard.admin') }}">Home</a></li>
-                        <li class="breadcrumb-item">Inquiry</li>
+                        <li class="breadcrumb-item"><a href="{{ route('dashboard.manager') }}">Home</a></li>
+                        <li class="breadcrumb-item">Vendor Quotation</li>
                         <li class="breadcrumb-item active">{{$title}}</li>
                     </ol>
                 </div>
@@ -62,7 +62,7 @@
                                         </div>
                                     </div>
                                 </form>
-                                <a href="{{ route('inquiry.add.admin') }}" class="btn btn-success"><i class="fa fa-plus-circle mr-1"></i> Add New</a>
+                                <a href="{{ route('vendorquotation.add.manager') }}" class="btn btn-success"><i class="fa fa-plus-circle mr-1"></i> Add New</a>
 
                             </div>
                         </div>
@@ -76,33 +76,30 @@
                                     <th class="pl-0">Items Description</th>
                                     <th class="pl-0">Amount</th>
                                     <th class="pl-0">Sales Person</th>
-                                    <th class="pl-0">Date</th>
-                                    <th class="pl-0">Submission Timeline</th>
                                 </tr>
                                 </thead>
                                 <tbody id="myTable">
-                                @foreach($inquires as $inquiry)
+                                @foreach($vendor_quotation as $quotation)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ ucfirst($inquiry->customer_name) }}</td>
-                                        <td>{{ ucfirst($inquiry->project_name) }}</td>
-                                        <td>{{ ucfirst($inquiry->item_description) }}</td>
-                                        <td>{{ $inquiry->amount }}</td>
-                                        <td>{{ $inquiry->name }}</td>
-                                        <td>{{ ucfirst($inquiry->date) }}</td>
-                                        <td>{{ ucfirst($inquiry->timeline) }}</td>
+                                        <td>{{ucfirst($quotation->vendor_name) }}</td>
+                                        <td>{{ ucfirst($quotation->project_name) }}</td>
+                                        <td>{{ ucfirst($quotation->item_description) }}</td>
+                                        <td>{{ ucfirst($quotation->amount) }}</td>
+                                        <td>{{ ucfirst($quotation->name) }}</td>
                                         <td class="text-right p-0">
+                                            <a class="bg-warning list-btn"  href="{{ asset('storage/file/'.$quotation->quotation_pdf) }}" title="Quotation PDF" target="_blank"><i class="fas fa-file-pdf" aria-hidden="false"></i></a>
                                             <a class="bg-primary list-btn"  href="#" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
-                                            <a class="bg-danger list-btn"  href="#"  title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
+                                            <a class="bg-danger list-btn"  href="#" title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
                                         </td>
                                     </tr>
-                                @endforeach
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
                     </div>
                     <div class="d-flex flex-row-reverse">
-                      {!! $inquires->links('pagination::bootstrap-4') !!}
+                        {{--{!! $quotation->links('pagination::bootstrap-4') !!}--}}
                     </div>
                 </div>
             </div>

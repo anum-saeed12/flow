@@ -10,7 +10,7 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard.admin') }}">Home</a></li>
-                        <li class="breadcrumb-item">Inquiry</li>
+                        <li class="breadcrumb-item">User</li>
                         <li class="breadcrumb-item active">{{$title}}</li>
                     </ol>
                 </div>
@@ -62,7 +62,7 @@
                                         </div>
                                     </div>
                                 </form>
-                                <a href="{{ route('inquiry.add.admin') }}" class="btn btn-success"><i class="fa fa-plus-circle mr-1"></i> Add New</a>
+                                <a href="{{ route('user.add.admin') }}" class="btn btn-success"><i class="fa fa-plus-circle mr-1"></i> Add New</a>
 
                             </div>
                         </div>
@@ -71,29 +71,23 @@
                                 <thead>
                                 <tr>
                                     <th>Sr.No.</th>
-                                    <th class="pl-0">Client</th>
-                                    <th class="pl-0">Project</th>
-                                    <th class="pl-0">Items Description</th>
-                                    <th class="pl-0">Amount</th>
-                                    <th class="pl-0">Sales Person</th>
-                                    <th class="pl-0">Date</th>
-                                    <th class="pl-0">Submission Timeline</th>
+                                    <th class="pl-0">Name</th>
+                                    <th class="pl-0">Username</th>
+                                    <th class="pl-0">Email</th>
+                                    <th class="pl-0">User Role</th>
                                 </tr>
                                 </thead>
                                 <tbody id="myTable">
-                                @foreach($inquires as $inquiry)
+                                @foreach($users as $user)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ ucfirst($inquiry->customer_name) }}</td>
-                                        <td>{{ ucfirst($inquiry->project_name) }}</td>
-                                        <td>{{ ucfirst($inquiry->item_description) }}</td>
-                                        <td>{{ $inquiry->amount }}</td>
-                                        <td>{{ $inquiry->name }}</td>
-                                        <td>{{ ucfirst($inquiry->date) }}</td>
-                                        <td>{{ ucfirst($inquiry->timeline) }}</td>
+                                        <td>{{ ucfirst($user->name) }}</td>
+                                        <td>{{ ucfirst($user->username) }}</td>
+                                        <td>{{ ucfirst($user->email) }}</td>
+                                        <td>{{ $user->user_role == 'admin' ? 'Admin' : '' }}{{ $user->user_role == 'sourcing_team' ? 'Sourcing Team' : '' }}{{ $user->user_role == 'manager' ? 'Manager' : '' }}{{ $user->user_role == 'sales_person' ? 'Sales Person' : '' }}</td>
                                         <td class="text-right p-0">
-                                            <a class="bg-primary list-btn"  href="#" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
-                                            <a class="bg-danger list-btn"  href="#"  title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
+                                            <a class="bg-primary list-btn"  href="{{ route('user.edit.admin',$user->id) }}" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
+                                            <a class="bg-danger list-btn"  href="{{ route('user.delete.admin',$user->id) }}"  title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -102,7 +96,7 @@
                         </div>
                     </div>
                     <div class="d-flex flex-row-reverse">
-                      {!! $inquires->links('pagination::bootstrap-4') !!}
+                        {!! $users->links('pagination::bootstrap-4') !!}
                     </div>
                 </div>
             </div>

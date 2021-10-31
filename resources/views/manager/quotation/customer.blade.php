@@ -9,8 +9,8 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard.admin') }}">Home</a></li>
-                        <li class="breadcrumb-item">Inquiry</li>
+                        <li class="breadcrumb-item"><a href="{{ route('dashboard.manager') }}">Home</a></li>
+                        <li class="breadcrumb-item">Quotation</li>
                         <li class="breadcrumb-item active">{{$title}}</li>
                     </ol>
                 </div>
@@ -24,7 +24,7 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-
+                    @include('manager.quotation.components.filters')
                 <div class="col-12">
                     @if(session()->has('success'))
                         <div class="callout callout-success" style="color:green">
@@ -62,7 +62,7 @@
                                         </div>
                                     </div>
                                 </form>
-                                <a href="{{ route('inquiry.add.admin') }}" class="btn btn-success"><i class="fa fa-plus-circle mr-1"></i> Add New</a>
+                                <a href="{{ route('quotation.add.manager') }}" class="btn btn-success"><i class="fa fa-plus-circle mr-1"></i> Add New</a>
 
                             </div>
                         </div>
@@ -76,24 +76,21 @@
                                     <th class="pl-0">Items Description</th>
                                     <th class="pl-0">Amount</th>
                                     <th class="pl-0">Sales Person</th>
-                                    <th class="pl-0">Date</th>
-                                    <th class="pl-0">Submission Timeline</th>
                                 </tr>
                                 </thead>
                                 <tbody id="myTable">
-                                @foreach($inquires as $inquiry)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ ucfirst($inquiry->customer_name) }}</td>
-                                        <td>{{ ucfirst($inquiry->project_name) }}</td>
-                                        <td>{{ ucfirst($inquiry->item_description) }}</td>
-                                        <td>{{ $inquiry->amount }}</td>
-                                        <td>{{ $inquiry->name }}</td>
-                                        <td>{{ ucfirst($inquiry->date) }}</td>
-                                        <td>{{ ucfirst($inquiry->timeline) }}</td>
+                                @foreach($quotations as $quotation)
+                                    <tr style="cursor:pointer" class="no-select" data-toggle="modal"
+                                        data-href="{{ route('quotation.view.manager',$quotation->id) }}">
+                                        <td><a href="{{ route('quotation.view.manager',$quotation->id) }}">{{ $loop->iteration }}</td>
+                                        <td><a href="{{ route('quotation.view.manager',$quotation->id) }}">{{ ucfirst($quotation->customer_name) }}</td>
+                                        <td><a href="{{ route('quotation.view.manager',$quotation->id) }}">{{ ucfirst($quotation->project_name) }}</td>
+                                        <td><a href="{{ route('quotation.view.manager',$quotation->id) }}">{{ ucfirst($quotation->item_description) }}</td>
+                                        <td><a href="{{ route('quotation.view.manager',$quotation->id) }}">{{ ucfirst($quotation->total) }}</td>
+                                        <td><a href="{{ route('quotation.view.manager',$quotation->id) }}">{{ ucfirst($quotation->name) }}</td>
                                         <td class="text-right p-0">
-                                            <a class="bg-primary list-btn"  href="#" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
-                                            <a class="bg-danger list-btn"  href="#"  title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
+                                            <a class="bg-primary list-btn"  href="{{ route('quotation.edit.manager',$quotation->id) }}" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
+                                            <a class="bg-danger list-btn"  href="#" title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -102,7 +99,7 @@
                         </div>
                     </div>
                     <div class="d-flex flex-row-reverse">
-                      {!! $inquires->links('pagination::bootstrap-4') !!}
+                      {!! $quotations->links('pagination::bootstrap-4') !!}
                     </div>
                 </div>
             </div>
