@@ -238,7 +238,7 @@
                     `<label for="rate_${$uid}">Rate</label><br/>` +
                     `<input type="text" name="rate[]" class="form-control common" id="rate_${$uid}" data-target="#total_amount_${$uid}" data-into="#quantity_${$uid}" onkeydown="calculate($(this))" onkeypress="calculate($(this))" onkeyup="calculate($(this))" onchange="calculate($(this))">` +
                     '</div>' +
-                    '<div class="col-md-2 amount-container">' +
+                    '<div class="col-md-1 amount-container">' +
                     `<label for="amount_${$uid}">Sub-Total</label><br/>` +
                     `<input type="text" name="amount[]" class="form-control total n" id="total_amount_${$uid}">` +
                     '</div>' +
