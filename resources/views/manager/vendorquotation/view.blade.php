@@ -80,13 +80,14 @@
                                 </thead>
                                 <tbody id="myTable">
                                 @foreach($vendor_quotation as $quotation)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ucfirst($quotation->vendor_name) }}</td>
-                                        <td>{{ ucfirst($quotation->project_name) }}</td>
-                                        <td>{{ ucfirst($quotation->item_description) }}</td>
-                                        <td>{{ ucfirst($quotation->amount) }}</td>
-                                        <td>{{ ucfirst($quotation->name) }}</td>
+                                    <tr style="cursor:pointer" class="no-select" data-toggle="modal"
+                                        data-href="{{ route('vendorquotation.view.manager',$quotation->id) }}">
+                                        <td><a href="{{ route('vendorquotation.view.manager',$quotation->id) }}">{{ $loop->iteration }}</td>
+                                        <td><a href="{{ route('vendorquotation.view.manager',$quotation->id) }}">{{ucfirst($quotation->vendor_name) }}</td>
+                                        <td><a href="{{ route('vendorquotation.view.manager',$quotation->id) }}">{{ ucfirst($quotation->project_name) }}</td>
+                                        <td><a href="{{ route('vendorquotation.view.manager',$quotation->id) }}">{{ ucfirst($quotation->item_description) }}</td>
+                                        <td><a href="{{ route('vendorquotation.view.manager',$quotation->id) }}">{{ ucfirst($quotation->amount) }}</td>
+                                        <td><a href="{{ route('vendorquotation.view.manager',$quotation->id) }}">{{ ucfirst($quotation->name) }}</td>
                                         <td class="text-right p-0">
                                             <a class="bg-warning list-btn"  href="{{ asset('storage/file/'.$quotation->quotation_pdf) }}" title="Quotation PDF" target="_blank"><i class="fas fa-file-pdf" aria-hidden="false"></i></a>
                                             <a class="bg-primary list-btn"  href="#" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>

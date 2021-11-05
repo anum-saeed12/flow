@@ -38,17 +38,28 @@ class ItemController extends Controller
             'base_url' => env('APP_URL', 'http://127.0.0.1:8000'),
             'user'     => Auth::user(),
             'brands'    => $brands,
-            'categories' => $categories,
+            'categories' => $categories
         ];
         return view('admin.item.add', $data);
     }
 
     public function edit($id)
     {
+        $data = Item::select('*')
+            ->where('items.id',$id)
+            ->leftJoin('brands','brands.id' ,'=', 'items.brand_id')
+            ->leftJoin('categories', 'categories.id' ,'=', 'items.category_id')
+            ->first();
+        $categories = Category::orderBy('id','DESC')->paginate($this->count);
+        $brands     = Brand::orderBy('id','DESC')->paginate($this->count);
+
         $data = [
             'title'    => 'Update Item',
             'base_url' => env('APP_URL', 'http://127.0.0.1:8000'),
             'user'     => Auth::user(),
+            'data'     => $data,
+            'brands'    => $brands,
+            'categories' => $categories
         ];
         return view('admin.item.edit', $data);
     }

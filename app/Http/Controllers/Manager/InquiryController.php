@@ -77,7 +77,7 @@ class InquiryController extends Controller
             'project_name'   => 'required',
             'date'           => 'required',
             'timeline'       => 'required',
-            'total'       => 'required',
+            'total'          => 'required',
             'remarks'        => 'sometimes',
             'rate'           => 'required|array',
             'rate.*'         => 'required',
@@ -91,8 +91,8 @@ class InquiryController extends Controller
             'quantity.*'     => 'required',
             'unit'           => 'required|array',
             'unit.*'         => 'required',
-            'amount'           => 'required|array',
-            'amount.*'         => 'required',
+            'amount'         => 'required|array',
+            'amount.*'       => 'required',
             'inquiry_file'   => 'required|array',
             'inquiry_file.*' => 'required|',
         ],[
@@ -110,7 +110,7 @@ class InquiryController extends Controller
         $amounts    = $request->amount;
 
         $data = $request->all();
-        $id=Auth::user()->id;
+        $id = Auth::user()->id;
         $data['user_id']  = $id;
         $data['date']     = Carbon::parse($request->date)->format('Y-m-d');
         $data['timeline'] = Carbon::parse($request->timeline)->format('Y-m-d');

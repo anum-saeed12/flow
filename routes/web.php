@@ -50,6 +50,8 @@ Route::prefix('/admin')->middleware('admin')->group(function() {
         Route::get('/edit/{id}', '\App\Http\Controllers\Admin\InquiryController@edit')->name('inquiry.edit.admin');
         Route::post('/update/{id}', '\App\Http\Controllers\Admin\InquiryController@update')->name('inquiry.update.admin');
         Route::get('/delete/{id}', '\App\Http\Controllers\Admin\InquiryController@delete')->name('inquiry.delete.admin');
+        Route::get('/view/{id}', '\App\Http\Controllers\Admin\InquiryController@view')->name('inquiry.view.admin');
+
     });
     Route::prefix('/customer')->group(function() {
         Route::get('/', '\App\Http\Controllers\Admin\CustomerController@index')->name('customer.index.admin');
@@ -69,6 +71,7 @@ Route::prefix('/admin')->middleware('admin')->group(function() {
         Route::post('/update/{id}', '\App\Http\Controllers\Admin\ItemController@update')->name('item.update.admin');
         Route::get('/delete/{id}', '\App\Http\Controllers\Admin\ItemController@delete')->name('item.delete.admin');
         Route::get('/ajax-fetch/', '\App\Http\Controllers\Admin\ItemController@ajaxFetch')->name('item.fetch.ajax.admin');
+        Route::get('/view/{id}', '\App\Http\Controllers\Admin\ItemController@view')->name('item.view.admin');
     });
     Route::prefix('/brand')->group(function() {
         Route::get('/', '\App\Http\Controllers\Admin\BrandController@index')->name('brand.index.admin');
@@ -114,6 +117,66 @@ Route::prefix('/admin')->middleware('admin')->group(function() {
         Route::get('/edit/{id}', '\App\Http\Controllers\Admin\VendorQuotationController@edit')->name('vendorquotation.edit.admin');
         Route::post('/update/{id}', '\App\Http\Controllers\Admin\VendorQuotationController@update')->name('vendorquotation.update.admin');
         Route::get('/delete/{id}', '\App\Http\Controllers\Admin\VendorQuotationController@delete')->name('vendorquotation.delete.admin');
+        Route::get('/view/{id}', '\App\Http\Controllers\Admin\VendorQuotationController@view')->name('vendorquotation.view.admin');
+
+    });
+});
+
+Route::prefix('/sourcing_team')->middleware('team')->group(function() {
+    # Dashboard
+    Route::get('/', '\App\Http\Controllers\DashboardController@team')->name('dashboard.team');
+
+    Route::prefix('/inquiry')->group(function() {
+        Route::get('/', '\App\Http\Controllers\Team\InquiryController@index')->name('inquiry.index.team');
+        Route::get('/index', '\App\Http\Controllers\Team\InquiryController@index')->name('inquiry.list.team');
+        Route::get('/open', '\App\Http\Controllers\Team\InquiryController@open')->name('inquiry.open.team');
+        Route::get('/add', '\App\Http\Controllers\Team\InquiryController@add')->name('inquiry.add.team');
+        Route::post('/store', '\App\Http\Controllers\Team\InquiryController@store')->name('inquiry.store.team');
+        Route::get('/edit/{id}', '\App\Http\Controllers\Team\InquiryController@edit')->name('inquiry.edit.team');
+        Route::post('/update/{id}', '\App\Http\Controllers\Team\InquiryController@update')->name('inquiry.update.team');
+        Route::get('/delete/{id}', '\App\Http\Controllers\Team\InquiryController@delete')->name('inquiry.delete.team');
+        Route::get('/view/{id}', '\App\Http\Controllers\Team\InquiryController@view')->name('inquiry.view.team');
+
+    });
+    Route::prefix('/item')->group(function() {
+        Route::get('/', '\App\Http\Controllers\Team\ItemController@index')->name('item.index.team');
+        Route::get('/index', '\App\Http\Controllers\Team\ItemController@index')->name('item.list.team');
+        Route::get('/add', '\App\Http\Controllers\Team\ItemController@add')->name('item.add.team');
+        Route::post('/store', '\App\Http\Controllers\Team\ItemController@store')->name('item.store.team');
+        Route::get('/edit/{id}', '\App\Http\Controllers\Team\ItemController@edit')->name('item.edit.team');
+        Route::post('/update/{id}', '\App\Http\Controllers\Team\ItemController@update')->name('item.update.team');
+        Route::get('/delete/{id}', '\App\Http\Controllers\Team\ItemController@delete')->name('item.delete.team');
+        Route::get('/ajax-fetch/', '\App\Http\Controllers\Team\ItemController@ajaxFetch')->name('item.fetch.ajax.team');
+        Route::get('/view/{id}', '\App\Http\Controllers\Team\ItemController@view')->name('item.view.team');
+    });
+    Route::prefix('/customer')->group(function() {
+        Route::get('/', '\App\Http\Controllers\Team\CustomerController@index')->name('customer.index.team');
+        Route::get('/index', '\App\Http\Controllers\Team\CustomerController@index')->name('customer.list.team');
+        Route::get('/add', '\App\Http\Controllers\Team\CustomerController@add')->name('customer.add.team');
+        Route::post('/store', '\App\Http\Controllers\Team\CustomerController@store')->name('customer.store.team');
+        Route::get('/edit/{id}', '\App\Http\Controllers\Team\CustomerController@edit')->name('customer.edit.team');
+        Route::post('/update/{id}', '\App\Http\Controllers\Team\CustomerController@update')->name('customer.update.team');
+        Route::get('/delete/{id}', '\App\Http\Controllers\Team\CustomerController@delete')->name('customer.delete.team');
+    });
+    Route::prefix('/quotation')->group(function() {
+        Route::get('/customer', '\App\Http\Controllers\Team\QuotationController@customer')->name('customerquotation.list.team');
+        Route::get('/add', '\App\Http\Controllers\Team\QuotationController@add')->name('quotation.add.team');
+        Route::post('/store', '\App\Http\Controllers\Team\QuotationController@store')->name('quotation.store.team');
+        Route::get('/edit/{id}', '\App\Http\Controllers\Team\QuotationController@edit')->name('quotation.edit.team');
+        Route::post('/update/{id}', '\App\Http\Controllers\Team\QuotationController@update')->name('quotation.update.team');
+        Route::get('/delete/{id}', '\App\Http\Controllers\Team\QuotationController@delete')->name('quotation.delete.team');
+        Route::get('/view/{id}', '\App\Http\Controllers\Team\QuotationController@view')->name('quotation.view.team');
+    });
+    Route::prefix('/vendor/quotation')->group(function() {
+        Route::get('/', '\App\Http\Controllers\Team\VendorQuotationController@index')->name('vendorquotation.index.team');
+        Route::get('/index', '\App\Http\Controllers\Team\VendorQuotationController@index')->name('vendorquotation.list.team');
+        Route::get('/add', '\App\Http\Controllers\Team\VendorQuotationController@add')->name('vendorquotation.add.team');
+        Route::post('/store', '\App\Http\Controllers\Team\VendorQuotationController@store')->name('vendorquotation.store.team');
+        Route::get('/edit/{id}', '\App\Http\Controllers\Team\VendorQuotationController@edit')->name('vendorquotation.edit.team');
+        Route::post('/update/{id}', '\App\Http\Controllers\Team\VendorQuotationController@update')->name('vendorquotation.update.team');
+        Route::get('/delete/{id}', '\App\Http\Controllers\Team\VendorQuotationController@delete')->name('vendorquotation.delete.team');
+        Route::get('/view/{id}', '\App\Http\Controllers\Team\VendorQuotationController@view')->name('vendorquotation.view.team');
+
     });
 });
 
@@ -130,6 +193,7 @@ Route::prefix('/manager')->middleware('manager')->group(function() {
         Route::get('/edit/{id}', '\App\Http\Controllers\Manager\InquiryController@edit')->name('inquiry.edit.manager');
         Route::post('/update/{id}', '\App\Http\Controllers\Manager\InquiryController@update')->name('inquiry.update.manager');
         Route::get('/delete/{id}', '\App\Http\Controllers\Manager\InquiryController@delete')->name('inquiry.delete.manager');
+        Route::get('/view/{id}', '\App\Http\Controllers\Manager\InquiryController@view')->name('inquiry.view.manager');
     });
     Route::prefix('/item')->group(function() {
         Route::get('/', '\App\Http\Controllers\Manager\ItemController@index')->name('item.index.manager');
@@ -140,6 +204,16 @@ Route::prefix('/manager')->middleware('manager')->group(function() {
         Route::post('/update/{id}', '\App\Http\Controllers\Manager\ItemController@update')->name('item.update.manager');
         Route::get('/delete/{id}', '\App\Http\Controllers\Manager\ItemController@delete')->name('item.delete.manager');
         Route::get('/ajax-fetch/', '\App\Http\Controllers\Manager\ItemController@ajaxFetch')->name('item.fetch.ajax.manager');
+        Route::get('/view/{id}', '\App\Http\Controllers\Manager\ItemController@view')->name('item.view.manager');
+    });
+    Route::prefix('/customer')->group(function() {
+        Route::get('/', '\App\Http\Controllers\Manager\CustomerController@index')->name('customer.index.manager');
+        Route::get('/index', '\App\Http\Controllers\Manager\CustomerController@index')->name('customer.list.manager');
+        Route::get('/add', '\App\Http\Controllers\Manager\CustomerController@add')->name('customer.add.manager');
+        Route::post('/store', '\App\Http\Controllers\Manager\CustomerController@store')->name('customer.store.manager');
+        Route::get('/edit/{id}', '\App\Http\Controllers\Manager\CustomerController@edit')->name('customer.edit.manager');
+        Route::post('/update/{id}', '\App\Http\Controllers\Manager\CustomerController@update')->name('customer.update.manager');
+        Route::get('/delete/{id}', '\App\Http\Controllers\Manager\CustomerController@delete')->name('customer.delete.manager');
     });
     Route::prefix('/quotation')->group(function() {
         Route::get('/customer', '\App\Http\Controllers\Manager\QuotationController@customer')->name('customerquotation.list.manager');
@@ -151,13 +225,31 @@ Route::prefix('/manager')->middleware('manager')->group(function() {
         Route::get('/view/{id}', '\App\Http\Controllers\Manager\QuotationController@view')->name('quotation.view.manager');
     });
     Route::prefix('/vendor/quotation')->group(function() {
-        Route::get('/', '\App\Http\Controllers\Manager\VendorQuotationController@index')->name('vendorquotation.index.manger');
-        Route::get('/index', '\App\Http\Controllers\Manager\VendorQuotationController@index')->name('vendorquotation.list.manger');
-        Route::get('/add', '\App\Http\Controllers\Manager\VendorQuotationController@add')->name('vendorquotation.add.manger');
-        Route::post('/store', '\App\Http\Controllers\Manager\VendorQuotationController@store')->name('vendorquotation.store.manger');
-        Route::get('/edit/{id}', '\App\Http\Controllers\Manager\VendorQuotationController@edit')->name('vendorquotation.edit.manger');
-        Route::post('/update/{id}', '\App\Http\Controllers\Manager\VendorQuotationController@update')->name('vendorquotation.update.manger');
-        Route::get('/delete/{id}', '\App\Http\Controllers\Manager\VendorQuotationController@delete')->name('vendorquotation.delete.manger');
+        Route::get('/', '\App\Http\Controllers\Manager\VendorQuotationController@index')->name('vendorquotation.index.manager');
+        Route::get('/index', '\App\Http\Controllers\Manager\VendorQuotationController@index')->name('vendorquotation.list.manager');
+        Route::get('/add', '\App\Http\Controllers\Manager\VendorQuotationController@add')->name('vendorquotation.add.manager');
+        Route::post('/store', '\App\Http\Controllers\Manager\VendorQuotationController@store')->name('vendorquotation.store.manager');
+        Route::get('/edit/{id}', '\App\Http\Controllers\Manager\VendorQuotationController@edit')->name('vendorquotation.edit.manager');
+        Route::post('/update/{id}', '\App\Http\Controllers\Manager\VendorQuotationController@update')->name('vendorquotation.update.manager');
+        Route::get('/delete/{id}', '\App\Http\Controllers\Manager\VendorQuotationController@delete')->name('vendorquotation.delete.manager');
+        Route::get('/view/{id}', '\App\Http\Controllers\Manager\VendorQuotationController@view')->name('vendorquotation.view.manager');
+    });
+});
+
+Route::prefix('/sale_person')->middleware('sale')->group(function() {
+    # Dashboard
+    Route::get('/', '\App\Http\Controllers\DashboardController@sale')->name('dashboard.sale');
+
+    Route::prefix('/inquiry')->group(function() {
+        Route::get('/', '\App\Http\Controllers\Sales\InquiryController@index')->name('inquiry.index.sale');
+        Route::get('/index', '\App\Http\Controllers\Sales\InquiryController@index')->name('inquiry.list.sale');
+        Route::get('/open', '\App\Http\Controllers\Sales\InquiryController@open')->name('inquiry.open.sale');
+        Route::get('/add', '\App\Http\Controllers\Sales\InquiryController@add')->name('inquiry.add.sale');
+        Route::post('/store', '\App\Http\Controllers\Sales\InquiryController@store')->name('inquiry.store.sale');
+        Route::get('/edit/{id}', '\App\Http\Controllers\Sales\InquiryController@edit')->name('inquiry.edit.sale');
+        Route::post('/update/{id}', '\App\Http\Controllers\Sales\InquiryController@update')->name('inquiry.update.sale');
+        Route::get('/delete/{id}', '\App\Http\Controllers\Sales\InquiryController@delete')->name('inquiry.delete.sale');
+        Route::get('/view/{id}', '\App\Http\Controllers\Sales\InquiryController@view')->name('inquiry.view.sale');
     });
 });
 

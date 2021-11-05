@@ -80,17 +80,18 @@
                                 </thead>
                                 <tbody id="myTable">
                                 @foreach($vendor_quotation as $quotation)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ucfirst($quotation->vendor_name) }}</td>
-                                        <td>{{ ucfirst($quotation->project_name) }}</td>
-                                        <td>{{ ucfirst($quotation->item_description) }}</td>
-                                        <td>{{ ucfirst($quotation->amount) }}</td>
-                                        <td>{{ ucfirst($quotation->name) }}</td>
+                                    <tr style="cursor:pointer" class="no-select" data-toggle="modal"
+                                        data-href="{{ route('vendorquotation.view.admin',$quotation->id) }}">
+                                        <td><a href="{{ route('vendorquotation.view.admin',$quotation->id) }}">{{ $loop->iteration }}</a></td>
+                                        <td><a href="{{ route('vendorquotation.view.admin',$quotation->id) }}">{{ucfirst($quotation->vendor_name) }}</a></td>
+                                        <td><a href="{{ route('vendorquotation.view.admin',$quotation->id) }}">{{ ucfirst($quotation->project_name) }}</a></td>
+                                        <td><a href="{{ route('vendorquotation.view.admin',$quotation->id) }}">{{ ucfirst($quotation->item_description) }}</a></td>
+                                        <td><a href="{{ route('vendorquotation.view.admin',$quotation->id) }}">{{ ucfirst($quotation->total) }}</a></td>
+                                        <td><a href="{{ route('vendorquotation.view.admin',$quotation->id) }}">{{ ucfirst($quotation->name) }}</a></td>
                                         <td class="text-right p-0">
                                             <a class="bg-warning list-btn"  href="{{ asset('storage/file/'.$quotation->quotation_pdf) }}" title="Quotation PDF" target="_blank"><i class="fas fa-file-pdf" aria-hidden="false"></i></a>
-                                            <a class="bg-primary list-btn"  href="#" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
-                                            <a class="bg-danger list-btn"  href="#" title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
+                                            <a class="bg-primary list-btn"  href="{{ route('vendorquotation.edit.admin',$quotation->id) }}"title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
+                                            <a class="bg-danger list-btn"  href="{{ route('vendorquotation.delete.admin',$quotation->id) }}" title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
                                         </td>
                                     </tr>
                                     @endforeach
@@ -99,7 +100,7 @@
                         </div>
                     </div>
                     <div class="d-flex flex-row-reverse">
-                        {{--{!! $quotation->links('pagination::bootstrap-4') !!}--}}
+                        {!! $vendor_quotation->links('pagination::bootstrap-4') !!}
                     </div>
                 </div>
             </div>

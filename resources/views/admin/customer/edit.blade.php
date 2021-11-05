@@ -46,7 +46,7 @@
                                 <div class="row">
                                     <div class="col-md-8">
                                         <label for="address">Address</label><br/>
-                                        <textarea class="form-control" name="address" id="address" >{{ ucfirst($customer->attended_person) }}</textarea>
+                                        <textarea class="form-control" name="address" id="address" >{{ ucfirst($customer->address) }}</textarea>
                                         <div class="text-danger">@error('address'){{ $message }}@enderror</div>
                                     </div>
                                 </div>

@@ -136,6 +136,15 @@ class QuotationController extends Controller
         return view('admin.quotation.edit', $data);
     }
 
+    public function delete($id)
+    {
+        $items = QuotationItem::where('quotation_id',$id)->delete();
+        $quotation = Quotation::find($id)->delete();
+        return redirect(
+            route('customerquotation.list.admin')
+        )->with('success', 'Customer Quotation deleted successfully!');
+    }
+
     public function view ($id)
     {
         $quotation = Quotation::select('*')
@@ -145,9 +154,6 @@ class QuotationController extends Controller
             ->leftJoin('items', 'items.id', '=', 'quotation_item.item_id')
             ->leftJoin('customers', 'customers.id', '=', 'quotations.customer_id')
             ->get();
-
-        #return $quotation[0]->date;
-
         $data = [
             'title'      => 'Quotations',
             'base_url'   => env('APP_URL', 'http://omnibiz.local'),

@@ -16,7 +16,7 @@ class VendorQuotationController extends Controller
 {
     public function index()
     {
-        $select = ['vendor_name', 'project_name', 'item_description', 'amount', 'users.name'];
+        $select = ['vendor_quotation.id','vendor_name', 'project_name', 'item_description', 'vendor_quotation.total', 'users.name'];
 
         $vendors_quotation = VendorQuotation::select($select)
             ->leftJoin('vendors', 'vendor_quotation.vendor_id', '=', 'vendors.id')
@@ -27,7 +27,7 @@ class VendorQuotationController extends Controller
         $data = [
             'title'            => 'Vendor Quotation',
             'vendor_quotation' => $vendors_quotation,
-            'user'             => Auth::user(),
+            'user'             => Auth::user()
         ];
         return view('admin.vendorquotation.view',$data);
     }
@@ -69,8 +69,6 @@ class VendorQuotationController extends Controller
         ],[
             'vendor_id.required'     => 'The vendor field is required.',
         ]);
-
-
 
         $categories   = $request->category_id;
         $quantities   = $request->quantity;
@@ -114,6 +112,14 @@ class VendorQuotationController extends Controller
         return $filename;
     }
 
+    public function delete($id)
+    {
+        $items = VendorQuotationItem::where('vendor_quotation_id',$id)->delete();
+        $quotation = VendorQuotation::find($id)->delete();
+        return redirect(
+            route('customerquotation.list.admin')
+        )->with('success', 'Customer Quotation deleted successfully!');
+    }
     public function edit($id)
     {
         $data = [
@@ -122,5 +128,26 @@ class VendorQuotationController extends Controller
             'user'     => Auth::user(),
         ];
         return view('admin.vendorquotation.edit', $data);
+    }
+
+    public function view($id)
+    {
+        $select = [
+            '*',
+            'vendor_quotation.total'
+        ];
+        $vendors_quotation = VendorQuotation::select($select)
+            ->where('vendor_quotation.id',$id)
+            ->leftJoin('vendor_quotation_item', 'vendor_quotation_item.vendor_quotation_id', '=', 'vendor_quotation.id')
+            ->leftJoin('vendors', 'vendor_quotation.vendor_id', '=', 'vendors.id')
+            ->leftJoin('users', 'users.id', '=', 'vendor_quotation.user_id')
+            ->leftJoin('categories', 'categories.id', '=', 'vendor_quotation_item.category_id')
+            ->get();
+        $data = [
+            'title'            => 'Vendor Quotation',
+            'user'             => Auth::user(),
+            'quotation'        => $vendors_quotation
+        ];
+        return view('admin.vendorquotation.item',$data);
     }
 }

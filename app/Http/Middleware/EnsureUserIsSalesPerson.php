@@ -20,7 +20,7 @@ class EnsureUserIsSalesPerson
         # 1st Step: Verify if user is logged in
         if (!Auth::check()) return redirect(route('login'));
         # 2nd Step: Check if user is admin or not
-        if (Auth::user()->user_role != 'sales_person') return redirect(route('login'));
+        if (Auth::user()->user_role != 'sale') return redirect(route('login'));
         # If everything went perfect
         return $next($request);
     }

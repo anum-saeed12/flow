@@ -81,26 +81,29 @@
                                 </tr>
                                 </thead>
                                 <tbody id="myTable">
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
+                                @foreach($inquires as $inquiry)
+                                    <tr style="cursor:pointer" class="no-select" data-toggle="modal"
+                                        data-href="{{ route('inquiry.view.admin',$inquiry->id) }}">
+                                        <td><a href="{{ route('inquiry.view.admin',$inquiry->id) }}">{{ $loop->iteration }}</td>
+                                        <td><a href="{{ route('inquiry.view.admin',$inquiry->id) }}">{{ ucfirst($inquiry->customer_name) }}</td>
+                                        <td><a href="{{ route('inquiry.view.admin',$inquiry->id) }}">{{ ucfirst($inquiry->project_name) }}</td>
+                                        <td><a href="{{ route('inquiry.view.admin',$inquiry->id) }}">{{ ucfirst($inquiry->item_description) }}</td>
+                                        <td><a href="{{ route('inquiry.view.admin',$inquiry->id) }}">{{ $inquiry->amount }}</td>
+                                        <td><a href="{{ route('inquiry.view.admin',$inquiry->id) }}">{{ $inquiry->name }}</td>
+                                        <td><a href="{{ route('inquiry.view.admin',$inquiry->id) }}">{{ ucfirst($inquiry->date) }}</td>
+                                        <td><a href="{{ route('inquiry.view.admin',$inquiry->id) }}">{{ ucfirst($inquiry->timeline) }}</td>
                                         <td class="text-right p-0">
-                                            <a class="bg-primary list-btn"  href="#"><i class="fas fa-tools" aria-hidden="false"></i></a>
-                                            <a class="bg-danger list-btn"  href="#"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
+                                            <a class="bg-primary list-btn"  href="{{ route('inquiry.edit.admin',$inquiry->id) }}" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
+                                            <a class="bg-danger list-btn"  href="{{ route('inquiry.delete.admin',$inquiry->id) }}"  title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
                                         </td>
                                     </tr>
+                                @endforeach
                                 </tbody>
                             </table>
                         </div>
                     </div>
                     <div class="d-flex flex-row-reverse">
-                      {{--  {!! $clients->links('pagination::bootstrap-4') !!}--}}
+                        {!! $inquires->links('pagination::bootstrap-4') !!}
                     </div>
                 </div>
             </div>

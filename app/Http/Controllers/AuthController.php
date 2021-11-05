@@ -32,7 +32,10 @@ class AuthController extends Controller
     # This will tell the login function to redirect the user type to their homepage
     private $homepage = [
         # Middleware    =>     Route name
-        'admin'         => 'dashboard.admin'
+        'admin'    => 'dashboard.admin',
+        'sale'     => 'dashboard.sale',
+        'manager'  => 'dashboard.manager',
+        'team'     => 'dashboard.team',
     ];
     /**
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View

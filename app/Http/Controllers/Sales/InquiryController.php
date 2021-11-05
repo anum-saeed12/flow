@@ -31,7 +31,7 @@ class InquiryController extends Controller
             ->leftJoin('categories', 'categories.id' ,'=', 'inquiry_order.category_id')
             ->leftJoin('users', 'users.id' ,'=', 'inquiries.user_id')
             ->leftJoin( 'items','items.id' ,'=', 'inquiry_order.item_id')
-            ->where('inquires.user_id','=',Auth::user()->id)
+            ->where('inquiries.user_id','=',Auth::user()->id)
             ->groupBy('inquiries.id','inquiry_order.inquiry_id')
             ->paginate($this->count);
 
@@ -40,16 +40,31 @@ class InquiryController extends Controller
             'user'    => Auth::user(),
             'inquires'=> $inquires
         ];
-        return view('sales_person.inquiry.view',$data);
+        return view('sale.inquiry.view',$data);
     }
 
     public function open()
     {
+        $select = [
+            'inquiries.id','customer_name', 'project_name', 'item_description', 'amount', 'users.name', 'date', 'timeline'
+        ];
+        $inquires = Inquiry::select($select)
+            ->leftJoin('customers','customers.id','=','inquiries.customer_id')
+            ->leftJoin('inquiry_documents','inquiry_documents.inquiry_id','=','inquiries.id')
+            ->leftJoin('inquiry_order','inquiry_order.inquiry_id', '=', 'inquiries.id')
+            ->leftJoin('brands','brands.id' ,'=', 'inquiry_order.brand_id')
+            ->leftJoin('categories', 'categories.id' ,'=', 'inquiry_order.category_id')
+            ->leftJoin('users', 'users.id' ,'=', 'inquiries.user_id')
+            ->leftJoin( 'items','items.id' ,'=', 'inquiry_order.item_id')
+            ->where('inquiries.user_id','=',Auth::user()->id)
+            ->groupBy('inquiries.id','inquiry_order.inquiry_id')
+            ->paginate($this->count);
         $data = [
             'title'   => 'Open Inquires',
             'user'    => Auth::user(),
+            'inquires'=> $inquires
         ];
-        return view('sales_person.inquiry.open',$data);
+        return view('sale.inquiry.open',$data);
     }
 
     public function add()
@@ -68,7 +83,7 @@ class InquiryController extends Controller
             'customers'  => $customers,
             'items'      => $items
         ];
-        return view('sales_person.inquiry.add', $data);
+        return view('sale.inquiry.add', $data);
     }
 
     public function store(Request $request)
@@ -144,7 +159,7 @@ class InquiryController extends Controller
             $save[] = (new InquiryOrder($inquiry_item))->save();
         }
         return redirect(
-            route('inquiry.list.sales_person')
+            route('inquiry.list.sale')
         )->with('success', 'Inquiry was added successfully!');
     }
 
@@ -163,6 +178,32 @@ class InquiryController extends Controller
             'base_url' => env('APP_URL', 'http://127.0.0.1:8000'),
             'user'     => Auth::user(),
         ];
-        return view('sales_person.inquiry.edit', $data);
+        return view('sale.inquiry.edit', $data);
+    }
+
+    public function view($id)
+    {
+        $select = [
+            'inquiries.id','customer_name', 'project_name', 'item_description', 'amount', 'users.name', 'date', 'timeline'
+        ];
+        $inquires = Inquiry::select('*')
+            ->where('inquiries.id',$id)
+            ->leftJoin('customers','customers.id','=','inquiries.customer_id')
+            ->leftJoin('inquiry_documents','inquiry_documents.inquiry_id','=','inquiries.id')
+            ->leftJoin('inquiry_order','inquiry_order.inquiry_id', '=', 'inquiries.id')
+            ->leftJoin('brands','brands.id' ,'=', 'inquiry_order.brand_id')
+            ->leftJoin('categories', 'categories.id' ,'=', 'inquiry_order.category_id')
+            ->leftJoin('users', 'users.id' ,'=', 'inquiries.user_id')
+            ->leftJoin( 'items','items.id' ,'=', 'inquiry_order.item_id')
+            ->where('inquiries.user_id','=',Auth::user()->id)
+            ->groupBy('inquiries.id','inquiry_order.inquiry_id')
+            ->get();
+        $data = [
+            'title'      => 'Inquiry',
+            'base_url'   => env('APP_URL', 'http://omnibiz.local'),
+            'user'       => Auth::user(),
+            'inquiry'  => $inquires
+        ];
+        return view('sale.inquiry.item',$data);
     }
 }
