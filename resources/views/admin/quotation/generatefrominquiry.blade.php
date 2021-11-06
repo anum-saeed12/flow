@@ -28,6 +28,7 @@
                 <div class="card card-info">
                     <form class="form-horizontal" action="{{ route('quotation.store.admin') }}" method="POST">
                         @csrf
+                        <input type="hidden" name="inquiry_id" value="{{ $inquiry->id }}" >
                         <div class="card-body pb-0">
                             <div class="row">
                                 <div class="col-md-3">
@@ -35,7 +36,7 @@
                                     <select name="customer_id" class="form-control" id="customer_id">
                                         <option selected="selected" value>Select</option>
                                         @foreach ($customers as $customer)
-                                            <option value="{{ $customer->customer_name }}"{{ $inquiry->customer_name==$customer->customer_name ? ' selected':'' }}>{{ ucfirst($customer->customer_name) }}</option>
+                                            <option value="{{ $customer->id }}"{{ $inquiry->customer_name==$customer->customer_name ? ' selected':'' }}>{{ ucfirst($customer->customer_name) }}</option>
                                         @endforeach
                                     </select>
                                     <div class="text-danger">@error('customer_id'){{ $message }}@enderror</div>

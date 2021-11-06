@@ -63,7 +63,7 @@
 
                                 <div class="col-md-2">
                                     <label for="currency">Currency</label><br/>
-                                    <input type="text" name="dacurrencyte" class="form-control" id="currency"
+                                    <input type="text" name="currency" class="form-control" id="currency"
                                            value="{{ old('currency') }}">
                                     <div class="text-danger">@error('currency'){{ $message }}@enderror</div>
                                 </div>

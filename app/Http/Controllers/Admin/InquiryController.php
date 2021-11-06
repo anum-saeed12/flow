@@ -13,6 +13,7 @@ use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Ramsey\Uuid\Uuid;
 
@@ -21,7 +22,21 @@ class InquiryController extends Controller
     public function index()
     {
         $select = [
-            'inquiries.id','customer_name', 'project_name', 'item_description', 'amount', 'users.name', 'date', 'timeline'
+            'customers.customer_name',
+            'inquiries.id',
+            'inquiries.project_name',
+            'inquiries.total',
+            'inquiries.date',
+            'inquiries.timeline',
+            'users.name',
+            'items.item_description',
+            DB::raw("(
+                CASE
+                    WHEN `quotations`.`id` iS NULL
+                        THEN 'open'
+                    ELSE 'close'
+                END
+            ) as 'inquiry_status'")
         ];
         $inquires = Inquiry::select($select)
             ->leftJoin('customers','customers.id','=','inquiries.customer_id')
@@ -30,7 +45,8 @@ class InquiryController extends Controller
             ->leftJoin('brands','brands.id' ,'=', 'inquiry_order.brand_id')
             ->leftJoin('categories', 'categories.id' ,'=', 'inquiry_order.category_id')
             ->leftJoin('users', 'users.id' ,'=', 'inquiries.user_id')
-            ->leftJoin( 'items','items.id' ,'=', 'inquiry_order.item_id')
+            ->leftJoin('items', 'items.id' ,'=', 'inquiry_order.item_id')
+            ->leftJoin('quotations', 'quotations.inquiry_id' ,'=', 'inquiries.id')
             ->groupBy('inquiries.id','inquiry_order.inquiry_id')
             ->paginate($this->count);
 
@@ -43,9 +59,25 @@ class InquiryController extends Controller
     }
 
     public function open()
-    {     $select = [
-        'inquiries.id','customer_name', 'project_name', 'item_description', 'amount', 'users.name', 'date', 'timeline'
-    ];
+    {
+
+    $select = [
+            'customers.customer_name',
+            'inquiries.id',
+            'inquiries.project_name',
+            'inquiries.total',
+            'inquiries.date',
+            'inquiries.timeline',
+            'users.name',
+            'items.item_description',
+            DB::raw("(
+                CASE
+                    WHEN `quotations`.`id` iS NULL
+                        THEN 'open'
+                    ELSE 'close'
+                END
+            ) as 'inquiry_status'")
+        ];
         $inquires = Inquiry::select($select)
             ->leftJoin('customers','customers.id','=','inquiries.customer_id')
             ->leftJoin('inquiry_documents','inquiry_documents.inquiry_id','=','inquiries.id')
@@ -53,7 +85,9 @@ class InquiryController extends Controller
             ->leftJoin('brands','brands.id' ,'=', 'inquiry_order.brand_id')
             ->leftJoin('categories', 'categories.id' ,'=', 'inquiry_order.category_id')
             ->leftJoin('users', 'users.id' ,'=', 'inquiries.user_id')
-            ->leftJoin( 'items','items.id' ,'=', 'inquiry_order.item_id')
+            ->leftJoin('items', 'items.id' ,'=', 'inquiry_order.item_id')
+            ->leftJoin('quotations', 'quotations.inquiry_id' ,'=', 'inquiries.id')
+            ->whereNull('quotations.id')
             ->groupBy('inquiries.id','inquiry_order.inquiry_id')
             ->paginate($this->count);
 

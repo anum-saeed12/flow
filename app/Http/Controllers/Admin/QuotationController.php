@@ -69,6 +69,7 @@ class QuotationController extends Controller
         $request->validate([
             'currency'       =>'required',
             'customer_id'    => 'required',
+            'inquiry_id'     => 'sometimes|required',
             'project_name'   => 'required',
             'date'           => 'required',
             'discount'       => 'sometimes',
