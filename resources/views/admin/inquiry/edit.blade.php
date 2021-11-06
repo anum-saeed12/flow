@@ -131,7 +131,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for="total">Total Amount</label><br/>
-                                    <input type="text" name="total[]" class="form-control" id="total"
+                                    <input type="text" name="total" class="form-control" id="total"
                                            value="{{ $inquires->total }}">
                                 </div>
                                 <div class="col-md-4">

@@ -47,19 +47,26 @@
                                     <div class="text-danger">@error('project_name'){{ $message }}@enderror</div>
                                 </div>
 
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <label for="date">Date</label><br/>
                                     <input type="date" name="date" class="form-control" id="date"
                                            value="{{ old('date') }}">
                                     <div class="text-danger">@error('date'){{ $message }}@enderror</div>
                                 </div>
 
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <label for="timeline">Timeline</label><br/>
                                     <input type="date" name="timeline" class="form-control" id="timeline"
                                            value="{{ old('timeline') }}">
-                                    </div>
                                     <div class="text-danger">@error('timeline'){{ $message }}@enderror</div>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <label for="currency">Currency</label><br/>
+                                    <input type="text" name="dacurrencyte" class="form-control" id="currency"
+                                           value="{{ old('currency') }}">
+                                    <div class="text-danger">@error('currency'){{ $message }}@enderror</div>
+                                </div>
                                 </div>
                             </div>
                             <br/>
@@ -131,7 +138,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for="total">Total Amount</label><br/>
-                                    <input type="text" name="total[]" class="form-control" id="total"
+                                    <input type="text" name="total" class="form-control" id="total"
                                            value="{{ old('total') }}">
                                 </div>
                                 <div class="col-md-4">

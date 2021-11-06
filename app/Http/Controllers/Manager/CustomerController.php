@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Manager;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
@@ -18,7 +18,7 @@ class CustomerController extends Controller
             'user'     => Auth::user(),
             'customer' => $customer,
         ];
-        return view('admin.customer.view',$data);
+        return view('manager.customer.view',$data);
     }
 
     public function add()
@@ -28,7 +28,7 @@ class CustomerController extends Controller
             'base_url' => env('APP_URL', 'http://127.0.0.1:8000'),
             'user'     => Auth::user(),
         ];
-        return view('admin.customer.add', $data);
+        return view('manager.customer.add', $data);
     }
 
     public function edit($id)
@@ -40,7 +40,7 @@ class CustomerController extends Controller
             'user'     => Auth::user(),
             'customer' => $customer
         ];
-        return view('admin.customer.edit', $data);
+        return view('manager.customer.edit', $data);
     }
 
     public function store(Request $request)
@@ -51,7 +51,7 @@ class CustomerController extends Controller
             'address'           => 'required'
         ], [
                 'customer_name.required'      => 'The customer name field is required.',
-                'attention_person.required'   => 'The attention person name field is required.'
+                'attention_person.required'    => 'The attention person name field is required.'
             ]
         );
 
@@ -62,7 +62,7 @@ class CustomerController extends Controller
         if($exist)
         {
             return redirect(
-                route('customer.list.admin')
+                route('customer.list.manager')
             )->with('success', 'Customer already exists!!');
         }
 
@@ -71,7 +71,7 @@ class CustomerController extends Controller
         $customer->save();
 
         return redirect(
-            route('customer.list.admin')
+            route('customer.list.manager')
         )->with('success', 'Customer was added successfully!');
     }
 
@@ -81,11 +81,11 @@ class CustomerController extends Controller
 
         $request->validate([
             'customer_name'     =>  'sometimes',
-            'attention_person'  =>  'sometimes',
+            'attention_person'   =>  'sometimes',
             'address'           =>  'sometimes'
         ],[
             'customer_name.required'      => 'The customer name field is required.',
-            'attention_person.required'   => 'The attention person name field is required.'
+            'attention_person.required'    => 'The attention person name field is required.'
         ]);
         $exist = Customer::where('customer_name',$request->customer_name)
             ->where('address',$request->address)
@@ -95,7 +95,7 @@ class CustomerController extends Controller
         if($exist)
         {
             return redirect(
-                route('customer.list.admin')
+                route('customer.list.manager')
             )->with('success', 'Customer already exists!!');
         }
 
@@ -105,7 +105,7 @@ class CustomerController extends Controller
         $customer->save();
 
         return redirect(
-            route('customer.list.admin')
+            route('customer.list.manager')
         )->with('success', 'Customer updated successfully!');
     }
 
@@ -113,7 +113,7 @@ class CustomerController extends Controller
     {
         $customer = Customer::find($id)->delete();
         return redirect(
-            route('customer.list.admin')
+            route('customer.list.manager')
         )->with('success', 'Customer deleted successfully!');
     }
 }

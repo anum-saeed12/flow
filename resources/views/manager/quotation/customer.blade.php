@@ -89,8 +89,8 @@
                                         <td><a href="{{ route('quotation.view.manager',$quotation->id) }}">{{ ucfirst($quotation->total) }}</td>
                                         <td><a href="{{ route('quotation.view.manager',$quotation->id) }}">{{ ucfirst($quotation->name) }}</td>
                                         <td class="text-right p-0">
-                                            <a class="bg-primary list-btn"  href="{{ route('quotation.edit.manager',$quotation->id) }}" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
-                                            <a class="bg-danger list-btn"  href="#" title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
+                                            <a class="bg-primary list-btn" href="{{ route('quotation.edit.manager',$quotation->id) }}" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
+                                            <a class="bg-danger list-btn"  href="{{ route('quotation.delete.manager',$quotation->id) }}" title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
                                         </td>
                                     </tr>
                                 @endforeach

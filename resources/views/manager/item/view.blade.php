@@ -85,25 +85,24 @@
                                 <tbody id="myTable">
                                 @foreach($items as $item)
                                     <tr style="cursor:pointer" class="no-select" data-toggle="modal"
-                                        data-href="{{ route('item.view.admin',$item->id) }}">
-                                        <td><a href="{{ route('item.view.admin',$item->id) }}">{{ $loop->iteration }}</td>
-                                        <td><a href="{{ route('item.view.admin',$item->id) }}">{{ucfirst($item->item_name)}}</td>
-                                        <td>
-                                            <a href="{{ asset('storage/images/'.$item->picture) }}" target="_blank">
+                                        data-href="{{ route('item.view.manager',$item->id) }}">
+                                        <td><a href="{{ route('item.view.manager',$item->id) }}">{{ $loop->iteration }}</td>
+                                        <td><a href="{{ route('item.view.manager',$item->id) }}">{{ucfirst($item->item_name)}}</td>
+                                        <td><a href="{{ asset('storage/images/'.$item->picture) }}" target="_blank">
                                                 <div class="list-img-thumbnail" style="background-image:url('{{ asset('storage/images/'.$item->picture) }}');"></div>
                                             </a>
                                         </td>
-                                        <td><a href="{{ route('item.view.admin',$item->id) }}">{{ucfirst($item->brand_name)}}</td>
-                                        <td><a href="{{ route('item.view.admin',$item->id) }}">{{ucfirst($item->category_name)}}</td>
-                                        <td><a href="{{ route('item.view.admin',$item->id) }}">{{ucfirst($item->item_description)}}</td>
-                                        <td><a href="{{ route('item.view.admin',$item->id) }}">{{ucfirst($item->unit)}}</td>
-                                        <td><a href="{{ route('item.view.admin',$item->id) }}">{{$item->price}}</td>
-                                        <td><a href="{{ route('item.view.admin',$item->id) }}">{{$item->weight}}</td>
-                                        <td><a href="{{ route('item.view.admin',$item->id) }}">{{$item->height}}</td>
-                                        <td><a href="{{ route('item.view.admin',$item->id) }}">{{$item->width}}</td>
+                                        <td><a href="{{ route('item.view.manager',$item->id) }}">{{ucfirst($item->brand_name)}}</td>
+                                        <td><a href="{{ route('item.view.manager',$item->id) }}">{{ucfirst($item->category_name)}}</td>
+                                        <td><a href="{{ route('item.view.manager',$item->id) }}">{{ucfirst($item->item_description)}}</td>
+                                        <td><a href="{{ route('item.view.manager',$item->id) }}">{{ucfirst($item->unit)}}</td>
+                                        <td><a href="{{ route('item.view.manager',$item->id) }}">{{$item->price}}</td>
+                                        <td><a href="{{ route('item.view.manager',$item->id) }}">{{$item->weight}}</td>
+                                        <td><a href="{{ route('item.view.manager',$item->id) }}">{{$item->height}}</td>
+                                        <td><a href="{{ route('item.view.manager',$item->id) }}">{{$item->width}}</td>
                                         <td class="text-right p-0">
-                                            <a class="bg-primary list-btn"  href="{{route('item.edit.admin',$item->id)}}" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
-                                            <a class="bg-danger list-btn"  href="{{route('item.delete.admin',$item->id)}}"  title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
+                                            <a class="bg-primary list-btn"  href="{{ route('item.edit.manager',$item->id) }}" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
+                                            <a class="bg-danger list-btn"  href="{{ route('item.delete.manager',$item->id) }}"  title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
                                         </td>
                                     </tr>
                                 @endforeach

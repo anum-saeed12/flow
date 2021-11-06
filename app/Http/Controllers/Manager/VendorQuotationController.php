@@ -16,7 +16,7 @@ class VendorQuotationController extends Controller
 {
     public function index()
     {
-        $select = ['vendor_name', 'project_name', 'item_description', 'amount', 'users.name'];
+        $select = ['vendor_quotation.quotation_pdf','vendor_quotation.id','vendor_name', 'project_name', 'item_description', 'vendor_quotation.total', 'users.name'];
 
         $vendors_quotation = VendorQuotation::select($select)
             ->leftJoin('vendors', 'vendor_quotation.vendor_id', '=', 'vendors.id')
@@ -27,7 +27,7 @@ class VendorQuotationController extends Controller
         $data = [
             'title'            => 'Vendor Quotation',
             'vendor_quotation' => $vendors_quotation,
-            'user'             => Auth::user(),
+            'user'             => Auth::user()
         ];
         return view('manager.vendorquotation.view',$data);
     }

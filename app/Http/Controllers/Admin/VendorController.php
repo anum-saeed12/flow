@@ -15,7 +15,7 @@ class VendorController extends Controller
         $data = [
             'title'   => 'View Vendors',
             'user'    => Auth::user(),
-            'vendors'    => $vendor
+            'vendors' => $vendor
         ];
         return view('admin.vendor.view',$data);
     }
@@ -47,12 +47,12 @@ class VendorController extends Controller
     {
         $request->validate([
             'vendor_name'       => 'required',
-            'attention_person'   => 'required',
+            'attention_person'  => 'required',
             'address'           => 'required',
             'country'           => 'required',
         ], [
                 'vendor_name.required'      => 'The vendor name field is required.',
-                'attention_person.required'    => 'The attention person name field is required.'
+                'attention_person.required' => 'The attention person name field is required.'
             ]
         );
 
@@ -83,12 +83,12 @@ class VendorController extends Controller
 
         $request->validate([
             'vendor_name'       => 'required',
-            'attention_person'   => 'required',
+            'attention_person'  => 'required',
             'address'           => 'required',
             'country'           => 'required',
         ], [
             'vendor_name.required'      => 'The vendor name field is required.',
-            'attention_person.required'    => 'The attention person name field is required.'
+            'attention_person.required' => 'The attention person name field is required.'
         ]);
         $exist = Vendor::where('vendor_name',$request->vendor_name)
             ->where('attended_person',$request->attended_person)

@@ -95,6 +95,7 @@ Route::prefix('/admin')->middleware('admin')->group(function() {
         Route::get('/customer', '\App\Http\Controllers\Admin\QuotationController@customer')->name('customerquotation.list.admin');
         Route::get('/add', '\App\Http\Controllers\Admin\QuotationController@add')->name('quotation.add.admin');
         Route::post('/store', '\App\Http\Controllers\Admin\QuotationController@store')->name('quotation.store.admin');
+        Route::get('/generate/{inquiry_id}', '\App\Http\Controllers\Admin\QuotationController@generateQuotation')->name('quotation.generate.admin');
         Route::get('/edit/{id}', '\App\Http\Controllers\Admin\QuotationController@edit')->name('quotation.edit.admin');
         Route::post('/update/{id}', '\App\Http\Controllers\Admin\QuotationController@update')->name('quotation.update.admin');
         Route::get('/delete/{id}', '\App\Http\Controllers\Admin\QuotationController@delete')->name('quotation.delete.admin');
@@ -189,6 +190,7 @@ Route::prefix('/manager')->middleware('manager')->group(function() {
         Route::get('/index', '\App\Http\Controllers\Manager\InquiryController@index')->name('inquiry.list.manager');
         Route::get('/open', '\App\Http\Controllers\Manager\InquiryController@open')->name('inquiry.open.manager');
         Route::get('/add', '\App\Http\Controllers\Manager\InquiryController@add')->name('inquiry.add.manager');
+        Route::get('/{id}/generate-quotation', '\App\Http\Controllers\Manager\InquiryController@generateQuotation')->name('inquiry.generate.quotation.admin');
         Route::post('/store', '\App\Http\Controllers\Manager\InquiryController@store')->name('inquiry.store.manager');
         Route::get('/edit/{id}', '\App\Http\Controllers\Manager\InquiryController@edit')->name('inquiry.edit.manager');
         Route::post('/update/{id}', '\App\Http\Controllers\Manager\InquiryController@update')->name('inquiry.update.manager');

@@ -27,13 +27,13 @@
                 <div class="col-lg-3 col-6">
                     <div class="small-box bg-white">
                         <div class="inner">
-                            <h3>#</h3>
+                            <h3>{{ $total_user->total }}</h3>
                             <p>Employees</p>
                         </div>
                         <div class="icon">
                             <i class="fas fa-users nav-icon text-danger"></i>
                         </div>
-                        <a href="#" class="small-box-footer bg-danger" style="color:white!important;">View Employees <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="{{ route('user.list.admin') }}" class="small-box-footer bg-danger" style="color:white!important;">View Employees <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
 
@@ -41,13 +41,13 @@
                 <div class="col-lg-3 col-6">
                     <div class="small-box bg-white">
                         <div class="inner">
-                            <h3>#</h3>
+                            <h3>{{ $total_items->total }}</h3>
                             <p>Inventory</p>
                         </div>
                         <div class="icon">
                             <i class="fas fa-boxes nav-icon text-success"></i>
                         </div>
-                        <a href="#" class="small-box-footer bg-success" style="color:white!important;">View Inventory <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="{{ route('item.list.admin') }}" class="small-box-footer bg-success" style="color:white!important;">View Inventory <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
 

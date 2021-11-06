@@ -35,7 +35,7 @@ class InquiryController extends Controller
             ->paginate($this->count);
 
         $data = [
-            'title'   => 'View Inquires',
+            'title'   => 'View Inquiries',
             'user'    => Auth::user(),
             'inquires'=> $inquires
         ];
@@ -58,7 +58,7 @@ class InquiryController extends Controller
             ->paginate($this->count);
 
         $data = [
-            'title'   => 'View Inquires',
+            'title'   => 'View Inquiries',
             'user'    => Auth::user(),
             'inquires'=> $inquires
         ];
@@ -91,7 +91,7 @@ class InquiryController extends Controller
             'project_name'   => 'required',
             'date'           => 'required',
             'timeline'       => 'required',
-            'total'       => 'required',
+            'total'          => 'required',
             'remarks'        => 'sometimes',
             'rate'           => 'required|array',
             'rate.*'         => 'required',
@@ -105,8 +105,8 @@ class InquiryController extends Controller
             'quantity.*'     => 'required',
             'unit'           => 'required|array',
             'unit.*'         => 'required',
-            'amount'           => 'required|array',
-            'amount.*'         => 'required',
+            'amount'         => 'required|array',
+            'amount.*'       => 'required',
             'inquiry_file'   => 'required|array',
             'inquiry_file.*' => 'required|',
         ],[
@@ -173,14 +173,15 @@ class InquiryController extends Controller
             ->leftJoin('users', 'users.id' ,'=', 'inquiries.user_id')
             ->leftJoin( 'items','items.id' ,'=', 'inquiry_order.item_id')
             ->groupBy('inquiries.id','inquiry_order.inquiry_id')
-            ->first();
+            ->get();
 
         $request->validate([
             'customer_id'    => 'required',
             'project_name'   => 'required',
             'date'           => 'required',
+            'currency'       => 'required',
             'timeline'       => 'required',
-            'total'       => 'required',
+            'total'          => 'required',
             'remarks'        => 'sometimes',
             'rate'           => 'required|array',
             'rate.*'         => 'required',
@@ -194,8 +195,8 @@ class InquiryController extends Controller
             'quantity.*'     => 'required',
             'unit'           => 'required|array',
             'unit.*'         => 'required',
-            'amount'           => 'required|array',
-            'amount.*'         => 'required',
+            'amount'         => 'required|array',
+            'amount.*'       => 'required',
             'inquiry_file'   => 'required|array',
             'inquiry_file.*' => 'required|',
         ],[

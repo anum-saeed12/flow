@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Inquiry;
+use App\Models\Quotation;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -28,8 +30,10 @@ class   DashboardController extends Controller
     public function admin()
     {
         $user = Auth::user();
-        # Fetch User
-        $total_user = User::select(DB::raw('COUNT(*) as total'))->first();
+        $total_user = User::select(DB::raw('COUNT(*) as total'))
+            ->where('user_role','!=','admin')
+            ->first();
+        $total_items = User::select(DB::raw('COUNT(*) as total'))->first();
         $data = [
             'class' => [
                 'body' => ' sidebar-mini layout-fixed'
@@ -37,6 +41,7 @@ class   DashboardController extends Controller
             'title'         => 'Dashboard',
             'user'          => $user,
             'total_user'    => $total_user,
+            'total_items'   => $total_items,
             'currency'      => 'PKR',
         ];
         return view("admin.dashboard", $data);
@@ -44,30 +49,32 @@ class   DashboardController extends Controller
     public function manager()
     {
         $user = Auth::user();
-        # Fetch User
-        $total_user = User::select(DB::raw('COUNT(*) as total'))->first();
+        $total_items = User::select(DB::raw('COUNT(*) as total'))->first();
+        $total_inquiries = Inquiry::select(DB::raw('COUNT(*) as total'))->first();
+        $total_quotations = Quotation::select(DB::raw('COUNT(*) as total'))->first();
         $data = [
             'class' => [
                 'body' => ' sidebar-mini layout-fixed'
             ],
             'title'         => 'Dashboard',
             'user'          => $user,
-            'total_user'    => $total_user,
+            'total_items'   => $total_items,
+            'total_quotations' => $total_quotations,
+            'total_inquiries' => $total_inquiries
         ];
         return view("manager.dashboard", $data);
     }
     public function sale()
     {
         $user = Auth::user();
-        # Fetch User
-        $total_user = User::select(DB::raw('COUNT(*) as total'))->first();
+        $total_inquiries = Inquiry::select(DB::raw('COUNT(*) as total'))->where('user_id',$user->id)->first();
         $data = [
             'class' => [
                 'body' => ' sidebar-mini layout-fixed'
             ],
             'title'         => 'Dashboard',
             'user'          => $user,
-            'total_user'    => $total_user,
+            'total_inquiries'    => $total_inquiries,
         ];
         return view("sale.dashboard", $data);
     }

@@ -93,8 +93,8 @@
                                         <td><a href="{{ route('inquiry.view.sale',$inquiry->id) }}">{{ ucfirst($inquiry->date) }}</td>
                                         <td><a href="{{ route('inquiry.view.sale',$inquiry->id) }}">{{ ucfirst($inquiry->timeline) }}</td>
                                         <td class="text-right p-0">
-                                            <a class="bg-primary list-btn"  href="#" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
-                                            <a class="bg-danger list-btn"  href="#"  title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
+                                            <a class="bg-primary list-btn"  href="{{ route('inquiry.edit.sale',$inquiry->id) }}" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
+                                            <a class="bg-danger list-btn"  href="{{ route('inquiry.delete.sale',$inquiry->id) }}"  title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
                                         </td>
                                     </tr>
                                 @endforeach

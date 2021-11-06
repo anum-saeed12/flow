@@ -9,8 +9,8 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard.team') }}">Home</a></li>
-                        <li class="breadcrumb-item">Vendor Quotation</li>
+                        <li class="breadcrumb-item"><a href="{{ route('dashboard.manager') }}">Home</a></li>
+                        <li class="breadcrumb-item">Customer</li>
                         <li class="breadcrumb-item active">{{$title}}</li>
                     </ol>
                 </div>
@@ -62,7 +62,7 @@
                                         </div>
                                     </div>
                                 </form>
-                                <a href="{{ route('vendorquotation.add.team') }}" class="btn btn-success"><i class="fa fa-plus-circle mr-1"></i> Add New</a>
+                                <a href="{{ route('customer.add.manager') }}" class="btn btn-success"><i class="fa fa-plus-circle mr-1"></i> Add New</a>
 
                             </div>
                         </div>
@@ -71,35 +71,30 @@
                                 <thead>
                                 <tr>
                                     <th>Sr.No.</th>
-                                    <th class="pl-0">Client</th>
-                                    <th class="pl-0">Project</th>
-                                    <th class="pl-0">Items Description</th>
-                                    <th class="pl-0">Amount</th>
-                                    <th class="pl-0">Sales Person</th>
+                                    <th class="pl-0">Customer Name</th>
+                                    <th class="pl-0">Attention Person</th>
+                                    <th class="pl-0">Address</th>
                                 </tr>
                                 </thead>
                                 <tbody id="myTable">
-                                @foreach($vendor_quotation as $quotation)
+                                @foreach($customer as $cus)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ucfirst($quotation->vendor_name) }}</td>
-                                        <td>{{ ucfirst($quotation->project_name) }}</td>
-                                        <td>{{ ucfirst($quotation->item_description) }}</td>
-                                        <td>{{ ucfirst($quotation->amount) }}</td>
-                                        <td>{{ ucfirst($quotation->name) }}</td>
+                                        <td>{{ ucfirst($cus->customer_name) }}</td>
+                                        <td>{{ ucfirst($cus->attention_person) }}</td>
+                                        <td>{{ ucfirst($cus->address) }}</td>
                                         <td class="text-right p-0">
-                                            <a class="bg-warning list-btn"  href="{{ asset('storage/file/'.$quotation->quotation_pdf) }}" title="Quotation PDF" target="_blank"><i class="fas fa-file-pdf" aria-hidden="false"></i></a>
-                                            <a class="bg-primary list-btn"  href="#" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
-                                            <a class="bg-danger list-btn"  href="#" title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
+                                            <a class="bg-primary list-btn"  href="{{ route('customer.edit.manager' ,$cus->id) }}" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
+                                            <a class="bg-danger list-btn"  href="{{ route('customer.delete.manager' ,$cus->id) }}"  title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
                                         </td>
                                     </tr>
-                                    @endforeach
+                                @endforeach
                                 </tbody>
                             </table>
                         </div>
                     </div>
                     <div class="d-flex flex-row-reverse">
-                        {{--{!! $quotation->links('pagination::bootstrap-4') !!}--}}
+                      {!! $customer->links('pagination::bootstrap-4') !!}
                     </div>
                 </div>
             </div>

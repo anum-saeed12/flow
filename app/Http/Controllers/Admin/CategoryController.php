@@ -14,8 +14,8 @@ class CategoryController extends Controller
     {
         $category = Category::orderBy('id','DESC')->paginate($this->count);
         $data = [
-            'title'   => 'View Categories',
-            'user'    => Auth::user(),
+            'title'     => 'View Categories',
+            'user'      => Auth::user(),
             'categories'=> $category
         ];
         return view('admin.category.view',$data);
@@ -36,10 +36,10 @@ class CategoryController extends Controller
         $category = Category::find($id);
         $categories = Category::orderBy('id','DESC')->paginate($this->count);
         $data = [
-            'title'    => 'Update Category',
-            'base_url' => env('APP_URL', 'http://127.0.0.1:8000'),
-            'user'     => Auth::user(),
-            'category' => $category,
+            'title'      => 'Update Category',
+            'base_url'   => env('APP_URL', 'http://127.0.0.1:8000'),
+            'user'       => Auth::user(),
+            'category'   => $category,
             'categories' => $categories,
         ];
         return view('admin.category.edit', $data);
@@ -48,9 +48,9 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'category_name'        => 'required'
+            'category_name' => 'required'
         ], [
-                'category_name.required'      => 'The category name field is required.'
+                'category_name.required'  => 'The category name field is required.'
             ]
         );
 
@@ -63,8 +63,8 @@ class CategoryController extends Controller
             )->with('success', 'Category already exists!!');
         }
 
-        $data                =  $request->all();
-        $brand               = new Category($data);
+        $data    =  $request->all();
+        $brand   = new Category($data);
 
         $brand->save();
 

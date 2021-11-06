@@ -9,7 +9,7 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard.team') }}">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('dashboard.sale') }}">Home</a></li>
                         <li class="breadcrumb-item">Inquiry</li>
                         <li class="breadcrumb-item active">{{$title}}</li>
                     </ol>
@@ -62,7 +62,7 @@
                                         </div>
                                     </div>
                                 </form>
-                                <a href="{{ route('inquiry.add.team') }}" class="btn btn-success"><i class="fa fa-plus-circle mr-1"></i> Add New</a>
+                                <a href="{{ route('inquiry.add.sale') }}" class="btn btn-success"><i class="fa fa-plus-circle mr-1"></i> Add New</a>
 
                             </div>
                         </div>
@@ -82,18 +82,19 @@
                                 </thead>
                                 <tbody id="myTable">
                                 @foreach($inquires as $inquiry)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ ucfirst($inquiry->customer_name) }}</td>
-                                        <td>{{ ucfirst($inquiry->project_name) }}</td>
-                                        <td>{{ ucfirst($inquiry->item_description) }}</td>
-                                        <td>{{ $inquiry->amount }}</td>
-                                        <td>{{ $inquiry->name }}</td>
-                                        <td>{{ ucfirst($inquiry->date) }}</td>
-                                        <td>{{ ucfirst($inquiry->timeline) }}</td>
+                                    <tr style="cursor:pointer" class="no-select" data-toggle="modal"
+                                        data-href="{{ route('inquiry.view.sale',$inquiry->id) }}">
+                                        <td><a href="{{ route('inquiry.view.sale',$inquiry->id) }}">{{ $loop->iteration }}</td>
+                                        <td><a href="{{ route('inquiry.view.sale',$inquiry->id) }}">{{ ucfirst($inquiry->customer_name) }}</td>
+                                        <td><a href="{{ route('inquiry.view.sale',$inquiry->id) }}">{{ ucfirst($inquiry->project_name) }}</td>
+                                        <td><a href="{{ route('inquiry.view.sale',$inquiry->id) }}">{{ ucfirst($inquiry->item_description) }}</td>
+                                        <td><a href="{{ route('inquiry.view.sale',$inquiry->id) }}">{{ $inquiry->amount }}</td>
+                                        <td><a href="{{ route('inquiry.view.sale',$inquiry->id) }}">{{ $inquiry->name }}</td>
+                                        <td><a href="{{ route('inquiry.view.sale',$inquiry->id) }}">{{ ucfirst($inquiry->date) }}</td>
+                                        <td><a href="{{ route('inquiry.view.sale',$inquiry->id) }}">{{ ucfirst($inquiry->timeline) }}</td>
                                         <td class="text-right p-0">
-                                            <a class="bg-primary list-btn"  href="#" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
-                                            <a class="bg-danger list-btn"  href="#"  title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
+                                            <a class="bg-primary list-btn"  href="{{ route('inquiry.edit.sale',$inquiry->id) }}" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
+                                            <a class="bg-danger list-btn"  href="{{ route('inquiry.delete.sale',$inquiry->id) }}"  title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
                                         </td>
                                     </tr>
                                 @endforeach

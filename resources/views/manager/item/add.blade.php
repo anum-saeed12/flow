@@ -9,7 +9,7 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard.z') }}">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('dashboard.manager') }}">Home</a></li>
                         <li class="breadcrumb-item">Item</li>
                         <li class="breadcrumb-item active">{{$title}}</li>
                     </ol>

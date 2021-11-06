@@ -75,32 +75,35 @@
                                     <th class="pl-0">Project</th>
                                     <th class="pl-0">Items Description</th>
                                     <th class="pl-0">Amount</th>
-                                    <th class="pl-0">Sales Person</th>
+                                    <th class="pl-0">managers Person</th>
                                     <th class="pl-0">Date</th>
                                     <th class="pl-0">Submission Timeline</th>
                                 </tr>
                                 </thead>
                                 <tbody id="myTable">
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
+                                @foreach($inquires as $inquiry)
+                                    <tr style="cursor:pointer" class="no-select" data-toggle="modal"
+                                        data-href="{{ route('inquiry.view.manager',$inquiry->id) }}">
+                                        <td><a href="{{ route('inquiry.view.manager',$inquiry->id) }}">{{ $loop->iteration }}</td>
+                                        <td><a href="{{ route('inquiry.view.manager',$inquiry->id) }}">{{ ucfirst($inquiry->customer_name) }}</td>
+                                        <td><a href="{{ route('inquiry.view.manager',$inquiry->id) }}">{{ ucfirst($inquiry->project_name) }}</td>
+                                        <td><a href="{{ route('inquiry.view.manager',$inquiry->id) }}">{{ ucfirst($inquiry->item_description) }}</td>
+                                        <td><a href="{{ route('inquiry.view.manager',$inquiry->id) }}">{{ $inquiry->amount }}</td>
+                                        <td><a href="{{ route('inquiry.view.manager',$inquiry->id) }}">{{ $inquiry->name }}</td>
+                                        <td><a href="{{ route('inquiry.view.manager',$inquiry->id) }}">{{ ucfirst($inquiry->date) }}</td>
+                                        <td><a href="{{ route('inquiry.view.manager',$inquiry->id) }}">{{ ucfirst($inquiry->timeline) }}</td>
                                         <td class="text-right p-0">
-                                            <a class="bg-primary list-btn"  href="#"><i class="fas fa-tools" aria-hidden="false"></i></a>
-                                            <a class="bg-danger list-btn"  href="#"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
+                                            <a class="bg-primary list-btn"  href="{{ route('inquiry.edit.manager',$inquiry->id) }}" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
+                                            <a class="bg-danger list-btn"  href="{{ route('inquiry.delete.manager',$inquiry->id) }}"  title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
                                         </td>
                                     </tr>
+                                @endforeach
                                 </tbody>
                             </table>
                         </div>
                     </div>
                     <div class="d-flex flex-row-reverse">
-                      {{--  {!! $clients->links('pagination::bootstrap-4') !!}--}}
+                        {!! $inquires->links('pagination::bootstrap-4') !!}
                     </div>
                 </div>
             </div>

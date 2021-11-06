@@ -48,12 +48,6 @@
                     <div class="mb-3"></div>
                     <div class="row">
                         <div class="col-8">
-                            <div class="icheck-primary">
-                                <input name="remember" type="checkbox" id="remember">
-                                <label for="remember">
-                                    Remember Me
-                                </label>
-                            </div>
                         </div>
                         <!-- /.col -->
                         <div class="col-4">

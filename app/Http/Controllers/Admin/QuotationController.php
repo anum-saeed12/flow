@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use App\Models\Customer;
+use App\Models\Inquiry;
+use App\Models\InquiryOrder;
 use App\Models\Item;
 use App\Models\Quotation;
 use App\Models\QuotationItem;
@@ -45,11 +47,11 @@ class QuotationController extends Controller
 
     public function add()
     {
-        $customers = Customer::orderBy('id','DESC')->paginate($this->count);
-        $brands    = Brand::orderBy('id','DESC')->paginate($this->count);
+        $customers = Customer::orderBy('id','DESC')->get();
+        $brands    = Brand::orderBy('id','DESC')->get();
         $items     = Item::select([
             DB::raw("DISTINCT item_name"),
-        ])->orderBy('id','DESC')->paginate($this->count);
+        ])->orderBy('id','DESC')->get();
 
         $data = [
             'title'    => 'Submit Quotation',
@@ -161,6 +163,47 @@ class QuotationController extends Controller
             'quotation'  => $quotation
         ];
         return view('admin.quotation.item', $data);
+    }
+
+    public function generateQuotation($inquiry_id)
+    {
+        $customers = Customer::orderBy('id','DESC')->get();
+        $brands    = Brand::orderBy('id','DESC')->get();
+        $items     = Item::select([
+            DB::raw("DISTINCT item_name"),
+        ])->orderBy('id','DESC')->get();
+
+        $inquiry = Inquiry::select('*')
+            ->join('customers','customers.id','=','inquiries.customer_id')
+            ->join('inquiry_order','inquiry_order.inquiry_id','=','inquiries.id')
+            ->where('inquiries.id', $inquiry_id)
+            ->first();
+
+        # If inquiry was not found
+        if (!$inquiry) return redirect()->back()->with('error', 'Inquiry not found');
+
+        $select = [
+            "inquiry_order.*",
+            "items.item_name"
+        ];
+
+        $inquiry->items = InquiryOrder::select()
+            ->join('items', 'items.id', '=', 'inquiry_order.item_id')
+            ->where('inquiry_id', $inquiry_id)
+            ->get();
+
+        $data = [
+            'title'     => 'Generate Quotation',
+            'base_url'  => env('APP_URL', 'http://omnibiz.local'),
+            'user'      => Auth::user(),
+            'inquiry'   => $inquiry,
+            'brands'    => $brands,
+            'customers' => $customers,
+            'items'     => $items
+        ];
+
+        return view('admin.quotation.generatefrominquiry', $data);
+
     }
 
 }

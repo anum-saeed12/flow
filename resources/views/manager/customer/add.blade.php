@@ -9,7 +9,7 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard.team') }}">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('dashboard.manager') }}">Home</a></li>
                         <li class="breadcrumb-item">Customer</li>
                         <li class="breadcrumb-item active">{{$title}}</li>
                     </ol>
@@ -26,7 +26,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card card-info">
-                    <form class="form-horizontal" action="{{ route('customer.store.team') }}" method="POST">
+                    <form class="form-horizontal" action="{{ route('customer.store.manager') }}" method="POST">
                         @csrf
                         <div class="card-body pb-0 ">
                             <div class="row">

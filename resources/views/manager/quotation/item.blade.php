@@ -108,7 +108,7 @@
                                         <table class="table">
                                            <tr>
                                                 <th style="width:50%">Total Amount:</th>
-                                                <td></td>
+                                                <td>{{ $item->total }}</td>
                                             </tr>
                                         </table>
                                     </div>

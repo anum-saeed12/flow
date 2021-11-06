@@ -36,7 +36,8 @@
         },
         "files": [
             "app/Helpers/SettingsHelper.php",
-            "app/Helpers/ResponseHelper.php"
+            "app/Helpers/ResponseHelper.php",
+            "app/Helpers/DataHelper.php"
         ]
     },
     "autoload-dev": {

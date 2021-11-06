@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\team;
+namespace App\Http\Controllers\Team;
 
 use App\Http\Controllers\Controller;
 use App\Models\Brand;

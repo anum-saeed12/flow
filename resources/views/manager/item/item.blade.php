@@ -10,7 +10,7 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard.manager') }}">Home</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('vendorquotation.list.manager') }}">Quotation</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('inquiry.list.manager') }}">inquiry</a></li>
                         <li class="breadcrumb-item active">{{$title}}</li>
                     </ol>
                 </div>
@@ -24,8 +24,8 @@
     <div class="container-fluid">
         <div class="row mb-3">
             <div class="col-12">
-                <a href="#" type="submit" class="btn btn-info toastrDefaultSuccess mr-2 btn-sm" target="btnActionIframe"><i class="fa fa-print mr-1"></i> Print Quotation</a>
-                <a href="#" type="submit" class="btn btn-info toastrDefaultSuccess btn-sm" target="btnActionIframe"><i class="far fa-file-alt mr-1"></i> Create Quotation Pdf</a>
+                <a href="#" type="submit" class="btn btn-info toastrDefaultSuccess mr-2 btn-sm" target="btnActionIframe"><i class="fa fa-print mr-1"></i> Print inquiry</a>
+                <a href="#" type="submit" class="btn btn-info toastrDefaultSuccess btn-sm" target="btnActionIframe"><i class="far fa-file-alt mr-1"></i> Create inquiry Pdf</a>
                 <iframe name="btnActionIframe" style="display:none;" onload="setTimeout(function(){this.src=''},1000)"></iframe>
             </div>
         </div>
@@ -51,24 +51,22 @@
                                         {{ ucwords('Build Con') }}
                                     </h2></strong>
                                     <h4 style="text-align: center" class="mb-4">
-                                        {{ ucwords('Vendor Quotation') }}
+                                        {{ ucwords('Inquiry') }}
                                     </h4>
                                 </div>
                             </div>
                             <div class="row invoice-info">
                                 <div class="col-sm-4 invoice-col">
                                     <address>
-                                        <p><b>Ref: </b>{{ strtoupper(substr($quotation[0]->vendor_quotation,0,4)) }}-{{ strtoupper(substr($quotation[0]->vendor_quotation,4,4)) }}-{{ \Carbon\Carbon::createFromTimeStamp(strtotime($quotation[0]->created_at))->format('dm') }}-{{ \Carbon\Carbon::createFromTimeStamp(strtotime($quotation[0]->created_at))->format('Y') }}</p>
-                                        <p><b>Attention: </b>{{ ucwords($quotation[0]->attended_person) }}</p>
-                                        <p><b>Vendor Name: </b>{{ ucwords($quotation[0]->vendor_name) }}</p>
-                                        <p><b>Project Name: </b>{{ ucwords($quotation[0]->project_name) }}</p>
+                                        <p><b>Ref: </b>{{ strtoupper(substr($inquiry[0]->inquiry,0,4)) }}-{{ strtoupper(substr($inquiry[0]->inquiry,4,4)) }}-{{ \Carbon\Carbon::createFromTimeStamp(strtotime($inquiry[0]->created_at))->format('dm') }}-{{ \Carbon\Carbon::createFromTimeStamp(strtotime($inquiry[0]->created_at))->format('Y') }}</p>
+                                        <p><b>Attention: </b>{{ ucwords($inquiry[0]->attention_person) }}</p>
+                                        <p><b>Customer Name: </b>{{ ucwords($inquiry[0]->customer_name) }}</p>
+                                        <p><b>Project Name: </b>{{ ucwords($inquiry[0]->project_name) }}</p>
                                     </address>
                                 </div>
-                                <div class="offset-4 col-sm-2\4 invoice-col">
+                                <div class="offset-6 col-sm-2 invoice-col">
                                     <address>
-                                        <p><b>Date: </b>{{ ucwords(\Carbon\Carbon::createFromTimeStamp(strtotime($quotation[0]->date))->format('Y-m-d')) }}</p>
-                                        <p><b>Quotation Ref# </b>{{ $quotation[0]->quotation_ref }}</p>
-
+                                        <p><b>Date: </b>{{ ucwords(\Carbon\Carbon::createFromTimeStamp(strtotime($inquiry[0]->date))->format('Y-m-d')) }}</p>
                                     </address>
                                 </div>
                             </div>
@@ -79,7 +77,7 @@
                                         <tr>
                                             <th>Sr.no</th>
                                             <th>Item Description</th>
-                                            <th>Category</th>
+                                            <th>Brand</th>
                                             <th>Quantity</th>
                                             <th>Unit</th>
                                             <th>Unit Price</th>
@@ -87,15 +85,15 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        @foreach($quotation as $item)
+                                        @foreach($inquiry as $item)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ ucwords($item['item_description']) }}</td>
-                                            <td>{{ ucwords($item['category_name']) }}</td>
-                                            <td>{{ ucwords($item['quantity']) }}</td>
-                                            <td>{{ ucwords($item['unit']) }}</td>
-                                            <td>{{ ucwords($item['price']) }}</td>
-                                            <td>{{ ucwords($item['amount']) }}</td>
+                                            <td>{{ ucwords($item->item_description) }}</td>
+                                            <td>{{ ucwords($item->brand_name) }}</td>
+                                            <td>{{ ucwords($item->quantity) }}</td>
+                                            <td>{{ ucwords($item->unit) }}</td>
+                                            <td>{{ ucwords($item->rate) }}</td>
+                                            <td>{{ ucwords($item->amount) }}</td>
                                         </tr>
                                         @endforeach
                                         </tbody>
@@ -110,7 +108,7 @@
                                         <table class="table">
                                            <tr>
                                                 <th style="width:50%">Total Amount:</th>
-                                                <td>{{ $item['total'] }}</td>
+                                                <td>{{ $item->total }}</td>
                                             </tr>
                                         </table>
                                     </div>

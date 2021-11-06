@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\team;
+namespace App\Http\Controllers\Team;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
@@ -16,7 +16,7 @@ class VendorQuotationController extends Controller
 {
     public function index()
     {
-        $select = ['vendor_name', 'project_name', 'item_description', 'amount', 'users.name'];
+        $select = ['vendor_quotation.quotation_pdf','vendor_quotation.id','vendor_name', 'project_name', 'item_description', 'vendor_quotation.total', 'users.name'];
 
         $vendors_quotation = VendorQuotation::select($select)
             ->leftJoin('vendors', 'vendor_quotation.vendor_id', '=', 'vendors.id')
