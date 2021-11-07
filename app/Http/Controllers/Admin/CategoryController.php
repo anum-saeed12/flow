@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Item;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CategoryController extends Controller
 {
@@ -89,6 +91,18 @@ class CategoryController extends Controller
         return redirect(
             route('category.list.admin')
         )->with('success', 'Category updated successfully!');
+    }
+
+    public function ajaxFetch(Request $request)
+    {
+        $request->validate([
+            'category' => 'required'
+        ]);
+        $category_id = $request->category;
+        $category_items = Item::select([DB::raw('DISTINCT item_name')])
+            ->where('category_id', $category_id)
+            ->get();
+        return response($category_items, 200);
     }
 
     public function delete($id)

@@ -26,20 +26,20 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="card card-info">
-                        <form class="form-horizontal" action="{{ route('user.update.admin',$user->id) }}" method="POST">
+                        <form class="form-horizontal" action="{{ route('user.update.admin',$users->id) }}" method="POST">
                             @csrf
                             <div class="card-body pb-0 pt-2 mt-2">
                                 <div class="row">
                                     <div class="col-md-4">
                                         <label for="name">Name</label><br/>
                                         <input type="text" name="name" class="form-control" id="name"
-                                               value="{{ ucfirst($user->name) }}">
+                                               value="{{ ucfirst($users->name) }}">
                                         <div class="text-danger">@error('name'){{ $message }}@enderror</div>
                                     </div>
                                     <div class="col-md-4">
                                         <label for="username">Username</label><br/>
                                         <input type="text" name="username" class="form-control" id="username"
-                                               value="{{ ucfirst($user->username) }}">
+                                               value="{{ ucfirst($users->username) }}">
                                         <div class="text-danger">@error('username'){{ $message }}@enderror</div>
                                     </div>
                                 </div>
@@ -47,16 +47,13 @@
                                     <div class="col-md-4">
                                         <label for="email">Email</label><br/>
                                         <input type="email" name="email" class="form-control" id="email"
-                                               value="{{ ucfirst($user->email) }}">
+                                               value="{{ ucfirst($users->email) }}">
                                         <div class="text-danger">@error('email'){{ $message }}@enderror</div>
                                     </div>
-                                </div>
-
-                                <div class="row">
                                     <div class="col-md-4">
                                         <label for="password">Password</label><br/>
                                         <input type="password" name="password" class="form-control" id="password"
-                                               value="{{ ucfirst($user->password) }}">
+                                               value="{{ ucfirst($users->password) }}">
                                         <div class="text-danger">@error('password'){{ $message }}@enderror</div>
                                     </div>
                                 </div>
@@ -64,16 +61,30 @@
                                     <div class="col-md-4">
                                         <label for="user_role">User Role</label><br/>
                                         <select name="user_role" class="form-control" id="user_role">
-                                            <option value="admin" {{ $user->user_role == 'admin' ? 'selected="selected"' : '' }}>Admin
+                                            <option selected="selected" value>Select</option>
+                                            <option value="admin" {{ $users->user_role == 'admin' ? 'selected="selected"' : '' }}>Admin
                                             </option>
-                                            <option value="sales_person" {{ $user->user_role == 'sales_person' ? 'selected="selected"' : '' }}>Sales Person
+                                            <option value="sale" {{ $users->user_role == 'sale' ? 'selected="selected"' : '' }}>Sales Person
                                             </option>
-                                            <option value="manager" {{ $user->user_role == 'manager' ? 'selected="selected"' : '' }}>Manager
+                                            <option value="manager" {{ $users->user_role == 'manager' ? 'selected="selected"' : '' }}>Manager
                                             </option>
-                                            <option value="sourcing_team" {{ $user->user_role == 'sourcing_team' ? 'selected="selected"' : '' }}>Sourcing Team
+                                            <option value="team" {{ $users->user_role == 'team' ? 'selected="selected"' : '' }}>Sourcing Team
                                             </option>
                                         </select>
-                                        <div class="text-danger">@error('password'){{ $message }}@enderror</div>
+                                        <div class="text-danger">@error('user_role'){{ $message }}@enderror</div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div id="user_category" style="display:none;">
+                                            <label for="category_id">Category</label><br/>
+                                            <select name="category_id" class="form-control" id="category_id">
+                                                <option selected="selected" value>Select</option>
+                                                @foreach($category as $names)
+                                                    <option value="{{ $names->id }}" {{ $users->category_name == $names->category_name ? 'selected="selected"' : '' }}>{{ $names->category_name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            <div class="text-danger">@error('user_role'){{ $message }}@enderror</div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="row mt-2">
@@ -92,3 +103,23 @@
     </section>
 @stop
 
+@section('extras')
+    <script>
+        $(function(){
+            $('.optional-trigger').change(function(){
+                let target = $($(this).data('target')),
+                    targetRequired = $($(this).data('target-required')),
+                    trigger = $(this).data('trigger-value'),
+                    value = $(this).val();
+                targetRequired.removeAttr('required');
+                if (value === trigger) {
+                    targetRequired.attr('required','required');
+                    target.show();
+                    return false
+                }
+                targetRequired.removeAttr('required');
+                return target.hide();
+            });
+        });
+    </script>
+@endsection

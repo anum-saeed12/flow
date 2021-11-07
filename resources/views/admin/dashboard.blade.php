@@ -55,7 +55,7 @@
                 <div class="col-lg-3 col-6">
                     <div class="small-box bg-white">
                         <div class="inner">
-                            <h3>#</h3>
+                            <h3>{{ $total_open->total }}</h3>
                             <p>Open Inquiries</p>
                         </div>
                         <div class="icon">
@@ -68,7 +68,7 @@
                 <div class="col-lg-3 col-6">
                     <div class="small-box bg-white">
                         <div class="inner">
-                            <h3>#</h3>
+                            <h3>{{ $total_quotation->total }}</h3>
                             <p>Submitted Quotation</p>
                         </div>
                         <div class="icon">

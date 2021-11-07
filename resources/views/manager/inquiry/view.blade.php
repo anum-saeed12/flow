@@ -24,7 +24,6 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-
                 <div class="col-12">
                     @if(session()->has('success'))
                         <div class="callout callout-success" style="color:green">
@@ -35,6 +34,9 @@
                         <div class="callout callout-danger" style="color:red">
                             {{ session()->get('error') }}
                         </div>
+                    @endif
+                    @if($errors->any())
+                        {{ implode('', $errors->all('<div>:message</div>')) }}
                     @endif
                     <div class="card">
                         <div class="row mb-3 mt-3 ml-3">
@@ -78,6 +80,7 @@
                                     <th class="pl-0">Sales Person</th>
                                     <th class="pl-0">Date</th>
                                     <th class="pl-0">Submission Timeline</th>
+                                    <th class="pl-0">Status</th>
                                 </tr>
                                 </thead>
                                 <tbody id="myTable">
@@ -88,11 +91,14 @@
                                         <td><a href="{{ route('inquiry.view.manager',$inquiry->id) }}">{{ ucfirst($inquiry->customer_name) }}</td>
                                         <td><a href="{{ route('inquiry.view.manager',$inquiry->id) }}">{{ ucfirst($inquiry->project_name) }}</td>
                                         <td><a href="{{ route('inquiry.view.manager',$inquiry->id) }}">{{ ucfirst($inquiry->item_description) }}</td>
-                                        <td><a href="{{ route('inquiry.view.manager',$inquiry->id) }}">{{ $inquiry->amount }}</td>
+                                        <td><a href="{{ route('inquiry.view.manager',$inquiry->id) }}">{{ $inquiry->total }}</td>
                                         <td><a href="{{ route('inquiry.view.manager',$inquiry->id) }}">{{ $inquiry->name }}</td>
                                         <td><a href="{{ route('inquiry.view.manager',$inquiry->id) }}">{{ ucfirst($inquiry->date) }}</td>
                                         <td><a href="{{ route('inquiry.view.manager',$inquiry->id) }}">{{ ucfirst($inquiry->timeline) }}</td>
+                                        <td><a href="{{ route('inquiry.view.manager',$inquiry->id) }}">{{ ucfirst($inquiry->inquiry_status) }}</td>
                                         <td class="text-right p-0">
+                                            <a class="bg-warning list-btn"  href="{{ route('quotation.generate.manager',$inquiry->id) }}" title="Download Files"><i class="fas fa-download" aria-hidden="false"></i></a>
+                                            @if($inquiry->inquiry_status=='open')<a class="bg-success list-btn"  href="{{ route('quotation.generate.manager',$inquiry->id) }}" title="Generate Quotation"><i class="fas fa-file" aria-hidden="false"></i></a>@endif
                                             <a class="bg-primary list-btn"  href="{{ route('inquiry.edit.manager',$inquiry->id) }}" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
                                             <a class="bg-danger list-btn"  href="{{ route('inquiry.delete.manager',$inquiry->id) }}"  title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
                                         </td>

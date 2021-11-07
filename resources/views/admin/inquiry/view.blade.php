@@ -24,7 +24,6 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-
                 <div class="col-12">
                     @if(session()->has('success'))
                         <div class="callout callout-success" style="color:green">
@@ -35,6 +34,9 @@
                         <div class="callout callout-danger" style="color:red">
                             {{ session()->get('error') }}
                         </div>
+                    @endif
+                    @if($errors->any())
+                        {{ implode('', $errors->all('<div>:message</div>')) }}
                     @endif
                     <div class="card">
                         <div class="row mb-3 mt-3 ml-3">

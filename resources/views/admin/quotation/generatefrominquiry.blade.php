@@ -322,24 +322,7 @@
             sumOfTotal.val(0);
             //$('#total').val(sum_of_sub_total);
         }
-        function itemSelect(ele) {
-            let target = ele.data('target'), href = ele.data('href'), item_id = ele.val(), spinner = ele.data('spinner'), brands;
-            $.ajax({
-                dataType: 'json',
-                url: `${href}?item=${item_id}`,
-                beforeSend: function() {
-                    $(spinner).text('Loading brands...');
-                },
-                success: function(data) {
-                    $(spinner).html('');
-                    brands += '<option>Select Brand</option>';
-                    $.each(data, function(index, json){
-                        brands += `<option value="${json.id}">${json.brand_name}</option>`;
-                    })
-                    $(target).html(brands);
-                }
-            });
-            // data-target="#brand_id" data-href="{{ route('item.fetch.ajax.admin') }}" onchange="itemSelect($(this))" onfocus="itemSelect($(this))" onblur="itemSelect($(this))">
-        }
     </script>
 @stop
+
+@include('includes.selectajax')

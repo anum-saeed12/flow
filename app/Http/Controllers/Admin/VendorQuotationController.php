@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Brand;
 use App\Models\Category;
+use App\Models\Item;
 use App\Models\Vendor;
 use App\Models\VendorQuotation;
 use App\Models\VendorQuotationItem;
@@ -16,7 +18,7 @@ class VendorQuotationController extends Controller
 {
     public function index()
     {
-        $select = ['vendor_quotation.quotation_pdf','vendor_quotation.id','vendor_name', 'project_name', 'item_description', 'vendor_quotation.total', 'users.name'];
+        $select = ['vendor_quotation.quotation_pdf','vendor_quotation.id','vendor_name', 'project_name', 'vendor_quotation.total', 'users.name'];
 
         $vendors_quotation = VendorQuotation::select($select)
             ->leftJoin('vendors', 'vendor_quotation.vendor_id', '=', 'vendors.id')
@@ -34,14 +36,18 @@ class VendorQuotationController extends Controller
 
     public function add()
     {
-        $vendors = Vendor::orderBy('id','DESC')->paginate($this->count);
-        $categories = Category::orderBy('id','DESC')->paginate($this->count);
+        $vendors = Vendor::orderBy('id','DESC')->get();
+        $categories = Category::orderBy('id','DESC')->get();
+        $items = Item::orderBy('id','DESC')->get();
+        $brands = Brand::orderBy('id','DESC')->get();
         $data = [
             'title'       => 'Add Vendor Quotation',
             'base_url'    => env('APP_URL', 'http://127.0.0.1:8000'),
             'user'        => Auth::user(),
             'vendors'     => $vendors,
-            'categories'  => $categories
+            'categories'  => $categories,
+            'brands'      => $brands,
+            'items'       => $items
         ];
         return view('admin.vendorquotation.add', $data);
     }
@@ -51,31 +57,34 @@ class VendorQuotationController extends Controller
         $request->validate([
             'vendor_id'          => 'required',
             'quotation_ref'      => 'required',
-            'total'              =>'required',
+            'quotation_pdf'      => 'required|file',
+            'project_name'       => 'required',
+            'total'              => 'required',
             'category_id'        => 'required|array',
             'category_id.*'      => 'required',
-            'item_description'   => 'required|array',
-            'item_description.*' => 'required',
+            'item_id'            => 'required|array',
+            'item_id.*'          => 'required',
+            'brand_id'           => 'required|array',
+            'brand_id.*'         => 'required',
             'quantity'           => 'required|array',
             'quantity.*'         => 'required',
             'unit'               => 'required|array',
             'unit.*'             => 'required',
-            'price'              => 'required|array',
-            'price.*'            => 'required',
+            'rate'               => 'required|array',
+            'rate.*'             => 'required',
             'amount'             => 'required|array',
-            'amount.*'           => 'required',
-            'quotation_pdf'      => 'required|file',
-            'project_name'       => 'required'
+            'amount.*'           => 'required'
         ],[
             'vendor_id.required'     => 'The vendor field is required.',
         ]);
 
         $categories   = $request->category_id;
         $quantities   = $request->quantity;
-        $descriptions = $request->item_description;
         $units        = $request->unit;
-        $prices       = $request->price;
+        $rates        = $request->rate;
         $amounts      = $request->amount;
+        $brands       = $request->brand_id;
+        $items        = $request->item_id;
 
         $id = Auth::user()->id;
         $data = $request->all();
@@ -88,13 +97,18 @@ class VendorQuotationController extends Controller
         $save = [];
 
         foreach($categories as $index => $category) {
+            $item_detail = Item::select('*')
+                ->where('item_name',$items[$index])
+                ->where('brand_id', $brands[$index])
+                ->first();
             $vendor_quotation_item = [
                 'vendor_quotation_id' => $vendor_quotation->id,
                 'category_id'         => $category,
-                'item_description'    => $descriptions[$index],
+                'brand_id'            => $brands[$index],
+                'item_id'             => $item_detail->id,
                 'quantity'            => $quantities[$index],
                 'unit'                => $units[$index],
-                'price'               => $prices[$index],
+                'rate'                => $rates[$index],
                 'amount'              => $amounts[$index],
             ];
             $save[] = (new VendorQuotationItem($vendor_quotation_item))->save();

@@ -73,7 +73,6 @@
                                     <th>Sr.No.</th>
                                     <th class="pl-0">Client</th>
                                     <th class="pl-0">Project</th>
-                                    <th class="pl-0">Items Description</th>
                                     <th class="pl-0">Amount</th>
                                     <th class="pl-0">Sales Person</th>
                                 </tr>
@@ -85,7 +84,6 @@
                                         <td><a href="{{ route('vendorquotation.view.admin',$quotation->id) }}">{{ $loop->iteration }}</a></td>
                                         <td><a href="{{ route('vendorquotation.view.admin',$quotation->id) }}">{{ucfirst($quotation->vendor_name) }}</a></td>
                                         <td><a href="{{ route('vendorquotation.view.admin',$quotation->id) }}">{{ ucfirst($quotation->project_name) }}</a></td>
-                                        <td><a href="{{ route('vendorquotation.view.admin',$quotation->id) }}">{{ ucfirst($quotation->item_description) }}</a></td>
                                         <td><a href="{{ route('vendorquotation.view.admin',$quotation->id) }}">{{ ucfirst($quotation->total) }}</a></td>
                                         <td><a href="{{ route('vendorquotation.view.admin',$quotation->id) }}">{{ ucfirst($quotation->name) }}</a></td>
                                         <td class="text-right p-0">

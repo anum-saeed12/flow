@@ -16,10 +16,6 @@ class User extends Authenticatable
     protected $hidden = ['password','remember_token'];
     protected $fillable = ['email', 'username','name', 'password', 'user_role', 'created_by'];
 
-    public function prefix()
-    {
-        return $this->hasOne(Client::class,);
-    }
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *
@@ -38,5 +34,10 @@ class User extends Authenticatable
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function category()
+    {
+        return $this->hasOne(UserCategory::class, 'user_id', 'id');
     }
 }

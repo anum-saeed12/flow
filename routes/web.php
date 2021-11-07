@@ -89,6 +89,7 @@ Route::prefix('/admin')->middleware('admin')->group(function() {
         Route::post('/store', '\App\Http\Controllers\Admin\CategoryController@store')->name('category.store.admin');
         Route::get('/edit/{id}', '\App\Http\Controllers\Admin\CategoryController@edit')->name('category.edit.admin');
         Route::post('/update/{id}', '\App\Http\Controllers\Admin\CategoryController@update')->name('category.update.admin');
+        Route::get('/ajax-fetch/', '\App\Http\Controllers\Admin\CategoryController@ajaxFetch')->name('category.fetch.ajax.admin');
         Route::get('/delete/{id}', '\App\Http\Controllers\Admin\CategoryController@delete')->name('category.delete.admin');
     });
     Route::prefix('/quotation')->group(function() {

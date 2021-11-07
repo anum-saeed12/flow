@@ -47,42 +47,50 @@
                                     <div class="text-danger">@error('project_name'){{ $message }}@enderror</div>
                                 </div>
 
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <label for="date">Date</label><br/>
                                     <input type="date" name="date" class="form-control" id="date"
                                            value="{{ old('date') }}">
                                     <div class="text-danger">@error('date'){{ $message }}@enderror</div>
                                 </div>
 
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <label for="timeline">Timeline</label><br/>
                                     <input type="date" name="timeline" class="form-control" id="timeline"
                                            value="{{ old('timeline') }}">
-                                    </div>
                                     <div class="text-danger">@error('timeline'){{ $message }}@enderror</div>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <label for="currency">Currency</label><br/>
+                                    <input type="text" name="currency" class="form-control" id="currency"
+                                           value="{{ old('currency') }}">
+                                    <div class="text-danger">@error('currency'){{ $message }}@enderror</div>
+                                </div>
                                 </div>
                             </div>
                             <br/>
                             <div class="row ml-3">
                                 <div class="col-md-3 category-container">
                                     <label for="category_id">Select Category</label><br/>
-                                    <select name="category_id[]" class="form-control" id="category_id">
+                                    <select name="category_id[]" class="form-control categories" id="category_id" data-target="#item_id" data-href="{{ route('category.fetch.ajax.manager') }}" data-spinner="#category_spinner" onchange="categorySelect($(this))">
                                         <option selected="selected" value>Select</option>
                                         @foreach ($categories as $category)
                                             <option value="{{ $category->id }}">{{ ucfirst($category->category_name) }}</option>
                                         @endforeach
                                     </select>
+                                    <div id="category_spinner"></div>
                                     <div class="text-danger">@error('category_id'){{ $message }}@enderror</div>
                                 </div>
                                 <div class="col-md-2 item-container">
                                     <label for="item_id">Select Item</label><br/>
-                                    <select name="item_id[]" class="form-control" id="item_id">
-
+                                    <select name="item_id[]" class="form-control" id="item_id"  data-target="#brand_id" data-href="{{ route('item.fetch.ajax.manager') }}" data-spinner="#item_spinner" onchange="itemSelect($(this))">
                                         <option selected="selected" value>Select</option>
                                         @foreach ($items as $item)
                                             <option value="{{ $item->id }}">{{ ucfirst($item->item_name) }}</option>
                                         @endforeach
                                     </select>
+                                    <div id="item_spinner"></div>
                                     <div class="text-danger">@error('item_id'){{ $message }}@enderror</div>
                                 </div>
                                 <div class="col-md-2 brand-container">
@@ -178,48 +186,32 @@
                     alert('You Reached the limits');
                     return false;
                 }
-
-                let $categorySelector = //'<div class="row hello">' +
-                    '<div class="col-md-3 mt-3">' +
-                        '<label for="category_id">Select Category</label><br/>' +
-                        '<div class="row">' +
-                            '<div class="col-10">' +
-                                '<select name="category_id" class="form-control" id="item_category_id">' +
-                                    '<option selected="selected" value>Select</option> <option value="#"></option>' +
-                                '</select>' +
-                            '</div>' +
-                            '<div class="col-2">' +
-                                '<a href="#" class="delete">' +
-                                    '<i class="fas fa-trash-alt ml-2" aria-hidden="false"></i>' +
-                                '</a>' +
-                            '</div>' +
-                        '</div>' +
-                    '</div>';// +
-                    ;// +
-                    //'</div>';
+                $uid = $('.category').length;
 
                 let $itemRow = '<div class="row mt-3 ml-3">' +
-                    '<div class="col-md-3 category-container">' +
+                '<div class="col-md-3 category-container">' +
                     '<label for="category_id">Select Category</label><br/>' +
-                    '<select name="category_id[]" class="form-control" id="category_id">' +
+                    `<select name="category_id[]" class="form-control categories" id="category_id_${$uid}" data-target="#item_id_${$uid}" data-href="{{ route('category.fetch.ajax.manager') }}" data-spinner="#category_spinner_${$uid}" onchange="categorySelect($(this))">` +
                         '<option selected="selected" value>Select</option>' +
-                    @foreach ($categories as $category)
-                    '<option value="{{ $category->id }}">{{ ucfirst($category->category_name) }}</option>'+
-                @endforeach
+                        @foreach ($categories as $category)
+                            '<option value="{{ $category->id }}">{{ ucfirst($category->category_name) }}</option>'+
+                        @endforeach
                     '</select>' +
-                    '</div>' +
+                    `<div id="category_spinner_${$uid}"></div>` +
+                '</div>' +
                 '<div class="col-md-2 item-container">' +
                     '<label for="item_id">Select Item</label><br/>' +
-                    '<select name="item_id[]" class="form-control" id="item_id">' +
+                    `<select name="item_id[]" class="form-control" id="item_id_${$uid}" data-target="#brand_id_${$uid}" data-href="{{ route('item.fetch.ajax.manager') }}" data-spinner="#item_spinner_${$uid}" onchange="itemSelect($(this))">` +
                         '<option selected="selected" value>Select</option>' +
-                    @foreach ($items as $item)
-                    '<option value="{{ $item->id }}">{{ ucfirst($item->item_name) }}</option>'+
-                @endforeach
+                        @foreach ($items as $item)
+                            '<option value="{{ $item->id }}">{{ ucfirst($item->item_name) }}</option>'+
+                        @endforeach
                     '</select>' +
+                    `<div id="item_spinner_${$uid}"></div>` +
                 '</div>' +
                 '<div class="col-md-2 brand-container">' +
                     '<label for="brand_id">Select Brand</label><br/>' +
-                    '<select name="brand_id[]" class="form-control" id="brand_id">' +
+                    `<select name="brand_id[]" class="form-control" id="brand_id_${$uid}">` +
                         '<option selected="selected" value>Select</option>' +
                     @foreach ($brands as $brand)
                    '<option value="{{ $brand->id }}">{{ ucfirst($brand->brand_name) }}</option>'+
@@ -295,6 +287,42 @@
             $(target).val(0);
             sumOfTotal.val(0);
             //$('#total').val(sum_of_sub_total);
+        }
+        function itemSelect(ele) {
+            let target = ele.data('target'), href = ele.data('href'), item_id = ele.val(), spinner = ele.data('spinner'), brands;
+            $.ajax({
+                dataType: 'json',
+                url: `${href}?item=${item_id}`,
+                beforeSend: function() {
+                    $(spinner).text('Loading brands...');
+                },
+                success: function(data) {
+                    $(spinner).html('');
+                    brands += '<option>Select Brand</option>';
+                    $.each(data, function(index, json){
+                        brands += `<option value="${json.id}">${json.brand_name}</option>`;
+                    })
+                    $(target).html(brands);
+                }
+            });
+        }
+        function categorySelect(ele) {
+            let target = ele.data('target'), href = ele.data('href'), item_id = ele.val(), spinner = ele.data('spinner'), brands;
+            $.ajax({
+                dataType: 'json',
+                url: `${href}?category=${item_id}`,
+                beforeSend: function() {
+                    $(spinner).text('Loading items...');
+                },
+                success: function(data) {
+                    $(spinner).html('');
+                    brands += '<option>Select Item</option>';
+                    $.each(data, function(index, json){
+                        brands += `<option value="${json.item_name}">${json.item_name}</option>`;
+                    })
+                    $(target).html(brands);
+                }
+            });
         }
     </script>
 @stop

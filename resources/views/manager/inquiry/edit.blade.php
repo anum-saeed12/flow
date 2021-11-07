@@ -10,7 +10,7 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard.manager') }}">Home</a></li>
-                        <li class="breadcrumb-item">Inquiry</li>
+                        <li class="breadcrumb-item">Edit Inquiry</li>
                         <li class="breadcrumb-item active">{{$title}}</li>
                     </ol>
                 </div>
@@ -21,159 +21,195 @@
 
 
 @section('content')
-    <section class="content">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card card-info">
-                        <form class="form-horizontal" action="{{ route('inquiry.update.manager',$inquires->id) }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            <div class="card-body pb-0">
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <label for="customer_id">Select Customer</label><br/>
-                                        <select name="customer_id" class="form-control" id="customer_id">
-                                            <option selected="selected" value>Select</option>
-                                            @foreach ($customers as $customer)
-                                                <option value="{{ $customer->id }}" {{ $customer->customer_name == $inquires->customer_name ? ' selected="selected" ' : '' }}> {{ucfirst( $customer->customer_name) }}</option>
-                                            @endforeach
-                                        </select>
-                                        <div class="text-danger">@error('customer_id'){{ $message }}@enderror</div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label for="project_name">Project Name</label><br/>
-                                        <input type="text" name="project_name" class="form-control" id="project_name"
-                                               value="{{ $inquires->project_name }}">
-                                        <div class="text-danger">@error('project_name'){{ $message }}@enderror</div>
-                                    </div>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                @if($errors->any())
+                    {!! implode('', $errors->all('<div class="alert alert-danger mb-3">:message</div>')) !!}
+                @endif
+                <div class="card card-info">
+                    <form class="form-horizontal" action="{{ route('inquiry.update.manager',$inquiry->id) }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="inquiry_id" value="{{ $inquiry->id }}" >
+                        <div class="card-body pb-0">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label for="customer_id">Select Customer</label><br/>
+                                    <select name="customer_id" class="form-control" id="customer_id">
+                                        <option selected="selected" value>Select</option>
+                                        @foreach ($customers as $customer)
+                                            <option value="{{ $customer->id }}"{{ $inquiry->customer_name==$customer->customer_name ? ' selected':'' }}>{{ ucfirst($customer->customer_name) }}</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="text-danger">@error('customer_id'){{ $message }}@enderror</div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="project_name">Project Name</label><br/>
+                                    <input type="text" name="project_name" class="form-control" id="project_name"
+                                            value="{{ $inquiry->project_name }}">
+                                    <div class="text-danger">@error('project_name'){{ $message }}@enderror</div>
+                                </div>
 
-                                    <div class="col-md-3">
-                                        <label for="date">Date</label><br/>
-                                        <input type="date" name="date" class="form-control" id="date"
-                                               value="{{ $inquires->date }}">
-                                        <div class="text-danger">@error('date'){{ $message }}@enderror</div>
-                                    </div>
-
-                                    <div class="col-md-3">
-                                        <label for="timeline">Timeline</label><br/>
-                                        <input type="date" name="timeline" class="form-control" id="timeline"
-                                               value="{{ $inquires->timeline }}">
-                                    </div>
-                                    <div class="text-danger">@error('timeline'){{ $message }}@enderror</div>
+                                <div class="col-md-3">
+                                    <label for="date">Date</label><br/>
+                                    <input type="date" name="date" class="form-control" id="date"
+                                           value="{{ $inquiry->date }}">
+                                    <div class="text-danger">@error('date'){{ $message }}@enderror</div>
+                                </div>
+                                <div class="col-md-2 ">
+                                    <label for="currency">Currency</label><br/>
+                                    <input type="text" name="currency" class="form-control" id="currency" value="{{ $inquiry->currency }}">
                                 </div>
                             </div>
                             <br/>
-                            <div class="row ml-3">
-                                <div class="col-md-3 category-container">
-                                    <label for="category_id">Select Category</label><br/>
-                                    <select name="category_id[]" class="form-control" id="category_id">
-                                        <option selected="selected" value>Select</option>
-                                        @foreach ($categories as $category)
-                                            <option value="{{ $category->id }}" {{ $category->category_name == $inquires->category_name ? ' selected="selected" ' : '' }}> {{ucfirst( $category->category_name) }}</option>
-                                        @endforeach
-                                    </select>
-                                    <div class="text-danger">@error('category_id'){{ $message }}@enderror</div>
-                                </div>
-                                <div class="col-md-2 item-container">
-                                    <label for="item_id">Select Item</label><br/>
-                                    <select name="item_id[]" class="form-control" id="item_id">
-
+                            <div class="row">
+                                <div class="col-md-3 item-container">
+                                    <label for="item_id">Select Item </label><br/>
+                                    <select name="item_id[]" class="form-control trigger" id="item_id" data-target="#brand_id" data-href="{{ route('item.fetch.ajax.manager') }}" data-spinner="#item_spinner" onchange="itemSelect($(this))">
                                         <option selected="selected" value>Select</option>
                                         @foreach ($items as $item)
-                                            <option value="{{ $item->id }}" {{ $item->item_name == $inquires->item_name ? ' selected="selected" ' : '' }}> {{ucfirst( $item->item_name) }}</option>
+                                            <option value="{{ $item->item_name }}"{{ $inquiry->items[0]->item_name==$item->item_name ? ' selected':'' }}>{{ ucfirst($item->item_name) }}</option>
                                         @endforeach
                                     </select>
-                                    <div class="text-danger">@error('item_id'){{ $message }}@enderror</div>
+                                    <div id="item_spinner"></div>
                                 </div>
-                                <div class="col-md-2 brand-container">
+                                <div class="col-md-3 item-container">
                                     <label for="brand_id">Select Brand</label><br/>
                                     <select name="brand_id[]" class="form-control" id="brand_id">
                                         <option selected="selected" value>Select</option>
-                                        @foreach ($brands as $brand)
-                                            <option value="{{ $brand->id }}" {{ $brand->brand_name == $inquires->brand_name ? ' selected="selected" ' : '' }}> {{ucfirst( $brand->brand_name) }}</option>
+                                        @foreach (fetchBrandsForItem($inquiry->items[0]->item_name) as $brand)
+                                            <option value="{{ $brand->id }}"{{ $inquiry->items[0]->brand_id==$brand->id?' selected':'' }}>{{ ucfirst($brand->brand_name) }}</option>
                                         @endforeach
                                     </select>
-                                    <div class="text-danger">@error('brand_id'){{ $message }}@enderror</div>
                                 </div>
                                 <div class="col-md-1 quantity-container">
                                     <label for="quantity">Quantity</label><br/>
-                                    <input type="text" name="quantity[]" class="form-control with_out" value="{{ $inquires->quantity }}" id="quantity" data-target="#total_amount" data-into="#rate" onkeydown="calculate($(this))" onkeypress="calculate($(this))" onkeyup="calculate($(this))" onchange="calculate($(this))">
+                                    <input type="text" name="quantity[]" class="form-control with_out" id="quantity" data-target="#total_amount" data-into="#rate" onkeydown="calculate($(this))" onkeypress="calculate($(this))" onkeyup="calculate($(this))" onchange="calculate($(this))" value="{{ $inquiry->items[0]->quantity }}">
                                 </div>
                                 <div class="col-md-1 unit-container">
                                     <label for="unit">Unit</label><br/>
-                                    <input type="text" name="unit[]" class="form-control" id="unit" value="{{ $inquires->unit }}">
+                                    <input type="text" name="unit[]" class="form-control" id="unit" value="{{ $inquiry->items[0]->unit }}">
                                 </div>
                                 <div class="col-md-1 rate-container">
                                     <label for="rate">Rate</label><br/>
-                                    <input type="text" name="rate[]" class="form-control with_out" id="rate" data-target="#total_amount" data-into="#quantity" value="{{ $inquires->rate }}" onkeydown="calculate($(this))" onkeypress="calculate($(this))" onkeyup="calculate($(this))" onchange="calculate($(this))">
+                                    <input type="text" name="rate[]" value="{{ $inquiry->items[0]->rate }}" class="form-control with_out" id="rate" data-target="#total_amount" data-into="#quantity" onkeydown="calculate($(this))" onkeypress="calculate($(this))" onkeyup="calculate($(this))" onchange="calculate($(this))">
                                 </div>
-                                <div class="col-md-1 amount-container">
+                                <div class="col-md-2 amount-container">
                                     <label for="amount">Sub-Total</label><br/>
-                                    <input type="text" name="amount[]" class="form-control total n" id="amount" value="{{ $inquires->amount }}">
+                                    <input type="text" name="amount[]" value="{!! floatval($inquiry->items[0]->amount) * intval($inquiry->items[0]->quantity) !!}" class="form-control total n" id="amount">
                                 </div>
                                 <div class="col-md-1">
-                                    <label for="button">&nbsp;</label><br/>
-                                    <button class="add_form_field btn btn-info"><span><i class="fas fa-plus-circle" aria-hidden="false"></i></span></button>
+                                    <label for="unit">&nbsp;</label><br/>
+                                    <button type="button" class="add_form_field btn btn-info"><span><i class="fas fa-plus-circle" aria-hidden="false"></i></span></button>
                                 </div>
                             </div>
                             <div class="additional-products">
-
+                                @foreach($inquiry->items as $inquiry_item)
+                                    @php if (isset($loop) && $loop->iteration <= 1) continue; @endphp
+                                    <div class="row mt-3">
+                                        <div class="col-md-3 item-container">
+                                            <label for="item_id_${$uid}">Select Item </label><br/>
+                                            <select name="item_id[]" class="form-control" id="item_id_${$uid}" data-target="#brand_id_${$uid}" data-href="{{ route('item.fetch.ajax.manager') }}" data-spinner="#item_spinner_${$uid}" onchange="itemSelect($(this))">
+                                                <option selected="selected" value>Select</option>
+                                                @foreach ($items as $item)
+                                                    <option value="{{ $item->item_name }}"{{ $inquiry_item->item_name == $item->item_name ? " selected":'' }}>{{ ucfirst($item->item_name) }}</option>
+                                                @endforeach
+                                            </select>
+                                            <span id="item_spinner_${$uid}"></span>
+                                        </div>
+                                        <div class="col-md-3 brand-container">
+                                            <label for="brand_id_${$uid}">Select Brand</label><br/>
+                                            <select name="brand_id[]" class="form-control" id="brand_id_${$uid}">
+                                                <option selected="selected" value>Select</option>
+                                                @foreach (fetchBrandsForItem($inquiry_item->item_name) as $brand)
+                                                    <option value="{{ $brand->id }}"{{ $brand->id == $inquiry_item->brand_id ? ' selected':'' }}>{{ ucfirst($brand->brand_name) }}</option>
+                                                @endforeach
+                                            {{--    @foreach ($brands as $brand)
+                                                    <option value="{{ $brand->brand_name }}"{{ $inquiry_item->brand_name == $brand->brand_name ? " selected":'' }}>{{ ucfirst($brand->brand_name) }}</option>
+                                                @endforeach--}}
+                                            </select>
+                                        </div>
+                                        <div class="col-md-1 quantity-container">
+                                            <label for="quantity_${$uid}">Quantity</label><br/>
+                                            <input type="text" name="quantity[]" value="{{ $inquiry_item->quantity }}" class="form-control common quantity" id="quantity_${$uid}" data-target="#total_amount_${$uid}" data-into="#rate_${$uid}" onkeydown="calculate($(this))" onkeypress="calculate($(this))" onkeyup="calculate($(this))" onchange="calculate($(this))">
+                                        </div>
+                                        <div class="col-md-1 unit-container">
+                                            <label for="unit_${$uid}">Unit</label><br/>
+                                            <input type="text" name="unit[]" value="{{ $inquiry_item->unit }}" class="form-control" id="unit_${$uid}" >
+                                        </div>
+                                        <div class="col-md-1 rate-container">
+                                            <label for="rate_${$uid}">Rate</label><br/>
+                                            <input type="text" name="rate[]" value="{{ $inquiry_item->rate }}" class="form-control common" id="rate_${$uid}" data-target="#total_amount_${$uid}" data-into="#quantity_${$uid}" onkeydown="calculate($(this))" onkeypress="calculate($(this))" onkeyup="calculate($(this))" onchange="calculate($(this))">
+                                        </div>
+                                        <div class="col-md-2 amount-container">
+                                            <label for="amount_${$uid}">Sub-Total</label><br/>
+                                            <input type="text" name="amount[]" value="{!! floatval($inquiry_item->amount) * intval($inquiry_item->quantity) !!}" class="form-control total n" id="total_amount_${$uid}">
+                                        </div>
+                                        <div class="col-md-1">
+                                            <label for="unit">&nbsp;</label><br/>
+                                            <button type="button" class="delete btn btn-danger"><span><i class="fas fa-trash-alt" aria-hidden="false"></i></span></button>
+                                        </div>
+                                    </div>
+                                @endforeach
                             </div>
                             <br/>
-                            <div class="row ml-3">
-                                <div class="col-md-3">
-                                    <label for="inquiry_file">Upload Inquiry Files</label><br/>
-                                    <div class="input-group mt-3">
-                                        <input name="inquiry_file[]" type="file"
-                                               class="form-control-file"
-                                               required="required" multiple>
-                                    </div>
+                            <div class="row">
+                                <div class="col-md-2 ">
+                                    <label for="discount">Discount</label><br/>
+                                    <input type="text" name="discount" class="form-control" id="discount"
+                                           value="{{ $inquiry->discount }}">
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-2 ">
                                     <label for="total">Total Amount</label><br/>
                                     <input type="text" name="total" class="form-control" id="total"
-                                           value="{{ $inquires->total }}">
+                                           value="{{ $inquiry->total }}">
                                 </div>
-                                <div class="col-md-4">
-                                    <label for="remarks">Remarks</label><br/>
-                                    <textarea class="form-control" name="remarks" id="remarks">value="{{ $inquires->remarks }}"</textarea>
+                                <div class="col-md-6">
+                                    <label for="terms_condition">Terms & Conditions</label><br/>
+                                    <textarea class="form-control" name="terms_condition" id="terms_condition">{{ $inquiry->remarks }}</textarea>
                                 </div>
                             </div>
                             <br/>
                             <div class="row">
                                 <div class="col mb-3 text-center">
-                                    <button type="submit" class="btn btn-default">Cancel</button>
+                                    <button type="reset" class="btn btn-default">Cancel</button>
                                     <span class="mr-3"></span>
                                     <button type="submit" class="btn btn-info">{{$title}}</button>
                                 </div>
                             </div>
-                        </form>
-                    </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 @stop
 
 @section('extras')
     <script type="text/javascript">
         $(document).ready(function() {
-
             let category_container = $('.category-container'),
                 item_container = $('.item-container'),
                 brand_container = $('.brand-container'),
                 quantity_container = $('.quantity-container'),
-                amount_container = $('.amount-container'),
-                rate_container = $('.rate-container'),
                 unit_container = $('.unit-container'),
+                rate_container = $('.rate-container'),
+                amount_container = $('.amount-container'),
+                add_button = $(".add_form_field"),
+                max_fields = 1000,
+                wrapper = $('.additional-products'),
                 $uid = $('.quantity').length;
-            add_button = $(".add_form_field"),
-                max_fields = 10,
-                wrapper = $('.additional-products');
+
+            // data-target="#brand_id" data-href="{{ route('item.fetch.ajax.manager') }}"
+
+
 
             var x = 1;
             $(add_button).click(function(e) {
                 e.preventDefault();
+                $uid = $('.quantity').length;
                 if (x >= max_fields) {
                     alert('You Reached the limits');
                     return false;
@@ -181,72 +217,65 @@
 
                 let $categorySelector = //'<div class="row hello">' +
                     '<div class="col-md-3 mt-3">' +
-                    '<label for="category_id">Select Category</label><br/>' +
-                    '<div class="row">' +
-                    '<div class="col-10">' +
-                    '<select name="category_id" class="form-control" id="item_category_id">' +
-                    '<option selected="selected" value>Select</option> <option value="#"></option>' +
-                    '</select>' +
-                    '</div>' +
-                    '<div class="col-2">' +
-                    '<a href="#" class="delete">' +
-                    '<i class="fas fa-trash-alt ml-2" aria-hidden="false"></i>' +
-                    '</a>' +
-                    '</div>' +
-                    '</div>' +
+                        '<label for="item_id">Select Item</label><br/>' +
+                        '<div class="row">' +
+                            '<div class="col-10">' +
+                                '<select name="item_id[]" class="form-control" id="item_id">' +
+                                    '<option selected="selected" value>Select</option> <option value="#"></option>' +
+                                '</select>' +
+                            '</div>' +
+                            '<div class="col-2">' +
+                                '<a href="#" class="delete">' +
+                                    '<i class="fas fa-trash-alt ml-2" aria-hidden="false"></i>' +
+                                '</a>' +
+                            '</div>' +
+                        '</div>' +
                     '</div>';// +
-                ;// +
-                //'</div>';
+                    //;// +
+                    //'</div>';
 
-                let $itemRow = '<div class="row mt-3 ml-3">' +
-                    '<div class="col-md-3 category-container">' +
-                    '<label for="category_id">Select Category</label><br/>' +
-                    '<select name="category_id[]" class="form-control" id="category_id">' +
-                    '<option selected="selected" value>Select</option>' +
-                    @foreach ($categories as $category)
-                        '<option value="{{ $category->id }}">{{ ucfirst($category->category_name) }}</option>'+
-                    @endforeach
-                        '</select>' +
+                let $itemRow = '<div class="row mt-3">' +
+                    '<div class="col-md-3 item-container">' +
+                    `<label for="item_id_${$uid}">Select Item </label><br/>` +
+                    `<select name="item_id[]" class="form-control" id="item_id_${$uid}" data-target="#brand_id_${$uid}" data-href="{{ route('item.fetch.ajax.manager') }}" data-spinner="#item_spinner_${$uid}" onchange="itemSelect($(this))">` +
+                        '<option selected="selected" value>Select</option>' +
+                        @foreach ($items as $item)
+                            '<option value="{{ $item->item_name }}">{{ ucfirst($item->item_name) }}</option>' +
+                        @endforeach
+                    '</select>' +
+                    `<span id="item_spinner_${$uid}"></span>` +
                     '</div>' +
-                    '<div class="col-md-2 item-container">' +
-                    '<label for="item_id">Select Item</label><br/>' +
-                    '<select name="item_id[]" class="form-control" id="item_id">' +
-                    '<option selected="selected" value>Select</option>' +
-                    @foreach ($items as $item)
-                        '<option value="{{ $item->id }}">{{ ucfirst($item->item_name) }}</option>'+
-                    @endforeach
-                        '</select>' +
-                    '</div>' +
-                    '<div class="col-md-2 brand-container">' +
-                    '<label for="brand_id">Select Brand</label><br/>' +
-                    '<select name="brand_id[]" class="form-control" id="brand_id">' +
-                    '<option selected="selected" value>Select</option>' +
-                    @foreach ($brands as $brand)
-                        '<option value="{{ $brand->id }}">{{ ucfirst($brand->brand_name) }}</option>'+
-                    @endforeach
-                        '</select>' +
-                    '</div>' +
-                    '<div class="col-md-1 quantity-container">' +
+                '<div class="col-md-3 brand-container">' +
+                    `<label for="brand_id_${$uid}">Select Brand</label><br/>` +
+                    `<select name="brand_id[]" class="form-control" id="brand_id_${$uid}">` +
+                        '<option selected="selected" value>Select</option>' +
+                        @foreach ($brands as $brand)
+                            '<option value="{{ $brand->id }}">{{ ucfirst($brand->brand_name) }}</option>' +
+                        @endforeach
+                    '</select>' +
+                '</div>' +
+                '<div class="col-md-1 quantity-container">' +
                     `<label for="quantity_${$uid}">Quantity</label><br/>` +
                     `<input type="text" name="quantity[]" class="form-control common quantity" id="quantity_${$uid}" data-target="#total_amount_${$uid}" data-into="#rate_${$uid}" onkeydown="calculate($(this))" onkeypress="calculate($(this))" onkeyup="calculate($(this))" onchange="calculate($(this))">`+
-                    '</div>' +
-                    '<div class="col-md-1 unit-container">' +
+                '</div>' +
+                '<div class="col-md-1 unit-container">' +
                     `<label for="unit_${$uid}">Unit</label><br/>` +
                     `<input type="text" name="unit[]" class="form-control" id="unit_${$uid}" >` +
-                    '</div>' +
-                    '<div class="col-md-1 rate-container">' +
+                '</div>' +
+                '<div class="col-md-1 rate-container">' +
                     `<label for="rate_${$uid}">Rate</label><br/>` +
                     `<input type="text" name="rate[]" class="form-control common" id="rate_${$uid}" data-target="#total_amount_${$uid}" data-into="#quantity_${$uid}" onkeydown="calculate($(this))" onkeypress="calculate($(this))" onkeyup="calculate($(this))" onchange="calculate($(this))">` +
-                    '</div>' +
-                    '<div class="col-md-2 amount-container">' +
+                '</div>' +
+                '<div class="col-md-2 amount-container">' +
                     `<label for="amount_${$uid}">Sub-Total</label><br/>` +
                     `<input type="text" name="amount[]" class="form-control total n" id="total_amount_${$uid}">` +
-                    '</div>' +
-                    '<div class="col-md-1">' +
+                '</div>' +
+                '<div class="col-md-1">' +
                     '<label for="unit">&nbsp;</label><br/>' +
                     '<button class="delete btn btn-danger"><span><i class="fas fa-trash-alt" aria-hidden="false"></i></span></button>' +
-                    '</div>' +
-                    '</div>';
+                '</div>' +
+            '</div>';
+
                 x++;
                 $(wrapper).append($itemRow); // add input box
             });
@@ -275,13 +304,13 @@
             }
 
             $(document).on('keyup', '.common', sumIt,total);
-            sumIt() // run when loading
+                sumIt() // run when loading
         });
         function calculate(ele) {
             let total = 0,sum = 0, result, target=$(ele.data('target')),
                 first = ele.val(), second = $(ele.data('into')).val(),
                 sub_total, sum_of_sub_total = 0, sumOfTotal = $('#total');
-            result = parseFloat(first) * parseFloat(second);
+                result = parseFloat(first) * parseFloat(second);
             if (!isNaN(result)) {
                 $(target).val(Math.round(result));
                 // Lets loop through all the total inputs
@@ -295,6 +324,25 @@
             $(target).val(0);
             sumOfTotal.val(0);
             //$('#total').val(sum_of_sub_total);
+        }
+        function itemSelect(ele) {
+            let target = ele.data('target'), href = ele.data('href'), item_id = ele.val(), spinner = ele.data('spinner'), brands;
+            $.ajax({
+                dataType: 'json',
+                url: `${href}?item=${item_id}`,
+                beforeSend: function() {
+                    $(spinner).text('Loading brands...');
+                },
+                success: function(data) {
+                    $(spinner).html('');
+                    brands += '<option>Select Brand</option>';
+                    $.each(data, function(index, json){
+                        brands += `<option value="${json.id}">${json.brand_name}</option>`;
+                    })
+                    $(target).html(brands);
+                }
+            });
+            // data-target="#brand_id" data-href="{{ route('item.fetch.ajax.manager') }}" onchange="itemSelect($(this))" onfocus="itemSelect($(this))" onblur="itemSelect($(this))">
         }
     </script>
 @stop

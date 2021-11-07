@@ -37,12 +37,22 @@ class UserController extends Controller
 
     public function edit($id)
     {
-        $user = User::find($id)->first();
+        $category = Category::all();
+        $select=[
+            'users.id','users.name','users.email','users.password','users.user_role','categories.category_name'
+        ];
+        $user = User::select()
+            ->where('users.id',$id)
+            ->leftJoin('usercategory','usercategory.user_id','=','users.id')
+            ->leftJoin('categories','usercategory.category_id','=','categories.id')
+            ->first();
+
         $data = [
             'title'    => 'Update User',
             'base_url' => env('APP_URL', 'http://127.0.0.1:8000'),
             'user'     => Auth::user(),
-            'users'    => $user
+            'users'    => $user,
+            'category' => $category
         ];
         return view('admin.user.edit', $data);
     }
@@ -67,7 +77,6 @@ class UserController extends Controller
                 route('user.list.admin')
             )->with('success', 'User already exists!!');
         }
-
 
         $data             =  $request->all();
         $user             =  new User($data);

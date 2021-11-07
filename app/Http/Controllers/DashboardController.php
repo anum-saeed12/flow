@@ -5,13 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Inquiry;
 use App\Models\Quotation;
 use App\Models\User;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
-class   DashboardController extends Controller
+class  DashboardController extends Controller
 {
     public function index()
     {
@@ -34,6 +31,13 @@ class   DashboardController extends Controller
             ->where('user_role','!=','admin')
             ->first();
         $total_items = User::select(DB::raw('COUNT(*) as total'))->first();
+        $total_open = Inquiry::select(DB::raw('COUNT(inquiries.id) as total'))
+            ->leftJoin('quotations','quotations.inquiry_id','inquiries.id')
+            ->whereNull('quotations.id')
+            ->first();
+
+        $total_quotation= Quotation::select(DB::raw('COUNT(*) as total'))->first();
+
         $data = [
             'class' => [
                 'body' => ' sidebar-mini layout-fixed'
@@ -42,7 +46,8 @@ class   DashboardController extends Controller
             'user'          => $user,
             'total_user'    => $total_user,
             'total_items'   => $total_items,
-            'currency'      => 'PKR',
+            'total_open'    => $total_open,
+            'total_quotation' => $total_quotation
         ];
         return view("admin.dashboard", $data);
     }

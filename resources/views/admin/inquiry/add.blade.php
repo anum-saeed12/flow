@@ -73,23 +73,24 @@
                             <div class="row ml-3">
                                 <div class="col-md-3 category-container">
                                     <label for="category_id">Select Category</label><br/>
-                                    <select name="category_id[]" class="form-control" id="category_id">
+                                    <select name="category_id[]" class="form-control categories" id="category_id" data-target="#item_id" data-href="{{ route('category.fetch.ajax.admin') }}" data-spinner="#category_spinner" onchange="categorySelect($(this))">
                                         <option selected="selected" value>Select</option>
                                         @foreach ($categories as $category)
                                             <option value="{{ $category->id }}">{{ ucfirst($category->category_name) }}</option>
                                         @endforeach
                                     </select>
+                                    <div id="category_spinner"></div>
                                     <div class="text-danger">@error('category_id'){{ $message }}@enderror</div>
                                 </div>
                                 <div class="col-md-2 item-container">
                                     <label for="item_id">Select Item</label><br/>
-                                    <select name="item_id[]" class="form-control" id="item_id">
-
+                                    <select name="item_id[]" class="form-control" id="item_id"  data-target="#brand_id" data-href="{{ route('item.fetch.ajax.admin') }}" data-spinner="#item_spinner" onchange="itemSelect($(this))">
                                         <option selected="selected" value>Select</option>
                                         @foreach ($items as $item)
                                             <option value="{{ $item->id }}">{{ ucfirst($item->item_name) }}</option>
                                         @endforeach
                                     </select>
+                                    <div id="item_spinner"></div>
                                     <div class="text-danger">@error('item_id'){{ $message }}@enderror</div>
                                 </div>
                                 <div class="col-md-2 brand-container">
@@ -136,7 +137,12 @@
                                            required="required" multiple>
                                 </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-2 ">
+                                    <label for="discount">Discount</label><br/>
+                                    <input type="text" name="discount" class="form-control" id="discount"
+                                           value="{{ old('discount') }}">
+                                </div>
+                                <div class="col-md-2">
                                     <label for="total">Total Amount</label><br/>
                                     <input type="text" name="total" class="form-control" id="total"
                                            value="{{ old('total') }}">
@@ -185,48 +191,32 @@
                     alert('You Reached the limits');
                     return false;
                 }
-
-                let $categorySelector = //'<div class="row hello">' +
-                    '<div class="col-md-3 mt-3">' +
-                        '<label for="category_id">Select Category</label><br/>' +
-                        '<div class="row">' +
-                            '<div class="col-10">' +
-                                '<select name="category_id" class="form-control" id="item_category_id">' +
-                                    '<option selected="selected" value>Select</option> <option value="#"></option>' +
-                                '</select>' +
-                            '</div>' +
-                            '<div class="col-2">' +
-                                '<a href="#" class="delete">' +
-                                    '<i class="fas fa-trash-alt ml-2" aria-hidden="false"></i>' +
-                                '</a>' +
-                            '</div>' +
-                        '</div>' +
-                    '</div>';// +
-                    ;// +
-                    //'</div>';
+                $uid = $('.category').length;
 
                 let $itemRow = '<div class="row mt-3 ml-3">' +
-                    '<div class="col-md-3 category-container">' +
+                '<div class="col-md-3 category-container">' +
                     '<label for="category_id">Select Category</label><br/>' +
-                    '<select name="category_id[]" class="form-control" id="category_id">' +
+                    `<select name="category_id[]" class="form-control categories" id="category_id_${$uid}" data-target="#item_id_${$uid}" data-href="{{ route('category.fetch.ajax.admin') }}" data-spinner="#category_spinner_${$uid}" onchange="categorySelect($(this))">` +
                         '<option selected="selected" value>Select</option>' +
-                    @foreach ($categories as $category)
-                    '<option value="{{ $category->id }}">{{ ucfirst($category->category_name) }}</option>'+
-                @endforeach
+                        @foreach ($categories as $category)
+                            '<option value="{{ $category->id }}">{{ ucfirst($category->category_name) }}</option>'+
+                        @endforeach
                     '</select>' +
-                    '</div>' +
+                    `<div id="category_spinner_${$uid}"></div>` +
+                '</div>' +
                 '<div class="col-md-2 item-container">' +
                     '<label for="item_id">Select Item</label><br/>' +
-                    '<select name="item_id[]" class="form-control" id="item_id">' +
+                    `<select name="item_id[]" class="form-control" id="item_id_${$uid}" data-target="#brand_id_${$uid}" data-href="{{ route('item.fetch.ajax.admin') }}" data-spinner="#item_spinner_${$uid}" onchange="itemSelect($(this))">` +
                         '<option selected="selected" value>Select</option>' +
-                    @foreach ($items as $item)
-                    '<option value="{{ $item->id }}">{{ ucfirst($item->item_name) }}</option>'+
-                @endforeach
+                        @foreach ($items as $item)
+                            '<option value="{{ $item->id }}">{{ ucfirst($item->item_name) }}</option>'+
+                        @endforeach
                     '</select>' +
+                    `<div id="item_spinner_${$uid}"></div>` +
                 '</div>' +
                 '<div class="col-md-2 brand-container">' +
                     '<label for="brand_id">Select Brand</label><br/>' +
-                    '<select name="brand_id[]" class="form-control" id="brand_id">' +
+                    `<select name="brand_id[]" class="form-control" id="brand_id_${$uid}">` +
                         '<option selected="selected" value>Select</option>' +
                     @foreach ($brands as $brand)
                    '<option value="{{ $brand->id }}">{{ ucfirst($brand->brand_name) }}</option>'+
@@ -288,7 +278,7 @@
             let total = 0,sum = 0, result, target=$(ele.data('target')),
                 first = ele.val(), second = $(ele.data('into')).val(),
                 sub_total, sum_of_sub_total = 0, sumOfTotal = $('#total');
-            result = parseFloat(first) * parseFloat(second);
+                result = parseFloat(first) * parseFloat(second);
             if (!isNaN(result)) {
                 $(target).val(Math.round(result));
                 // Lets loop through all the total inputs
@@ -305,3 +295,4 @@
         }
     </script>
 @stop
+@include('includes.selectajax')
