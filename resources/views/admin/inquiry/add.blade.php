@@ -87,7 +87,7 @@
                                     <select name="item_id[]" class="form-control" id="item_id"  data-target="#brand_id" data-href="{{ route('item.fetch.ajax.admin') }}" data-spinner="#item_spinner" onchange="itemSelect($(this))">
                                         <option selected="selected" value>Select</option>
                                         @foreach ($items as $item)
-                                            <option value="{{ $item->id }}">{{ ucfirst($item->item_name) }}</option>
+                                            <option value="{{ $item->item_name }}">{{ ucfirst($item->item_name) }}</option>
                                         @endforeach
                                     </select>
                                     <div id="item_spinner"></div>
@@ -181,16 +181,11 @@
                 unit_container = $('.unit-container'),
                 $uid = $('.quantity').length;
                 add_button = $(".add_form_field"),
-                max_fields = 10,
                 wrapper = $('.additional-products');
 
             var x = 1;
             $(add_button).click(function(e) {
                 e.preventDefault();
-                if (x >= max_fields) {
-                    alert('You Reached the limits');
-                    return false;
-                }
                 $uid = $('.category').length;
 
                 let $itemRow = '<div class="row mt-3 ml-3">' +
@@ -209,7 +204,7 @@
                     `<select name="item_id[]" class="form-control" id="item_id_${$uid}" data-target="#brand_id_${$uid}" data-href="{{ route('item.fetch.ajax.admin') }}" data-spinner="#item_spinner_${$uid}" onchange="itemSelect($(this))">` +
                         '<option selected="selected" value>Select</option>' +
                         @foreach ($items as $item)
-                            '<option value="{{ $item->id }}">{{ ucfirst($item->item_name) }}</option>'+
+                            '<option value="{{ $item->item_name }}">{{ ucfirst($item->item_name) }}</option>'+
                         @endforeach
                     '</select>' +
                     `<div id="item_spinner_${$uid}"></div>` +

@@ -4,12 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-
 class InquiryOrder extends Model
 {
     use HasFactory;
-    use SoftDeletes;
 
     protected $table = 'inquiry_order';
     protected $fillable = ['rate','category_id','item_id','brand_id','quantity','amount','inquiry_id','unit','price','created_at','updated_at'];

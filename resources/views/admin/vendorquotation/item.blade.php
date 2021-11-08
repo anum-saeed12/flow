@@ -94,10 +94,10 @@
                                             <td>{{ ucwords($item['category_name']) }}</td>
                                             <td>{{ ucwords($item['quantity']) }}</td>
                                             <td>{{ ucwords($item['unit']) }}</td>
-                                            <td>{{ ucwords($item['price']) }}</td>
+                                            <td>{{ ucwords($item['rate']) }}</td>
                                             <td>{{ ucwords($item['amount']) }}</td>
                                         </tr>
-                                        @endforeach 
+                                        @endforeach
                                         </tbody>
                                     </table>
                                 </div>

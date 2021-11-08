@@ -39,9 +39,15 @@ class UserController extends Controller
     {
         $category = Category::all();
         $select=[
-            'users.id','users.name','users.email','users.password','users.user_role','categories.category_name'
+            'users.id',
+            'users.name',
+            'users.username',
+            'users.email',
+            #'users.password',
+            'users.user_role',
+            'categories.category_name'
         ];
-        $user = User::select()
+        $user = User::select($select)
             ->where('users.id',$id)
             ->leftJoin('usercategory','usercategory.user_id','=','users.id')
             ->leftJoin('categories','usercategory.category_id','=','categories.id')
@@ -80,7 +86,7 @@ class UserController extends Controller
 
         $data             =  $request->all();
         $user             =  new User($data);
-        $user['password'] = Hash::make($request->password);
+        $user['password'] =  Hash::make($request->password);
         $user->save();
 
         if($request->category_id)
@@ -103,12 +109,12 @@ class UserController extends Controller
         $request->validate([
             'email'      => 'sometimes|required',
             'username'   => 'sometimes|required',
-            'password'   => 'sometimes|required',
+            #'password'   => 'sometimes|required',
             'user_role'  => 'sometimes|required|in:admin,sales_person,manager,sourcing_team'
         ]);
 
         $request->input('email')       &&  $user->email        = $request->input('email');
-        $request->input('password')    &&  $user->password     = $request->input('password');
+        empty($request->passowrd)      ||  $user->password     = Hash::make($request->input('password'));
         $request->input('username')    &&  $user->username     = $request->input('username');
         $request->input('user_role')   &&  $user->user_role    = $request->input('user_role');
         $user->save();

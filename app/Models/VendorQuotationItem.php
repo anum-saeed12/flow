@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class VendorQuotationItem extends Model
 {
     use HasFactory;
-    use SoftDeletes;
 
     protected $table = 'vendor_quotation_item';
     protected $fillable = ['category_id','item_id','brand_id','vendor_quotation_id','unit','amount','quantity','rate','created_at','updated_at'];

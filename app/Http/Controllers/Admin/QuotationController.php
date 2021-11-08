@@ -10,6 +10,7 @@ use App\Models\InquiryOrder;
 use App\Models\Item;
 use App\Models\Quotation;
 use App\Models\QuotationItem;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,7 +19,7 @@ use Ramsey\Uuid\Uuid;
 
 class QuotationController extends Controller
 {
-    public function customer()
+    public function customer(Request $request)
     {
         $select = [
             'quotations.id',
@@ -28,19 +29,40 @@ class QuotationController extends Controller
             'total',
             'users.name'
         ];
+
+
         $quotations = Quotation::select($select)
             ->leftJoin('quotation_item', 'quotation_item.quotation_id', '=', 'quotations.id')
             ->leftJoin('brands', 'brands.id', '=', 'quotation_item.brand_id')
             ->leftJoin('items', 'items.id', '=', 'quotation_item.item_id')
             ->leftJoin('users','users.id','=','quotations.user_id')
             ->leftJoin('customers', 'customers.id', '=', 'quotations.customer_id')
-            ->groupBy('quotations.id')
-            ->paginate($this->count);
+            ->groupBy('quotations.id');
+
+        # Applying filters
+        # 1. Applying sales person filter
+        $request->sales_person && $quotations = $quotations->where('users.id', $request->sales_person);
+        # 2. Applying customer name filter
+        $request->customer_id && $quotations = $quotations->where('customers.id', $request->customer_id);
+        # 3. Applying project name filter
+        $request->project && $quotations = $quotations->where('quotations.project_name', 'LIKE', "%$request->project%");
+        # 4. Applying start date and end date filter
+        $start_date = $request->from;
+        $end_date = $request->to;
+        $request->from && $quotations = $quotations->where('quotations.created_at', '>', $start_date);
+        $request->to && $quotations = $quotations->where('quotations.created_at', '<', $end_date);
+
+        # We have separated the paginate function so we can apply all the filters before that
+        $quotations = $quotations->paginate($this->count);
 
         $data = [
             'title'     => 'Quotations',
             'user'      => Auth::user(),
-            'quotations' => $quotations
+            'quotations' => $quotations,
+            'sales_people' => User::where('user_role','sale')->get(),
+            'customers' => Customer::all(),
+            'request' => $request,
+            'reset_url' => route('customerquotation.list.admin')
         ];
         return view('admin.quotation.customer',$data);
     }
@@ -137,7 +159,12 @@ class QuotationController extends Controller
             DB::raw("DISTINCT item_name,id"),
         ])->orderBy('id','DESC')->get();
 
-        $quotation = Quotation::select('*')
+        $select = [
+            "quotations.*",
+            "quotation_item.*",
+            "customers.*"
+        ];
+        $quotation = Quotation::select($select)
             ->join('customers','customers.id','=','quotations.customer_id')
             ->join('quotation_item','quotation_item.quotation_id','=','quotations.id')
             ->where('quotations.id', $id)
@@ -151,7 +178,7 @@ class QuotationController extends Controller
             "items.item_name"
         ];
 
-        $quotation->items = QuotationItem::select()
+        $quotation->items = QuotationItem::select($select)
             ->join('items', 'items.id', '=', 'quotation_item.item_id')
             ->where('quotation_id', $id)
             ->get();

@@ -29,7 +29,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="card card-info">
-                        <form class="form-horizontal" action="{{ route('vendorquotation.store.admin') }}" method="POST" enctype="multipart/form-data">
+                        <form class="form-horizontal" action="{{ route('vendorquotation.update.admin',$vendor_quotation->ids) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="card-body pb-0">
                                 <div class="row">
@@ -38,7 +38,7 @@
                                         <select name="vendor_id" class="form-control" id="vendor_id">
                                             <option selected="selected" value>Select</option>
                                             @foreach ($vendors as $vendor)
-                                                <option value="{{ $vendor->id }}">{{ ucfirst($vendor->vendor_name) }}</option>
+                                                <option value="{{ $vendor->id }}"{{ $vendor_quotation->vendor_name==$vendor->vendor_name ? ' selected':'' }}>{{ ucfirst($vendor->vendor_name) }}</option>
                                             @endforeach
                                         </select>
                                         <div class="text-danger">@error('vendor_id'){{ $message }}@enderror</div>
@@ -46,13 +46,13 @@
                                     <div class="col-md-3">
                                         <label for="project_name">Project Name</label><br/>
                                         <input type="text" name="project_name" class="form-control" id="project_name"
-                                               value="{{ old('quotation_ref') }}">
+                                               value="{{ $vendor_quotation->project_name }}">
                                         <div class="text-danger">@error('project_name'){{ $message }}@enderror</div>
                                     </div>
                                     <div class="col-md-3">
                                         <label for="quotation_ref">Quotation Ref#</label><br/>
                                         <input type="text" name="quotation_ref" class="form-control" id="quotation_ref"
-                                               value="{{ old('quotation_ref') }}">
+                                               value="{{ $vendor_quotation->quotation_ref }}">
                                         <div class="text-danger">@error('quotation_ref'){{ $message }}@enderror</div>
                                     </div>
 
@@ -69,7 +69,7 @@
                                         <select name="category_id[]" class="form-control categories" id="category_id" data-target="#item_id" data-href="{{ route('category.fetch.ajax.admin') }}" data-spinner="#category_spinner" onchange="categorySelect($(this))">
                                             <option selected="selected" value>Select Category</option>
                                             @foreach ($categories as $category)
-                                                <option value="{{ $category->id }}">{{ ucfirst($category->category_name) }}</option>
+                                                <option value="{{ $category->id }}"{{ $vendor_quotation->items[0]->category_id==$category->id ? ' selected':'' }}>{{ ucfirst($category->category_name ) }}</option>
                                             @endforeach
                                         </select>
                                         <div id="category_spinner"></div>
@@ -80,7 +80,7 @@
                                         <select name="item_id[]" class="form-control" id="item_id"  data-target="#brand_id" data-href="{{ route('item.fetch.ajax.admin') }}" data-spinner="#item_spinner" onchange="itemSelect($(this))">
                                             <option selected="selected" value>Select Item</option>
                                             @foreach ($items as $item)
-                                                <option value="{{ $item->id }}">{{ ucfirst($item->item_name) }}</option>
+                                                <option value="{{ $item->item_name }}"{{ $vendor_quotation->items[0]->item_name==$item->item_name ? ' selected':'' }}>{{ ucfirst($item->item_name ) }}</option>
                                             @endforeach
                                         </select>
                                         <div id="item_spinner"></div>
@@ -91,26 +91,26 @@
                                         <select name="brand_id[]" class="form-control" id="brand_id">
                                             <option selected="selected" value>Select Brand</option>
                                             @foreach ($brands as $brand)
-                                                <option value="{{ $brand->id }}">{{ ucfirst($brand->brand_name) }}</option>
+                                                <option value="{{ $brand->id }}"{{ $vendor_quotation->items[0]->brand_id==$brand->id  ? ' selected':'' }}>{{ ucfirst($brand->brand_name  ) }}</option>
                                             @endforeach
                                         </select>
                                         <div class="text-danger">@error('brand_id'){{ $message }}@enderror</div>
                                     </div>
                                     <div class="col-md-1 quantity-container">
                                         <label for="quantity">Quantity</label><br/>
-                                        <input type="text" name="quantity[]" class="form-control with_out" id="quantity" data-target="#total_amount" data-into="#rate" onkeydown="calculate($(this))" onkeypress="calculate($(this))" onkeyup="calculate($(this))" onchange="calculate($(this))">
+                                        <input type="text" name="quantity[]" class="form-control with_out" id="quantity" value="{{ $vendor_quotation->items[0]->quantity }}" data-target="#total_amount" data-into="#rate" onkeydown="calculate($(this))" onkeypress="calculate($(this))" onkeyup="calculate($(this))" onchange="calculate($(this))">
                                     </div>
                                     <div class="col-md-1 unit-container">
                                         <label for="unit">Unit</label><br/>
-                                        <input type="text" name="unit[]" class="form-control" id="unit">
+                                        <input type="text" name="unit[]" class="form-control" id="unit" value="{{ $vendor_quotation->items[0]->unit }}">
                                     </div>
                                     <div class="col-md-1 rate-container">
                                         <label for="rate">Rate</label><br/>
-                                        <input type="text" name="rate[]" class="form-control with_out" id="rate" data-target="#total_amount" data-into="#quantity" onkeydown="calculate($(this))" onkeypress="calculate($(this))" onkeyup="calculate($(this))" onchange="calculate($(this))">
+                                        <input type="text" name="rate[]" class="form-control with_out" id="rate" value="{{ $vendor_quotation->items[0]->rate }}" data-target="#total_amount" data-into="#quantity" onkeydown="calculate($(this))" onkeypress="calculate($(this))" onkeyup="calculate($(this))" onchange="calculate($(this))">
                                     </div>
                                     <div class="col-md-1 amount-container">
                                         <label for="amount">Sub-Total</label><br/>
-                                        <input type="text" name="amount[]" class="form-control total n" id="amount">
+                                        <input type="text" name="amount[]" class="form-control total n" value="{!! floatval($vendor_quotation->items[0]->rate) * intval($vendor_quotation->items[0]->quantity) !!}" id="amount">
                                     </div>
                                     <div class="col-md-1">
                                         <label for="button">&nbsp;</label><br/>
@@ -118,21 +118,70 @@
                                     </div>
                                 </div>
                                 <div class="additional-products">
+                                    @foreach($vendor_quotation->items as $vendor_quotation_item)
+                                        @php if (isset($loop) && $loop->iteration <= 1) continue; @endphp
+                                        <div class="row mt-3">
+                                            <div class="col-md-3 category-container">
+                                                <label for="category_id">Select Category</label><br/>
+                                                <select name="category_id[]" class="form-control" id="category_id_{{ $loop->iteration }}" data-target="#item_id_{{ $loop->iteration }}" data-href="{{ route('category.fetch.ajax.admin') }}" data-spinner="#item_spinner_{{ $loop->iteration }}" onchange="categorySelect($(this))">
+                                                    <option selected="selected" value>Select</option>
+                                                    @foreach ($categories as $category)
+                                                        <option value="{{ $category->id }}"{{ $category->id == $vendor_quotation_item->category_id ? ' selected':'' }}>{{ ucfirst($category->category_name) }}</option>
+                                                    @endforeach
+                                                </select>
+                                                <div id="category_spinner"></div>
+                                                <div class="text-danger">@error('category_id'){{ $message }}@enderror</div>
+                                            </div>
+                                            <div class="col-md-2 item-container">
+                                                <label for="item_id_${$uid}">Select Item </label><br/>
+                                                <select name="item_id[]" class="form-control" id="item_id_{{ $loop->iteration }}" data-target="#brand_id_{{ $loop->iteration }}" data-href="{{ route('item.fetch.ajax.admin') }}" data-spinner="#item_spinner_{{ $loop->iteration }}" onchange="itemSelect($(this))">
+                                                    <option selected="selected" value>Select</option>
+                                                    @foreach ($items as $item)
+                                                        <option value="{{ $item->item_name }}"{{ $vendor_quotation_item->item_name == $item->item_name ? " selected":'' }}>{{ ucfirst($item->item_name) }}</option>
+                                                    @endforeach
+                                                </select>
+                                                <span id="item_spinner_${$uid}"></span>
+                                            </div>
+                                            <div class="col-md-2 brand-container">
+                                                <label for="brand_id_{{ $loop->iteration }}">Select Brand</label><br/>
+                                                <select name="brand_id[]" class="form-control" id="brand_id_{{ $loop->iteration }}">
+                                                    <option selected="selected" value>Select</option>
+                                                    @foreach (fetchBrandsForItem($vendor_quotation_item->item_name) as $brand)
+                                                        <option value="{{ $brand->id }}"{{ $brand->id == $vendor_quotation_item->brand_id ? ' selected':'' }}>{{ ucfirst($brand->brand_name) }}</option>
+                                                    @endforeach
+                                                    {{--    @foreach ($brands as $brand)
+                                                            <option value="{{ $brand->brand_name }}"{{ $vendor_quotation_item->brand_name == $brand->brand_name ? " selected":'' }}>{{ ucfirst($brand->brand_name) }}</option>
+                                                        @endforeach--}}
+                                                </select>
+                                            </div>
+                                            <div class="col-md-1 quantity-container">
+                                                <label for="quantity_{{ $loop->iteration }}">Quantity</label><br/>
+                                                <input type="text" name="quantity[]" value="{{ $vendor_quotation_item->quantity }}" class="form-control common quantity" id="quantity_{{ $loop->iteration }}" data-target="#total_amount_{{ $loop->iteration }}" data-into="#rate_{{ $loop->iteration }}" onkeydown="calculate($(this))" onkeypress="calculate($(this))" onkeyup="calculate($(this))" onchange="calculate($(this))">
+                                            </div>
+                                            <div class="col-md-1 unit-container">
+                                                <label for="unit_{{ $loop->iteration }}">Unit</label><br/>
+                                                <input type="text" name="unit[]" value="{{ $vendor_quotation_item->unit }}" class="form-control" id="unit_{{ $loop->iteration }}" >
+                                            </div>
+                                            <div class="col-md-1 rate-container">
+                                                <label for="rate_{{ $loop->iteration }}">Rate</label><br/>
+                                                <input type="text" name="rate[]" value="{{ $vendor_quotation_item->rate }}" class="form-control common" id="rate_{{ $loop->iteration }}" data-target="#total_amount_{{ $loop->iteration }}" data-into="#quantity_{{ $loop->iteration }}" onkeydown="calculate($(this))" onkeypress="calculate($(this))" onkeyup="calculate($(this))" onchange="calculate($(this))">
+                                            </div>
+                                            <div class="col-md-1 amount-container">
+                                                <label for="amount_{{ $loop->iteration }}">Sub-Total</label><br/>
+                                                <input type="text" name="amount[]" value="{!! floatval($vendor_quotation_item->rate) * intval($vendor_quotation_item->quantity) !!}" class="form-control total n" id="total_amount_{{ $loop->iteration }}">
+                                            </div>
+                                            <div class="col-md-1">
+                                                <label for="unit">&nbsp;</label><br/>
+                                                <button type="button" class="delete btn btn-danger"><span><i class="fas fa-trash-alt" aria-hidden="false"></i></span></button>
+                                            </div>
+                                        </div>
+                                    @endforeach
                                 </div>
                                 <br/>
                                 <div class="row">
-                                    <div class="col-md-4">
-                                        <label for="quotation_pdf">Upload Quotation PDF</label><br/>
-                                        <div class="input-group mt-3">
-                                            <input name="quotation_pdf" type="file"
-                                                   class="form-control-file"
-                                                   required="required" >
-                                        </div>
-
-                                    </div>
                                     <div class="col-md-4 ">
                                         <label for="total">Total Amount</label><br/>
-                                        <input type="text" name="total" class="form-control" id="total">
+                                        <input type="text" name="total" class="form-control" id="total" value="{{ $vendor_quotation->totals }}">
                                     </div>
                                 </div>
 
@@ -208,7 +257,7 @@
                     `<select name="item_id[]" class="form-control" id="item_id_${$uid}" data-target="#brand_id_${$uid}" data-href="{{ route('item.fetch.ajax.admin') }}" data-spinner="#item_spinner_${$uid}" onchange="itemSelect($(this))">` +
                     '<option selected="selected" value>Select</option>' +
                     @foreach ($items as $item)
-                        '<option value="{{ $item->id }}">{{ ucfirst($item->item_name) }}</option>'+
+                        '<option value="{{ $item->item_name }}">{{ ucfirst($item->item_name) }}</option>'+
                     @endforeach
                         '</select>' +
                     `<div id="item_spinner_${$uid}"></div>` +
@@ -292,6 +341,8 @@
             sumOfTotal.val(0);
             //$('#total').val(sum_of_sub_total);
         }
-
     </script>
 @stop
+@include('includes.selectajax')
+
+

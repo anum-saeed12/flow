@@ -26,7 +26,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="card card-info">
-                        <form class="form-horizontal" action="{{ route('quotation.store.admin') }}" method="POST">
+                        <form class="form-horizontal" action="{{ route('quotation.update.admin',$quotation->id) }}" method="POST">
                             @csrf
                             <div class="card-body pb-0">
                                 <div class="row">
@@ -65,7 +65,7 @@
                                         <select name="item_id[]" class="form-control trigger" id="item_id" data-target="#brand_id" data-href="{{ route('item.fetch.ajax.admin') }}" data-spinner="#item_spinner" onchange="itemSelect($(this))">
                                             <option selected="selected" value>Select</option>
                                             @foreach ($items as $item)
-                                                <option value="{{ $item->id }}"{{ $quotation->items[0]->item_id==$item->id ? ' selected':'' }}>{{ ucfirst($item->item_name) }}</option>
+                                                <option value="{{ $item->item_name }}"{{ $quotation->items[0]->item_id==$item->id ? ' selected':'' }}>{{ ucfirst($item->item_name) }}</option>
                                             @endforeach
                                         </select>
                                         <div id="item_spinner"></div>
@@ -141,7 +141,7 @@
                                             </div>
                                             <div class="col-md-2 amount-container">
                                                 <label for="amount_{{ $loop->iteration }}">Sub-Total</label><br/>
-                                                <input type="text" name="amount[]" value="{!! floatval($quotation_item->amount) * intval($quotation_item->quantity) !!}" class="form-control total n" id="total_amount_{{ $loop->iteration }}">
+                                                <input type="text" name="amount[]" value="{!! floatval($quotation_item->rate) * intval($quotation_item->quantity) !!}" class="form-control total n" id="total_amount_{{ $loop->iteration }}">
                                             </div>
                                             <div class="col-md-1">
                                                 <label for="unit">&nbsp;</label><br/>
@@ -237,7 +237,7 @@
                     `<select name="item_id[]" class="form-control" id="item_id_${$uid}" data-target="#brand_id_${$uid}" data-href="{{ route('item.fetch.ajax.admin') }}" data-spinner="#item_spinner_${$uid}" onchange="itemSelect($(this))">` +
                     '<option selected="selected" value>Select</option>' +
                     @foreach ($items as $item)
-                        '<option value="{{ $item->id }}">{{ ucfirst($item->item_name) }}</option>' +
+                        '<option value="{{ $item->item_name }}">{{ ucfirst($item->item_name) }}</option>' +
                     @endforeach
                         '</select>' +
                     `<span id="item_spinner_${$uid}"></span>` +

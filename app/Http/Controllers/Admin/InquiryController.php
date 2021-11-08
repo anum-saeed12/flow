@@ -120,7 +120,6 @@ class InquiryController extends Controller
 
     public function store(Request $request)
     {
-
         $request->validate([
             'customer_id'    => 'required',
             'project_name'   => 'required',
@@ -260,10 +259,14 @@ class InquiryController extends Controller
         $save = [];
 
         foreach($categories as $index => $category) {
+             $item_detail = Item::select('*')
+                ->where('item_name',$items[$index])
+                ->where('brand_id', $brands[$index])
+                ->first();
             $inquiry_item = [
                 'inquiry_id'   => $inquiry->id,
                 'category_id'  => $category,
-                'item_id'      => $items[$index],
+                'item_id'      => $item_detail->id,
                 'brand_id'     => $brands[$index],
                 'quantity'     => $quantities[$index],
                 'unit'         => $units[$index],
@@ -294,7 +297,13 @@ class InquiryController extends Controller
             DB::raw("DISTINCT item_name,id"),
         ])->orderBy('id','DESC')->get();
 
-        $inquiry = Inquiry::select('*')
+        $select = [
+            "customers.*",
+            "inquiry_order.*",
+            "inquiries.*",
+        ];
+
+        $inquiry = Inquiry::select($select)
             ->join('customers','customers.id','=','inquiries.customer_id')
             ->join('inquiry_order','inquiry_order.inquiry_id','=','inquiries.id')
             ->where('inquiries.id', $id)

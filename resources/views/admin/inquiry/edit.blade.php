@@ -25,9 +25,6 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
-                @if($errors->any())
-                    {!! implode('', $errors->all('<div class="alert alert-danger mb-3">:message</div>')) !!}
-                @endif
                 <div class="card card-info">
                     <form class="form-horizontal" action="{{ route('inquiry.update.admin',$inquiry->id) }}" method="POST">
                         @csrf
@@ -86,7 +83,7 @@
                                     <select name="item_id[]" class="form-control trigger" id="item_id" data-target="#brand_id" data-href="{{ route('item.fetch.ajax.admin') }}" data-spinner="#item_spinner" onchange="itemSelect($(this))">
                                         <option selected="selected" value>Select</option>
                                         @foreach ($items as $item)
-                                            <option value="{{ $item->id }}"{{ $inquiry->items[0]->item_name==$item->item_name ? ' selected':'' }}>{{ ucfirst($item->item_name) }}</option>
+                                            <option value="{{ $item->item_name }}"{{ $inquiry->items[0]->item_name==$item->item_name ? ' selected':'' }}>{{ ucfirst($item->item_name) }}</option>
                                         @endforeach
                                     </select>
                                     <div id="item_spinner"></div>
@@ -114,7 +111,7 @@
                                 </div>
                                 <div class="col-md-2 amount-container">
                                     <label for="amount">Sub-Total</label><br/>
-                                    <input type="text" name="amount[]" value="{!! floatval($inquiry->items[0]->amount) * intval($inquiry->items[0]->quantity) !!}" class="form-control total n" id="amount">
+                                    <input type="text" name="amount[]" value="{!! floatval($inquiry->items[0]->rate) * intval($inquiry->items[0]->quantity) !!}" class="form-control total n" id="amount">
                                 </div>
                                 <div class="col-md-1">
                                     <label for="unit">&nbsp;</label><br/>
@@ -141,7 +138,7 @@
                                             <select name="item_id[]" class="form-control" id="item_id_{{ $loop->iteration }}" data-target="#brand_id_{{ $loop->iteration }}" data-href="{{ route('item.fetch.ajax.admin') }}" data-spinner="#item_spinner_{{ $loop->iteration }}" onchange="itemSelect($(this))">
                                                 <option selected="selected" value>Select</option>
                                                 @foreach ($items as $item)
-                                                    <option value="{{ $item->id }}"{{ $inquiry_item->item_name == $item->item_name ? " selected":'' }}>{{ ucfirst($item->item_name) }}</option>
+                                                    <option value="{{ $item->item_name }}"{{ $inquiry_item->item_name == $item->item_name ? " selected":'' }}>{{ ucfirst($item->item_name) }}</option>
                                                 @endforeach
                                             </select>
                                             <span id="item_spinner_${$uid}"></span>
@@ -256,7 +253,7 @@
                     `<select name="item_id[]" class="form-control " id="item_id_${$uid}" data-target="#brand_id_${$uid}" data-href="{{ route('item.fetch.ajax.admin') }}" data-spinner="#item_spinner_${$uid}" onchange="itemSelect($(this))">` +
                     '<option selected="selected" value>Select</option>' +
                     @foreach ($items as $item)
-                        '<option value="{{ $item->id }}">{{ ucfirst($item->item_name) }}</option>'+
+                        '<option value="{{ $item->item_name }}">{{ ucfirst($item->item_name) }}</option>'+
                     @endforeach
                         '</select>' +
                     `<div id="item_spinner_${$uid}"></div>` +

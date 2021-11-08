@@ -80,7 +80,7 @@
                                     <select name="item_id[]" class="form-control" id="item_id"  data-target="#brand_id" data-href="{{ route('item.fetch.ajax.admin') }}" data-spinner="#item_spinner" onchange="itemSelect($(this))">
                                         <option selected="selected" value>Select Item</option>
                                         @foreach ($items as $item)
-                                            <option value="{{ $item->id }}">{{ ucfirst($item->item_name) }}</option>
+                                            <option value="{{ $item->item_name }}">{{ ucfirst($item->item_name) }}</option>
                                         @endforeach
                                     </select>
                                     <div id="item_spinner"></div>
@@ -208,7 +208,7 @@
                     `<select name="item_id[]" class="form-control" id="item_id_${$uid}" data-target="#brand_id_${$uid}" data-href="{{ route('item.fetch.ajax.admin') }}" data-spinner="#item_spinner_${$uid}" onchange="itemSelect($(this))">` +
                     '<option selected="selected" value>Select</option>' +
                     @foreach ($items as $item)
-                        '<option value="{{ $item->id }}">{{ ucfirst($item->item_name) }}</option>'+
+                        '<option value="{{ $item->item_name }}">{{ ucfirst($item->item_name) }}</option>'+
                     @endforeach
                         '</select>' +
                     `<div id="item_spinner_${$uid}"></div>` +
@@ -295,6 +295,6 @@
 
     </script>
 @stop
-
+@include('includes.selectajax')
 
 

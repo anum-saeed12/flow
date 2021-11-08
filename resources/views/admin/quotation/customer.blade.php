@@ -51,17 +51,17 @@
                                 </form>
                             </div>
                             <div class="col-md-6 text-right pr-md-4">
-                                <form method="Get" action="" style="display:inline-block;vertical-align:top;" class="mr-2">
+                                <div class="mr-2" style="display:inline-block;vertical-align:top;">
                                     <div class="input-group">
-                                        <input type="text" id="myInput" onkeyup="myFunction()" placeholder=" Search" class="form-control"
+                                        <input type="text" id="myInput" onkeyup="myFunction()" placeholder=" Quick find" class="form-control"
                                                aria-label="Search">
                                         <div class="input-group-append">
-                                            <button class="btn btn-secondary" type="submit"><i
+                                            <button class="btn btn-secondary" type="button"><i
                                                     class="fas fa-search"></i>
                                             </button>
                                         </div>
                                     </div>
-                                </form>
+                                </div>
                                 <a href="{{ route('quotation.add.admin') }}" class="btn btn-success"><i class="fa fa-plus-circle mr-1"></i> Add New</a>
 
                             </div>
@@ -79,7 +79,7 @@
                                 </tr>
                                 </thead>
                                 <tbody id="myTable">
-                                @foreach($quotations as $quotation)
+                                @forelse($quotations as $quotation)
                                     <tr style="cursor:pointer" class="no-select" data-toggle="modal"
                                         data-href="{{ route('quotation.view.admin',$quotation->id) }}">
                                         <td><a href="{{ route('quotation.view.admin',$quotation->id) }}">{{ $loop->iteration }}</td>
@@ -93,7 +93,11 @@
                                             <a class="bg-danger list-btn"  href="{{ route('quotation.delete.admin',$quotation->id) }}" title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
                                         </td>
                                     </tr>
-                                @endforeach
+                                @empty
+                                    <tr>
+                                        <td colspan="7" class="py-3 text-center">No quotations found</td>
+                                    </tr>
+                                @endforelse
                                 </tbody>
                             </table>
                         </div>

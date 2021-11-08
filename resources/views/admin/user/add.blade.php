@@ -102,6 +102,7 @@
     <script>
         $(function(){
             $('.optional-trigger').change(function(){
+                // .data('abc') = data-abc
                 let target = $($(this).data('target')),
                     targetRequired = $($(this).data('target-required')),
                     trigger = $(this).data('trigger-value'),
@@ -113,6 +114,7 @@
                     return false
                 }
                 targetRequired.removeAttr('required');
+                targetRequired.val('');
                 return target.hide();
             });
         });
