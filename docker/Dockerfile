@@ -1,5 +1,6 @@
-FROM alpine:3.11
+#FROM alpine:3.11
 # FROM php:7.3-fpm-alpine
+FROM php:8.0.5-fpm-alpine
 LABEL Description="Lightweight container with Nginx 1.16 & PHP-FPM based on Alpine Linux."
 
 ARG NGINX_PORT=8080
@@ -10,9 +11,9 @@ ARG OB_WEB_TOOLS_S3=https://${APP_NAME}-web-tools.s3-eu-west-1.amazonaws.com/
 # ARG NEWRELIC_FILE_EXT=.tar.gz
 
 # Install packages
-RUN apk --no-cache add php7 php7-fpm php7-mysqli php7-json php7-openssl php7-curl php7-iconv php7-tokenizer \
-    php7-zlib php7-xml php7-phar php7-intl php7-dom php7-xmlreader php7-ctype php7-session php7-fileinfo \
-    php7-mbstring php7-gd php7-pdo php7-pdo_mysql php7-pecl-redis nginx nginx-mod-http-geoip supervisor curl vim
+RUN apk --no-cache add php8 php8-fpm php8-mysqli php8-json php8-openssl php8-curl php8-iconv php8-tokenizer \
+    php8-zlib php8-xml php8-phar php8-intl php8-dom php8-xmlreader php8-ctype php8-session php8-fileinfo \
+    php8-mbstring php8-gd php8-pdo php8-pdo_mysql php8-pecl-redis nginx nginx-mod-http-geoip supervisor curl vim
 
 #RUN docker-php-ext-install sockets pdo_mysql opcache
 #
@@ -41,9 +42,9 @@ RUN chown -R nginx.nginx /var/www/${APP_NAME} && \
 VOLUME /var/www/${APP_NAME}
 
 # Configure PHP-FPM
-COPY docker/config/fpm-pool.conf /etc/php7/php-fpm.d/www.conf
-COPY docker/config/php.ini /etc/php7/conf.d/custom.ini
-COPY docker/config/newrelic.ini /etc/php7/conf.d/newrelic.ini
+COPY docker/config/fpm-pool.conf /etc/php8/php-fpm.d/www.conf
+COPY docker/config/php.ini /etc/php8/conf.d/custom.ini
+COPY docker/config/newrelic.ini /etc/php8/conf.d/newrelic.ini
 
 # Configure supervisord
 COPY docker/config/supervisord.conf /etc/supervisord.conf
