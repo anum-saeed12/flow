@@ -10,9 +10,11 @@ use App\Models\Inquiry;
 use App\Models\InquiryDocument;
 use App\Models\InquiryOrder;
 use App\Models\Item;
+use App\Models\UserCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Ramsey\Uuid\Uuid;
 
@@ -23,7 +25,7 @@ class InquiryController extends Controller
         $select = [
             'inquiries.id','customer_name', 'project_name', 'item_description', 'amount', 'users.name', 'date', 'timeline'
         ];
-        $inquires = Inquiry::select($select)
+        $inquiries = Inquiry::select($select)
             ->leftJoin('customers','customers.id','=','inquiries.customer_id')
             ->leftJoin('inquiry_documents','inquiry_documents.inquiry_id','=','inquiries.id')
             ->leftJoin('inquiry_order','inquiry_order.inquiry_id', '=', 'inquiries.id')
@@ -37,16 +39,53 @@ class InquiryController extends Controller
         $data = [
             'title'   => 'View Inquires',
             'user'    => Auth::user(),
-            'inquires'=> $inquires
+            'inquiries' => $inquiries
         ];
-        return view('team.inquiry.view',$data);
+        return view('team.inquiry.view', $data);
     }
 
     public function open()
     {
+        $select = [
+            'customers.customer_name',
+            'inquiries.id',
+            'inquiries.project_name',
+            'inquiries.currency',
+            'inquiries.total',
+            'inquiries.date',
+            'inquiries.timeline',
+            'users.name',
+            #'categories.name',
+            DB::raw("GROUP_CONCAT(categories.category_name) as category_names"),
+            #'items.item_description',
+            DB::raw("(
+                CASE
+                    WHEN `quotations`.`id` iS NULL
+                        THEN 'open'
+                    ELSE 'close'
+                END
+            ) as 'inquiry_status'"),
+            DB::raw("COUNT(inquiry_order.id) as item_count"),
+            DB::raw("SUM(inquiry_order.amount) as amount")
+        ];
+        $inquiries = Inquiry::select($select)
+            ->leftJoin('customers','customers.id','=','inquiries.customer_id')
+            ->leftJoin('inquiry_documents','inquiry_documents.inquiry_id','=','inquiries.id')
+            ->leftJoin('inquiry_order','inquiry_order.inquiry_id', '=', 'inquiries.id')
+            #->leftJoin('brands','brands.id' ,'=', 'inquiry_order.brand_id')
+            ->leftJoin('categories', 'categories.id' ,'=', 'inquiry_order.category_id')
+            ->leftJoin('users', 'users.id' ,'=', 'inquiries.user_id')
+            #->leftJoin('items', 'items.id' ,'=', 'inquiry_order.item_id')
+            ->leftJoin('quotations', 'quotations.inquiry_id' ,'=', 'inquiries.id')
+            ->whereNull('quotations.id')
+            ->whereIn('categories.id', UserCategory::select('category_id as id')
+            ->where('user_id', Auth::id())->get())
+            ->groupBy('inquiries.id','inquiry_order.inquiry_id')
+            ->paginate($this->count);
         $data = [
             'title'   => 'Open Inquires',
             'user'    => Auth::user(),
+            'inquiries' => $inquiries,
         ];
         return view('team.inquiry.open',$data);
     }
@@ -163,5 +202,67 @@ class InquiryController extends Controller
             'user'     => Auth::user(),
         ];
         return view('team.inquiry.edit', $data);
+    }
+
+    public function view($id)
+    {
+        $select = [
+            'inquiries.id',
+            'inquiries.inquiry',
+            'inquiries.project_name',
+            'inquiries.date',
+            'inquiries.timeline',
+            'inquiries.currency',
+            'inquiries.discount',
+            'inquiries.remarks',
+            'inquiries.created_at',
+            #'items.*',
+            #'categories.*',
+            #'brands.*',
+            #'inquiry_order.*',
+            'customers.customer_name',
+            'customers.address',
+            'customers.attention_person',
+            DB::raw("SUM(inquiry_order.amount) as total"),
+        ];
+        $inquiry = Inquiry::select($select)
+            ->leftJoin('customers','customers.id','=','inquiries.customer_id')
+            #->leftJoin('inquiry_documents','inquiry_documents.inquiry_id','=','inquiries.id')
+            ->leftJoin('inquiry_order','inquiry_order.inquiry_id', '=', 'inquiries.id')
+            #->leftJoin('brands','brands.id' ,'=', 'inquiry_order.brand_id')
+            #->leftJoin('categories', 'categories.id' ,'=', 'inquiry_order.category_id')
+            #->leftJoin('users', 'users.id' ,'=', 'inquiries.user_id')
+            #->leftJoin( 'items','items.id' ,'=', 'inquiry_order.item_id')
+            ->where('inquiries.id', $id)
+            ->whereIn('inquiry_order.category_id', UserCategory::select('category_id')->where('user_id', Auth::id())->get())
+            ->groupBy('inquiries.id','inquiry_order.inquiry_id')
+            ->first();
+
+        if (!$inquiry) return redirect()->back()->with("error","Inquiry not found!");
+
+        $select_items = [
+            "inquiry_order.quantity",
+            "inquiry_order.unit",
+            "inquiry_order.rate",
+            "inquiry_order.amount",
+            "items.item_name",
+            "items.item_description",
+            "brands.brand_name",
+        ];
+        $inquiry->items = InquiryOrder::select($select_items)
+            ->leftJoin('brands', 'brands.id', '=', 'inquiry_order.brand_id')
+            ->leftJoin('items', 'items.id', '=', 'inquiry_order.item_id')
+            ->where('inquiry_id', $id)
+            # The line below is a where clause which will only fetch the records for the specified category_id
+            # In our case, we get the category_id from the userCategory table which is linked to the user_id
+            ->whereIn('inquiry_order.category_id', UserCategory::select('category_id')->where('user_id', Auth::id())->get())
+            ->get();
+
+        $data = [
+            'title'   => 'View Inquires',
+            'user'    => Auth::user(),
+            'inquiry'=> $inquiry
+        ];
+        return view('team.inquiry.item',$data);
     }
 }

@@ -85,7 +85,7 @@ class InquiryController extends Controller
     public function open()
     {
 
-    $select = [
+        $select = [
             'customers.customer_name',
             'inquiries.id',
             'inquiries.project_name',
@@ -93,6 +93,7 @@ class InquiryController extends Controller
             'inquiries.date',
             'inquiries.timeline',
             'users.name',
+            'users.id',
             'items.item_description',
             DB::raw("(
                 CASE
@@ -100,7 +101,8 @@ class InquiryController extends Controller
                         THEN 'open'
                     ELSE 'close'
                 END
-            ) as 'inquiry_status'")
+            ) as 'inquiry_status'"),
+            DB::raw("COUNT(inquiry_order.id) as item_count")
         ];
         $inquires = Inquiry::select($select)
             ->leftJoin('customers','customers.id','=','inquiries.customer_id')
