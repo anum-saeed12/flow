@@ -5,7 +5,7 @@ LABEL Description="Lightweight container with Nginx 1.16 & PHP-FPM based on Alpi
 
 ARG NGINX_PORT=8080
 ARG PHP_FPM_PORT=9090
-ARG APP_NAME=omnibiz
+ARG APP_NAME=buildcon
 ARG OB_WEB_TOOLS_S3=https://${APP_NAME}-web-tools.s3-eu-west-1.amazonaws.com/
 # ARG NEWRELIC_FILE=newrelic-php5-9.10.0.262-linux-musl
 # ARG NEWRELIC_FILE_EXT=.tar.gz
