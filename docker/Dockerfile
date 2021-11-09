@@ -1,6 +1,6 @@
-FROM alpine:3.11
+#FROM alpine:3.11
 # FROM php:7.3-fpm-alpine
-#FROM php:8.0.5-fpm-alpine
+FROM php:8.0.5-fpm-alpine
 LABEL Description="Lightweight container with Nginx 1.16 & PHP-FPM based on Alpine Linux."
 
 ARG NGINX_PORT=8080
