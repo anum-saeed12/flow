@@ -280,6 +280,7 @@ class VendorQuotationController extends Controller
             ->where('vendor_quotation.id',$id)
             ->leftJoin('vendor_quotation_item', 'vendor_quotation_item.vendor_quotation_id', '=', 'vendor_quotation.id')
             ->leftJoin('vendors', 'vendor_quotation.vendor_id', '=', 'vendors.id')
+            ->leftJoin('items', 'items.id', '=', 'vendor_quotation_item.item_id')
             ->leftJoin('users', 'users.id', '=', 'vendor_quotation.user_id')
             ->leftJoin('categories', 'categories.id', '=', 'vendor_quotation_item.category_id')
             ->get();

@@ -76,6 +76,7 @@
                                         <thead>
                                         <tr>
                                             <th>Sr.no</th>
+                                            <th>Item Name</th>
                                             <th>Item Description</th>
                                             <th>Brand</th>
                                             <th>Quantity</th>
@@ -88,6 +89,7 @@
                                         @foreach($quotation as $item)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
+                                            <td>{{ ucwords($item->item_name) }}</td>
                                             <td>{{ ucwords($item->item_description) }}</td>
                                             <td>{{ ucwords($item->brand_name) }}</td>
                                             <td>{{ ucwords($item->quantity) }}</td>

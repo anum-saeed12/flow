@@ -10,6 +10,7 @@ use App\Models\Inquiry;
 use App\Models\InquiryDocument;
 use App\Models\InquiryOrder;
 use App\Models\Item;
+use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -338,7 +339,16 @@ class InquiryController extends Controller
 
     public function view($id)
     {
-        $inquires = Inquiry::select('*')
+        $select=[
+            'inquiries.*',
+            'inquiries.id as unique',
+            'items.*',
+            'categories.*',
+            'brands.*',
+            'inquiry_order.*',
+            'customers.*',
+        ];
+        $inquires = Inquiry::select($select)
             ->where('inquiries.id',$id)
             ->leftJoin('customers','customers.id','=','inquiries.customer_id')
             ->leftJoin('inquiry_documents','inquiry_documents.inquiry_id','=','inquiries.id')
@@ -349,6 +359,7 @@ class InquiryController extends Controller
             ->leftJoin( 'items','items.id' ,'=', 'inquiry_order.item_id')
             ->groupBy('inquiries.id','inquiry_order.inquiry_id')
             ->get();
+
 
         $data = [
             'title'   => 'View Inquires',
@@ -366,5 +377,42 @@ class InquiryController extends Controller
         return redirect(
             route('inquiry.list.admin')
         )->with('success', 'Inquiry deleted successfully!');
+    }
+
+    public function pdfinquiry($id)
+    {
+        $select=[
+            'inquiries.*',
+            'inquiries.created_at as creationdate',
+            'inquiries.id as unique',
+            'items.*',
+            'categories.*',
+            'brands.*',
+            'inquiry_order.*',
+            'customers.*',
+        ];
+        $inquires = Inquiry::select($select)
+            ->where('inquiries.id',$id)
+            ->leftJoin('customers','customers.id','=','inquiries.customer_id')
+            ->leftJoin('inquiry_documents','inquiry_documents.inquiry_id','=','inquiries.id')
+            ->leftJoin('inquiry_order','inquiry_order.inquiry_id', '=', 'inquiries.id')
+            ->leftJoin('brands','brands.id' ,'=', 'inquiry_order.brand_id')
+            ->leftJoin('categories', 'categories.id' ,'=', 'inquiry_order.category_id')
+            ->leftJoin('users', 'users.id' ,'=', 'inquiries.user_id')
+            ->leftJoin( 'items','items.id' ,'=', 'inquiry_order.item_id')
+            ->groupBy('inquiries.id','inquiry_order.inquiry_id')
+            ->get();
+
+        $inquires->creation = Carbon::createFromTimeStamp(strtotime($inquires[0]->creationdate))->format('d-M-Y');
+
+        $data = [
+            'title'      => 'Inquiry Pdf',
+            'base_url'   => env('APP_URL', 'http://omnibiz.local'),
+            'user'       => Auth::user(),
+            'inquiry'=> $inquires
+        ];
+        $date = "Inquiry-Invoice-". Carbon::now()->format('d-M-Y')  .".pdf";
+        $pdf = PDF::loadView('admin.inquiry.pdf-invoice', $data);
+        return $pdf->download($date);
     }
 }
