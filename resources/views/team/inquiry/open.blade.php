@@ -86,7 +86,7 @@
                                         data-href="{{ route('inquiry.view.team',$inquiry->id) }}">
                                         <td><a href="{{ route('inquiry.view.team',$inquiry->id) }}">{{ $loop->iteration }}</a></td>
                                         <td><a href="{{ route('inquiry.view.team',$inquiry->id) }}">{{ ucfirst($inquiry->customer_name) }}</a></td>
-                                        <td><a href="{{ route('inquiry.view.team',$inquiry->id) }}">{{ ucfirst($inquiry->project_name) }}</a></td>
+                                        <td><a href="{{ route('inquiry.view.team',$inquiry->id) }} ///">{{ ucfirst($inquiry->project_name) }}</a></td>
                                         <td><a href="{{ route('inquiry.view.team',$inquiry->id) }}"><b>{{ $inquiry->item_count }}</b> Item(s)</a></td>
                                         <td><a href="{{ route('inquiry.view.team',$inquiry->id) }}">{{ number_format($inquiry->amount) }} {{ strtoupper($inquiry->currency) }}</a></td>
                                         <td><a href="{{ route('inquiry.view.team',$inquiry->id) }}">{{ $inquiry->name }}{!! $inquiry->id == auth()->id() ? ' (me)':'' !!}</a></td>

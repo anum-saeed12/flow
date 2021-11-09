@@ -75,7 +75,7 @@
                                     <th class="pl-0">Project</th>
                                     <th class="pl-0"># of Items</th>
                                     <th class="pl-0">Amount</th>
-                                    <th class="pl-0">Sales Person</th>
+                                    <th class="pl-0">Created By</th>
                                     <th class="pl-0">Date</th>
                                     <th class="pl-0">Submission Timeline</th>
                                 </tr>
@@ -83,15 +83,15 @@
                                 <tbody id="myTable">
                                 @foreach($inquiries as $inquiry)
                                     <tr style="cursor:pointer" class="no-select" data-toggle="modal"
-                                        data-href="{{ route('inquiry.view.sale',$inquiry->id) }}">
-                                        <td><a href="{{ route('inquiry.view.sale',$inquiry->id) }}">{{ $loop->iteration }}</td>
-                                        <td><a href="{{ route('inquiry.view.sale',$inquiry->id) }}">{{ ucfirst($inquiry->customer_name) }}</td>
-                                        <td><a href="{{ route('inquiry.view.sale',$inquiry->id) }}">{{ ucfirst($inquiry->project_name) }}</td>
-                                        <td><a href="{{ route('inquiry.view.sale',$inquiry->id) }}"><b>{{ $inquiry->item_count }}</b> Item(s)</td>
-                                        <td><a href="{{ route('inquiry.view.sale',$inquiry->id) }}">{{ $inquiry->amount }}</td>
-                                        <td><a href="{{ route('inquiry.view.sale',$inquiry->id) }}">{{ $inquiry->name }}</td>
-                                        <td><a href="{{ route('inquiry.view.sale',$inquiry->id) }}">{{ ucfirst($inquiry->date) }}</td>
-                                        <td><a href="{{ route('inquiry.view.sale',$inquiry->id) }}">{{ ucfirst($inquiry->timeline) }}</td>
+                                        data-href="{{ route('inquiry.view.team',$inquiry->id) }}">
+                                        <td><a href="{{ route('inquiry.view.team',$inquiry->id) }}">{{ $loop->iteration }}</a></td>
+                                        <td><a href="{{ route('inquiry.view.team',$inquiry->id) }}">{{ ucfirst($inquiry->customer_name) }}</a></td>
+                                        <td><a href="{{ route('inquiry.view.team',$inquiry->id) }} ///">{{ ucfirst($inquiry->project_name) }}</a></td>
+                                        <td><a href="{{ route('inquiry.view.team',$inquiry->id) }}"><b>{{ $inquiry->item_count }}</b> Item(s)</a></td>
+                                        <td><a href="{{ route('inquiry.view.team',$inquiry->id) }}">{{ number_format($inquiry->amount) }} {{ strtoupper($inquiry->currency) }}</a></td>
+                                        <td><a href="{{ route('inquiry.view.team',$inquiry->id) }}">{{ $inquiry->name }}{!! $inquiry->id == auth()->id() ? ' (me)':'' !!}</a></td>
+                                        <td><a href="{{ route('inquiry.view.team',$inquiry->id) }}">{{ ucfirst($inquiry->date) }}</a></td>
+                                        <td><a href="{{ route('inquiry.view.team',$inquiry->id) }}">{{ ucfirst($inquiry->timeline) }}</a></td>
                                         <td class="text-right p-0">
                                             <a class="bg-primary list-btn"  href="{{ route('inquiry.edit.sale',$inquiry->id) }}" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
                                             <a class="bg-danger list-btn"  href="{{ route('inquiry.delete.sale',$inquiry->id) }}"  title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>

@@ -23,16 +23,38 @@ class InquiryController extends Controller
     public function index()
     {
         $select = [
-            'inquiries.id','customer_name', 'project_name', 'item_description', 'amount', 'users.name', 'date', 'timeline'
+            'customers.customer_name',
+            'inquiries.id',
+            'inquiries.project_name',
+            'inquiries.currency',
+            'inquiries.total',
+            'inquiries.date',
+            'inquiries.timeline',
+            'users.name',
+            DB::raw("GROUP_CONCAT(categories.category_name) as category_names"),
+            DB::raw("(
+                CASE
+                    WHEN `quotations`.`id` iS NULL
+                        THEN 'open'
+                    ELSE 'close'
+                END
+            ) as 'inquiry_status'"),
+            DB::raw("COUNT(inquiry_order.id) as item_count"),
+            DB::raw("SUM(inquiry_order.amount) as amount")
         ];
         $inquiries = Inquiry::select($select)
             ->leftJoin('customers','customers.id','=','inquiries.customer_id')
             ->leftJoin('inquiry_documents','inquiry_documents.inquiry_id','=','inquiries.id')
             ->leftJoin('inquiry_order','inquiry_order.inquiry_id', '=', 'inquiries.id')
-            ->leftJoin('brands','brands.id' ,'=', 'inquiry_order.brand_id')
             ->leftJoin('categories', 'categories.id' ,'=', 'inquiry_order.category_id')
             ->leftJoin('users', 'users.id' ,'=', 'inquiries.user_id')
-            ->leftJoin( 'items','items.id' ,'=', 'inquiry_order.item_id')
+            ->leftJoin('quotations', 'quotations.inquiry_id' ,'=', 'inquiries.id')
+            # The line below is a where clause which will only fetch the records for the specified category_id
+            # In our case, we get the category_id from the userCategory table which is linked to the user_id
+            ->whereIn('categories.id', UserCategory::select('category_id as id')->where('user_id', Auth::id())->get())
+            # where IN (value1, value2, value3)
+            # where IN ($array_of_objects)
+            #->where('user_id', Auth::id()->get())
             ->groupBy('inquiries.id','inquiry_order.inquiry_id')
             ->paginate($this->count);
 
@@ -55,9 +77,7 @@ class InquiryController extends Controller
             'inquiries.date',
             'inquiries.timeline',
             'users.name',
-            #'categories.name',
             DB::raw("GROUP_CONCAT(categories.category_name) as category_names"),
-            #'items.item_description',
             DB::raw("(
                 CASE
                     WHEN `quotations`.`id` iS NULL
@@ -72,14 +92,14 @@ class InquiryController extends Controller
             ->leftJoin('customers','customers.id','=','inquiries.customer_id')
             ->leftJoin('inquiry_documents','inquiry_documents.inquiry_id','=','inquiries.id')
             ->leftJoin('inquiry_order','inquiry_order.inquiry_id', '=', 'inquiries.id')
-            #->leftJoin('brands','brands.id' ,'=', 'inquiry_order.brand_id')
             ->leftJoin('categories', 'categories.id' ,'=', 'inquiry_order.category_id')
             ->leftJoin('users', 'users.id' ,'=', 'inquiries.user_id')
-            #->leftJoin('items', 'items.id' ,'=', 'inquiry_order.item_id')
             ->leftJoin('quotations', 'quotations.inquiry_id' ,'=', 'inquiries.id')
             ->whereNull('quotations.id')
-            ->whereIn('categories.id', UserCategory::select('category_id as id')
-            ->where('user_id', Auth::id())->get())
+            # The line below is a where clause which will only fetch the records for the specified category_id
+            # In our case, we get the category_id from the userCategory table which is linked to the user_id
+            ->whereIn('categories.id', UserCategory::select('category_id as id')->where('user_id', Auth::id()))
+            #->where('user_id', Auth::id()->get())
             ->groupBy('inquiries.id','inquiry_order.inquiry_id')
             ->paginate($this->count);
         $data = [
@@ -216,10 +236,6 @@ class InquiryController extends Controller
             'inquiries.discount',
             'inquiries.remarks',
             'inquiries.created_at',
-            #'items.*',
-            #'categories.*',
-            #'brands.*',
-            #'inquiry_order.*',
             'customers.customer_name',
             'customers.address',
             'customers.attention_person',
@@ -227,13 +243,10 @@ class InquiryController extends Controller
         ];
         $inquiry = Inquiry::select($select)
             ->leftJoin('customers','customers.id','=','inquiries.customer_id')
-            #->leftJoin('inquiry_documents','inquiry_documents.inquiry_id','=','inquiries.id')
             ->leftJoin('inquiry_order','inquiry_order.inquiry_id', '=', 'inquiries.id')
-            #->leftJoin('brands','brands.id' ,'=', 'inquiry_order.brand_id')
-            #->leftJoin('categories', 'categories.id' ,'=', 'inquiry_order.category_id')
-            #->leftJoin('users', 'users.id' ,'=', 'inquiries.user_id')
-            #->leftJoin( 'items','items.id' ,'=', 'inquiry_order.item_id')
             ->where('inquiries.id', $id)
+            # The line below is a where clause which will only fetch the records for the specified category_id
+            # In our case, we get the category_id from the userCategory table which is linked to the user_id
             ->whereIn('inquiry_order.category_id', UserCategory::select('category_id')->where('user_id', Auth::id())->get())
             ->groupBy('inquiries.id','inquiry_order.inquiry_id')
             ->first();
