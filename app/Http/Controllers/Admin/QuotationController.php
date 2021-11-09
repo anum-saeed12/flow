@@ -11,6 +11,7 @@ use App\Models\Item;
 use App\Models\Quotation;
 use App\Models\QuotationItem;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -284,7 +285,16 @@ class QuotationController extends Controller
 
     public function view ($id)
     {
-        $quotation = Quotation::select('*')
+        $select=[
+            'quotations.*',
+            'quotations.created_at as creationdate',
+            'quotations.id as unique',
+            'items.*',
+            'brands.*',
+            'customers.*',
+            'quotation_item.*',
+        ];
+        $quotation = Quotation::select($select)
             ->where('quotations.id',$id)
             ->leftJoin('quotation_item', 'quotation_item.quotation_id', '=', 'quotations.id')
             ->leftJoin('brands', 'brands.id', '=', 'quotation_item.brand_id')
@@ -338,5 +348,36 @@ class QuotationController extends Controller
         ];
 
         return view('admin.quotation.generatefrominquiry', $data);
+    }
+
+    public function pdfinquiry($id)
+    {
+        $select=[
+            'quotations.*',
+            'quotations.created_at as creationdate',
+            'quotations.id as unique',
+            'items.*',
+            'brands.*',
+            'customers.*',
+            'quotation_item.*',
+        ];
+        $quotation = Quotation::select($select)
+            ->where('quotations.id',$id)
+            ->leftJoin('quotation_item', 'quotation_item.quotation_id', '=', 'quotations.id')
+            ->leftJoin('brands', 'brands.id', '=', 'quotation_item.brand_id')
+            ->leftJoin('items', 'items.id', '=', 'quotation_item.item_id')
+            ->leftJoin('customers', 'customers.id', '=', 'quotations.customer_id')
+            ->get();
+        $quotation->creation = \Illuminate\Support\Carbon::createFromTimeStamp(strtotime($quotation[0]->creationdate))->format('d-M-Y');
+
+        $data = [
+            'title'      => 'Quotation Pdf',
+            'base_url'   => env('APP_URL', 'http://omnibiz.local'),
+            'user'       => Auth::user(),
+            'quotation'=> $quotation
+        ];
+        $date = "Quotation-Invoice-". Carbon::now()->format('d-M-Y')  .".pdf";
+        $pdf = PDF::loadView('admin.quotation.pdf-invoice', $data);
+        return $pdf->download($date);
     }
 }

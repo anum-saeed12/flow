@@ -6,10 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Item;
+use Barryvdh\DomPDF\Facade as PDF;
 use App\Models\Vendor;
 use App\Models\VendorQuotation;
 use App\Models\VendorQuotationItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -272,9 +274,17 @@ class VendorQuotationController extends Controller
 
     public function view($id)
     {
-        $select = [
-            '*',
-            'vendor_quotation.total'
+        $select=[
+            'vendor_quotation.*',
+            'vendor_quotation.created_at as creationdate',
+            'vendor_quotation.id as unique',
+            'vendor_quotation.total as totals',
+            'items.*',
+            'vendors.*',
+            'categories.*',
+            'brands.*',
+            'users.*',
+            'vendor_quotation_item.*',
         ];
         $vendors_quotation = VendorQuotation::select($select)
             ->where('vendor_quotation.id',$id)
@@ -282,6 +292,7 @@ class VendorQuotationController extends Controller
             ->leftJoin('vendors', 'vendor_quotation.vendor_id', '=', 'vendors.id')
             ->leftJoin('items', 'items.id', '=', 'vendor_quotation_item.item_id')
             ->leftJoin('users', 'users.id', '=', 'vendor_quotation.user_id')
+            ->leftJoin('brands', 'brands.id', '=', 'vendor_quotation_item.brand_id')
             ->leftJoin('categories', 'categories.id', '=', 'vendor_quotation_item.category_id')
             ->get();
         $data = [
@@ -290,5 +301,41 @@ class VendorQuotationController extends Controller
             'quotation'        => $vendors_quotation
         ];
         return view('admin.vendorquotation.item',$data);
+    }
+
+    public function pdfinquiry($id)
+    {
+
+        $select=[
+            'vendor_quotation.*',
+            'vendor_quotation.created_at as creationdate',
+            'vendor_quotation.id as unique',
+            'items.*',
+            'vendors.*',
+            'categories.*',
+            'brands.*',
+            'users.*',
+            'vendor_quotation_item.*',
+        ];
+        $vendors_quotation = VendorQuotation::select($select)
+            ->where('vendor_quotation.id',$id)
+            ->leftJoin('vendor_quotation_item', 'vendor_quotation_item.vendor_quotation_id', '=', 'vendor_quotation.id')
+            ->leftJoin('vendors', 'vendor_quotation.vendor_id', '=', 'vendors.id')
+            ->leftJoin('items', 'items.id', '=', 'vendor_quotation_item.item_id')
+            ->leftJoin('users', 'users.id', '=', 'vendor_quotation.user_id')
+            ->leftJoin('brands', 'brands.id', '=', 'vendor_quotation_item.brand_id')
+            ->leftJoin('categories', 'categories.id', '=', 'vendor_quotation_item.category_id')
+            ->get();
+        $vendors_quotation->creation = \Illuminate\Support\Carbon::createFromTimeStamp(strtotime($vendors_quotation[0]->creationdate))->format('d-M-Y');
+
+        $data = [
+            'title'      => 'Vendor Quotation Pdf',
+            'base_url'   => env('APP_URL', 'http://omnibiz.local'),
+            'user'       => Auth::user(),
+            'quotation'  => $vendors_quotation
+        ];
+        $date = "Quotation-Invoice-". Carbon::now()->format('d-M-Y')  .".pdf";
+        $pdf = PDF::loadView('admin.vendorquotation.pdf-invoice', $data);
+        return $pdf->download($date);
     }
 }

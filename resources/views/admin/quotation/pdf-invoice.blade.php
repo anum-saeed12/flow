@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <title>{{ $inquiry->creation }}</title>
+    <title>{{ $quotation->creation }}</title>
     <style type="text/css">
         * {
             font-family:  Verdana, Arial, Helvetica, sans-serif;
@@ -25,7 +25,7 @@
     <tr>
         <td align="center">
             <h1><b>Build Con</b></h1>
-            <h2><b>Inquiry Invoice</b></h2>
+            <h2><b>Quotation Invoice</b></h2>
         </td>
     </tr>
 </table>
@@ -34,14 +34,14 @@
     <tr>
         <td>
             <address>
-                <p><b>Ref: </b>{{ strtoupper(substr($inquiry[0]->inquiry,0,4)) }}-{{ strtoupper(substr($inquiry[0]->inquiry,4,4)) }}-{{ \Carbon\Carbon::createFromTimeStamp(strtotime($inquiry[0]->created_at))->format('dm') }}-{{ \Carbon\Carbon::createFromTimeStamp(strtotime($inquiry[0]->created_at))->format('Y') }}</p>
-                <p><b>Attention: </b>{{ ucwords($inquiry[0]->attention_person) }}</p>
-                <p><b>Customer Name: </b>{{ ucwords($inquiry[0]->customer_name) }}</p>
-                <p><b>Project Name: </b>{{ ucwords($inquiry[0]->project_name) }}</p>
+                <p><b>Ref: </b>{{ strtoupper(substr($quotation[0]->inquiry,0,4)) }}-{{ strtoupper(substr($quotation[0]->inquiry,4,4)) }}-{{ \Carbon\Carbon::createFromTimeStamp(strtotime($quotation[0]->created_at))->format('dm') }}-{{ \Carbon\Carbon::createFromTimeStamp(strtotime($quotation[0]->created_at))->format('Y') }}</p>
+                <p><b>Attention: </b>{{ ucwords($quotation[0]->attention_person) }}</p>
+                <p><b>Customer Name: </b>{{ ucwords($quotation[0]->customer_name) }}</p>
+                <p><b>Project Name: </b>{{ ucwords($quotation[0]->project_name) }}</p>
             </address>
         </td>
         <td><p style="color:white"> hello</p></td>
-        <td colspan="4" align="top"><strong>Date #{{ $inquiry->creation }}</strong></td>
+        <td colspan="4" align="top"><strong>Date #{{ $quotation->creation }}</strong></td>
     </tr>
 </table>
 
@@ -51,18 +51,20 @@
     <thead style="background-color: #eae8e4;">
     <tr>
         <th>Sr.no</th>
+        <th>Item Name</th>
         <th>Item Description</th>
         <th>Brand</th>
         <th>Quantity</th>
         <th>Unit</th>
-        <th>Unit Price</th>
+        <th>Unit Price ( {{ ucwords($quotation[0]->currency) }} )</th>
         <th>Total</th>
     </tr>
     </thead>
     <tbody>
-    @foreach($inquiry as $item)
+    @foreach($quotation as $item)
         <tr>
             <td>{{ $loop->iteration }}</td>
+            <td>{{ ucwords($item->item_name) }}</td>
             <td>{{ ucwords($item->item_description) }}</td>
             <td>{{ ucwords($item->brand_name) }}</td>
             <td>{{ ucwords($item->quantity) }}</td>
@@ -76,7 +78,7 @@
     <tr>
         <td  colspan="3"></td>
         <th align="right">Total:</th>
-        <td align="right">{{ $inquiry[0]->currency }}{{number_format($inquiry[0]->total )}}</td>
+        <td align="right">{{ $quotation[0]->currency }}{{number_format($quotation[0]->total )}}</td>
     </tr>
     </tfoot>
 </table>

@@ -101,6 +101,7 @@ Route::prefix('/admin')->middleware('admin')->group(function() {
         Route::post('/update/{id}', '\App\Http\Controllers\Admin\QuotationController@update')->name('quotation.update.admin');
         Route::get('/delete/{id}', '\App\Http\Controllers\Admin\QuotationController@delete')->name('quotation.delete.admin');
         Route::get('/view/{id}', '\App\Http\Controllers\Admin\QuotationController@view')->name('quotation.view.admin');
+        Route::get('/invoice/{id}', '\App\Http\Controllers\Admin\QuotationController@pdfinquiry')->name('quotation.pdfinquiry.admin');
     });
     Route::prefix('/vendor')->group(function() {
         Route::get('/', '\App\Http\Controllers\Admin\VendorController@index')->name('vendor.index.admin');
@@ -120,6 +121,7 @@ Route::prefix('/admin')->middleware('admin')->group(function() {
         Route::post('/update/{id}', '\App\Http\Controllers\Admin\VendorQuotationController@update')->name('vendorquotation.update.admin');
         Route::get('/delete/{id}', '\App\Http\Controllers\Admin\VendorQuotationController@delete')->name('vendorquotation.delete.admin');
         Route::get('/view/{id}', '\App\Http\Controllers\Admin\VendorQuotationController@view')->name('vendorquotation.view.admin');
+        Route::get('/invoice/{id}', '\App\Http\Controllers\Admin\VendorQuotationController@pdfinquiry')->name('vendorquotation.pdfinquiry.admin');
 
     });
 });

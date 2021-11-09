@@ -25,7 +25,7 @@
         <div class="row mb-3">
             <div class="col-12">
                 <a href="#" type="submit" class="btn btn-info toastrDefaultSuccess mr-2 btn-sm" target="btnActionIframe"><i class="fa fa-print mr-1"></i> Print Quotation</a>
-                <a href="#" type="submit" class="btn btn-info toastrDefaultSuccess btn-sm" target="btnActionIframe"><i class="far fa-file-alt mr-1"></i> Create Quotation Pdf</a>
+                <a href="{{ route('quotation.pdfinquiry.admin',$quotation[0]->unique) }}" type="submit" class="btn btn-info toastrDefaultSuccess btn-sm" target="btnActionIframe"><i class="far fa-file-alt mr-1"></i> Create Quotation Pdf</a>
                 <iframe name="btnActionIframe" style="display:none;" onload="setTimeout(function(){this.src=''},1000)"></iframe>
             </div>
         </div>
@@ -81,7 +81,7 @@
                                             <th>Brand</th>
                                             <th>Quantity</th>
                                             <th>Unit</th>
-                                            <th>Unit Price ( {{ $quotation[0]->currency }} )</th>
+                                            <th>Unit Price ( {{ ucwords($quotation[0]->currency) }} )</th>
                                             <th>Total</th>
                                         </tr>
                                         </thead>
