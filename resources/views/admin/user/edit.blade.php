@@ -83,18 +83,27 @@
                                         </div>
                                     </div>
                                     <div class="col-md-4">
-                                        <div id="user_category"{!! $users->user_role!='teams'?' style="display:none;"':'' !!}>
-                                            <div class="form-group">
-                                                <label for="category_id">Category</label><br/>
-                                                <select name="category_id" class="form-control" id="category_id">
-                                                    <option selected="selected" value>Select</option>
-                                                    @foreach($category as $names)
-                                                        <option value="{{ $names->id }}" {{ $users->category_name == $names->category_name ? 'selected="selected"' : '' }}>{{ $names->category_name }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                                <div class="text-danger">@error('user_role'){{ $message }}@enderror</div>
+                                        <div id="user_category" class="mt-3 category-selector"{!! $users->user_role!='team'?' style="display:none;"':'' !!}>
+                                            <label>Select Category <small>({{ $category->count() }})</small></label><br/>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <input type="text" id="searchCategory" placeholder="Filter categories" class="form-control">
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-secondary" type="submit">
+                                                        <i class="fas fa-search"></i>
+                                                    </button>
+                                                </div>
                                             </div>
+                                            <div class="row">
+                                                @foreach($category as $names)
+                                                    <div class="col-md-6 filterable-category">
+                                                        <label for="pRv{{ md5($names->id) }}" style="font-weight:normal;">
+                                                            <input type="checkbox" name="category_id[]" value="{{ $names->id }}" id="pRv{{ md5($names->id) }}"{!! isset($user_categories)&&in_array($names->id, $user_categories)?' checked':'' !!}/>
+                                                            {{ ucfirst( $names->category_name) }}
+                                                        </label>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                            <div class="text-danger">@error('user_role'){{ $message }}@enderror</div>
                                         </div>
                                     </div>
                                 </div>

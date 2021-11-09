@@ -25,6 +25,16 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
+                @if(session()->has('success'))
+                    <div class="callout callout-success" style="color:green">
+                        {{ session()->get('success') }}
+                    </div>
+                @endif
+                @if(session()->has('error'))
+                    <div class="callout callout-danger" style="color:red">
+                        {{ session()->get('error') }}
+                    </div>
+                @endif
                 <div class="card card-info">
                     <form class="form-horizontal" action="{{ route('user.store.admin') }}" method="POST">
                         @csrf
@@ -70,14 +80,26 @@
                                     <div class="text-danger">@error('user_role'){{ $message }}@enderror</div>
                                 </div>
                                 <div class="col-md-4">
-                                    <div id="user_category" style="display:none;">
-                                        <label for="category_id">Category</label><br/>
-                                        <select name="category_id" class="form-control" id="category_id">
-                                            <option selected="selected" value>Select</option>
+                                    <div id="user_category" class="mt-3 category-selector" style="display:none;">
+                                        <label>Select Category <small>({{ $category->count() }})</small></label><br/>
+                                        <div class="input-group input-group-sm mb-3">
+                                            <input type="text" id="searchCategory" placeholder="Filter categories" class="form-control">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-secondary" type="submit">
+                                                    <i class="fas fa-search"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="row">
                                             @foreach($category as $names)
-                                                <option value="{{ $names->id }}">{{ ucfirst( $names->category_name) }}</option>
+                                                <div class="col-md-6 filterable-category">
+                                                    <label for="pRv{{ md5($names->id) }}" style="font-weight:normal;">
+                                                        <input type="checkbox" name="category_id[]" value="{{ $names->id }}" id="pRv{{ md5($names->id) }}"/>
+                                                        {{ ucfirst( $names->category_name) }}
+                                                    </label>
+                                                </div>
                                             @endforeach
-                                        </select>
+                                        </div>
                                         <div class="text-danger">@error('user_role'){{ $message }}@enderror</div>
                                     </div>
                                 </div>
@@ -116,6 +138,12 @@
                 targetRequired.removeAttr('required');
                 targetRequired.val('');
                 return target.hide();
+            });
+            $("#searchCategory").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $(".filterable-category").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
             });
         });
     </script>

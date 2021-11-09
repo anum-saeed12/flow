@@ -45,12 +45,11 @@ class UserController extends Controller
             'users.email',
             #'users.password',
             'users.user_role',
-            'categories.category_name'
         ];
         $user = User::select($select)
             ->where('users.id',$id)
-            ->leftJoin('usercategory','usercategory.user_id','=','users.id')
-            ->leftJoin('categories','usercategory.category_id','=','categories.id')
+            #->leftJoin('usercategory','usercategory.user_id','=','users.id')
+            #->leftJoin('categories','usercategory.category_id','=','categories.id')
             ->first();
 
         $data = [
@@ -60,19 +59,29 @@ class UserController extends Controller
             'users'    => $user,
             'category' => $category
         ];
+        $categories = [];
+        if ($user->user_role == 'team') {
+            $user_categories = UserCategory::select('category_id')->where('user_id', $user->id)->get();
+            $categories = [];
+            foreach ($user_categories as $cat) {
+                $categories[] = $cat->category_id;
+            }
+        }
+        if ($user->user_role == 'team') $data['user_categories'] = $categories;
         return view('admin.user.edit', $data);
     }
 
     public function store(Request $request)
     {
-        $request->validate([
+        $rules = [
             'email'      => 'required',
             'username'   => 'required',
             'name'       => 'required',
             'password'   => 'required',
-            'category_id'=> 'nullable',
             'user_role'  => 'required|in:admin,sale,manager,team'
-        ]);
+        ];
+
+        $request->validate($rules);
 
         $exist = User::where('username',$request->username)
                       ->where('email',$request->email)->first();
@@ -84,18 +93,29 @@ class UserController extends Controller
             )->with('success', 'User already exists!!');
         }
 
+        if($request->user_role == 'team')
+        {
+            # Verify if categories exist
+            $verification = Category::select('id')->whereIn('id', $request->category_id)->get();
+            if (count($request->category_id) != $verification->count()) return redirect()->back()->with('error', 'Please select valid categories');
+
+            $data             =  $request->all();
+            $user             =  new User($data);
+            $user['password'] =  Hash::make($request->password);
+            $user->save();
+
+            foreach ($request->category_id as $category) {
+                $user_category = new UserCategory();
+                $user_category->category_id = $category;
+                $user_category->user_id = $user->id;
+                $user_category->save();
+            }
+        }
+
         $data             =  $request->all();
         $user             =  new User($data);
         $user['password'] =  Hash::make($request->password);
         $user->save();
-
-        if($request->category_id)
-        {
-            $data            =  $request->all('category_id');
-            $user_category   =  new UserCategory($data);
-            $user_category['user_id'] = $user->id;
-            $user_category->save();
-        }
 
         return redirect(
             route('user.list.admin')
@@ -110,7 +130,7 @@ class UserController extends Controller
             'email'      => 'sometimes|required',
             'username'   => 'sometimes|required',
             #'password'   => 'sometimes|required',
-            'user_role'  => 'sometimes|required|in:admin,sales_person,manager,sourcing_team'
+            'user_role'  => 'sometimes|required|in:admin,sale,manager,team'
         ]);
 
         $request->input('email')       &&  $user->email        = $request->input('email');
@@ -118,6 +138,22 @@ class UserController extends Controller
         $request->input('username')    &&  $user->username     = $request->input('username');
         $request->input('user_role')   &&  $user->user_role    = $request->input('user_role');
         $user->save();
+
+        if($request->user_role == 'team')
+        {
+            # Verify if categories exist
+            $verification = Category::select('id')->whereIn('id', $request->category_id)->get();
+            if (count($request->category_id) != $verification->count()) return redirect()->back()->with('error', 'Please select valid categories');
+
+            $delete_old_categories = UserCategory::where('user_id', $user->id)->delete();
+
+            foreach ($request->category_id as $category) {
+                $user_category = new UserCategory();
+                $user_category->category_id = $category;
+                $user_category->user_id = $user->id;
+                $user_category->save();
+            }
+        }
 
         return redirect(
             route('user.list.admin')

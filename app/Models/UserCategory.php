@@ -9,7 +9,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class UserCategory extends Model
 {
     use HasFactory;
-    use SoftDeletes;
+    # Never use soft deletes on bridge tables!
+    #use SoftDeletes;
 
     protected $table = 'usercategory';
     protected $fillable = ['user_id','category_id'];

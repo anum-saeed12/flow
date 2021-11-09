@@ -44,3 +44,4 @@ label.normal {margin-bottom:5px!important;color:#666;line-height:normal;font-wei
 *.list-btn.primary {background:#007bff;color:#fff!important;}
 .list-img-thumbnail {display:block;height:90px;width:75px;background:transparent center center no-repeat;background-size:cover;content:'';cursor:pointer;transition:.3s all;}
 .list-img-thumbnail:hover {background-size:cover;transform:scale(2);box-shadow:0 0 6px #999;}
+.category-selector {border: 1px solid #ccc;padding:1rem;}
