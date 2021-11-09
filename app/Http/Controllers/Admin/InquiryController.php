@@ -299,27 +299,27 @@ class InquiryController extends Controller
 
         $select = [
             "customers.*",
-            "inquiry_order.*",
+         #   "inquiry_order.*",
             "inquiries.*",
         ];
 
         $inquiry = Inquiry::select($select)
             ->join('customers','customers.id','=','inquiries.customer_id')
-            ->join('inquiry_order','inquiry_order.inquiry_id','=','inquiries.id')
+           # ->join('inquiry_order','inquiry_order.inquiry_id','=','inquiries.id')
             ->where('inquiries.id', $id)
             ->first();
 
         # If inquiry was not found
         if (!$inquiry) return redirect()->back()->with('error', 'Inquiry not found');
 
-        $select = [
+        $select_item = [
             "inquiry_order.*",
             "items.item_name"
         ];
 
-        $inquiry->items = InquiryOrder::select()
+        $inquiry->items = InquiryOrder::select($select_item)
             ->join('items', 'items.id', '=', 'inquiry_order.item_id')
-            ->where('inquiry_id', $id)
+            ->where('inquiry_order.inquiry_id', $id)
             ->get();
 
         $data = [

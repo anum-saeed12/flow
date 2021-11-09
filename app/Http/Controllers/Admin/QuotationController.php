@@ -161,12 +161,12 @@ class QuotationController extends Controller
 
         $select = [
             "quotations.*",
-            "quotation_item.*",
+           # "quotation_item.*",
             "customers.*"
         ];
         $quotation = Quotation::select($select)
             ->join('customers','customers.id','=','quotations.customer_id')
-            ->join('quotation_item','quotation_item.quotation_id','=','quotations.id')
+            #->join('quotation_item','quotation_item.quotation_id','=','quotations.id')
             ->where('quotations.id', $id)
             ->first();
 
