@@ -139,7 +139,8 @@ Route::prefix('/sourcing_team')->middleware('team')->group(function() {
         Route::get('/edit/{id}', '\App\Http\Controllers\Team\InquiryController@edit')->name('inquiry.edit.team');
         Route::post('/update/{id}', '\App\Http\Controllers\Team\InquiryController@update')->name('inquiry.update.team');
         Route::get('/delete/{id}', '\App\Http\Controllers\Team\InquiryController@delete')->name('inquiry.delete.team');
-        Route::get('/view/{id}', '\App\Http\Controllers\Team\InquiryController@view')->name('inquiry.view.team');
+        Route::get('/view/{id}', '\App\Http\Controllers\Team\
+        @view')->name('inquiry.view.team');
 
     });
     Route::prefix('/item')->group(function() {

@@ -21,7 +21,7 @@ use Ramsey\Uuid\Uuid;
 
 class InquiryController extends Controller
 {
-    public function index(Request $request)
+    public function index ()
     {
         $select = [
             'customers.customer_name',
@@ -49,51 +49,27 @@ class InquiryController extends Controller
             ->leftJoin('users', 'users.id' ,'=', 'inquiries.user_id')
             ->leftJoin('items', 'items.id' ,'=', 'inquiry_order.item_id')
             ->leftJoin('quotations', 'quotations.inquiry_id' ,'=', 'inquiries.id')
-            ->groupBy('inquiries.id','inquiry_order.inquiry_id');
+            ->groupBy('inquiries.id','inquiry_order.inquiry_id')->paginate($this->count);
 
 
-        # Applying filters
-        # 1. Applying sales person filter
-        $request->sales_person && $inquires = $inquires->where('users.id', $request->sales_person);
-        # 2. Applying customer name filter
-        $request->customer_id && $inquires = $inquires->where('customers.id', $request->customer_id);
-        # 3. Applying project name filter
-        $request->project && $inquires = $inquires->where('quotations.project_name', 'LIKE', "%$request->project%");
-        # 4. Applying start date and end date filter
-        $start_date = $request->from;
-        $end_date = $request->to;
-        $request->from && $inquires = $inquires->where('quotations.created_at', '>', $start_date);
-        $request->to && $inquires = $inquires->where('quotations.created_at', '<', $end_date);
-
-        #We have separated the paginate function so we can apply all the filters before that
-        $inquires = $inquires->paginate($this->count);
-
-        $sale = User::where('user_role','sale')->get();
-        return $sale;
         $data = [
             'title'   => 'View Inquiries',
             'user'    => Auth::user(),
-            'inquires'=> $inquires,
-            'sales_people' => $sale,
-            'customers' => Customer::all(),
-            'request' => $request,
-            'reset_url' => route('inquiry.list.admin')
+            'inquires'=> $inquires
         ];
         return view('admin.inquiry.view',$data);
     }
 
-    public function open()
+    public function open(Request $request)
     {
-
         $select = [
             'customers.customer_name',
-            'inquiries.id',
+            'inquiries.id as ids',
             'inquiries.project_name',
             'inquiries.total',
             'inquiries.date',
             'inquiries.timeline',
             'users.name',
-            'users.id',
             'items.item_description',
             DB::raw("(
                 CASE
@@ -114,13 +90,34 @@ class InquiryController extends Controller
             ->leftJoin('items', 'items.id' ,'=', 'inquiry_order.item_id')
             ->leftJoin('quotations', 'quotations.inquiry_id' ,'=', 'inquiries.id')
             ->whereNull('quotations.id')
-            ->groupBy('inquiries.id','inquiry_order.inquiry_id')
-            ->paginate($this->count);
+            ->groupBy('inquiries.id','inquiry_order.inquiry_id');
+
+        # Applying filters
+        # 1. Applying sales person filter
+        $request->sales_person && $inquires = $inquires->where('users.id', $request->sales_person);
+        # 2. Applying customer name filter
+        $request->customer_id && $inquires = $inquires->where('customers.id', $request->customer_id);
+        # 3. Applying project name filter
+        $request->project && $inquires = $inquires->where('quotations.project_name', 'LIKE', "%$request->project%");
+        # 4. Applying start date and end date filter
+        $start_date = $request->from;
+        $end_date = $request->to;
+        $request->from && $inquires = $inquires->where('quotations.created_at', '>', $start_date);
+        $request->to && $inquires = $inquires->where('quotations.created_at', '<', $end_date);
+
+        #We have separated the paginate function so we can apply all the filters before that
+        $inquires = $inquires->paginate($this->count);
+
+        $sale = User::where('user_role','sale')->get();
 
         $data = [
             'title'   => 'View Inquiries',
             'user'    => Auth::user(),
-            'inquires'=> $inquires
+            'inquires'=> $inquires,
+            'sales_people' => $sale,
+            'request' => $request,
+            'customers' =>Customer::all(),
+            'reset_url' => route('inquiry.list.admin')
         ];
         return view('admin.inquiry.open',$data);
     }
