@@ -157,7 +157,7 @@
                 </li>
                 <li class="nav-item has-treeview">
                     <a href="{{ route('inquiry.list.' . auth()->user()->user_role) }}" class="nav-link">
-                        <i class="fas fa-pen-square nav-icon"></i>
+                        <i class="fas fa-file-alt nav-icon"></i>
                         <p>
                             My Submitted Inquiry
                         </p>

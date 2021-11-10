@@ -25,13 +25,12 @@ class InquiryController extends Controller
     {
         $select = [
             'customers.customer_name',
-            'inquiries.id',
+            'inquiries.id as ids',
             'inquiries.project_name',
             'inquiries.total',
             'inquiries.date',
             'inquiries.timeline',
-            'users.name',
-            'items.item_description',
+            'users.name as username',
             DB::raw("(
                 CASE
                     WHEN `quotations`.`id` iS NULL
@@ -40,6 +39,8 @@ class InquiryController extends Controller
                 END
             ) as 'inquiry_status'")
         ];
+
+        $auth = Auth::user()->id;
         $inquires = Inquiry::select($select)
             ->leftJoin('customers','customers.id','=','inquiries.customer_id')
             ->leftJoin('inquiry_documents','inquiry_documents.inquiry_id','=','inquiries.id')
@@ -49,8 +50,8 @@ class InquiryController extends Controller
             ->leftJoin('users', 'users.id' ,'=', 'inquiries.user_id')
             ->leftJoin('items', 'items.id' ,'=', 'inquiry_order.item_id')
             ->leftJoin('quotations', 'quotations.inquiry_id' ,'=', 'inquiries.id')
-            ->where('inquiries.user_id',Auth::user()->id)
-            ->groupBy('inquiries.id','inquiry_order.inquiry_id');
+            ->where('inquiries.user_id', $auth)
+            ->groupBy('inquiries.id')->paginate($this->count);
 
         $data = [
             'title'   => 'View Inquiries',
@@ -62,6 +63,7 @@ class InquiryController extends Controller
 
     public function open(Request $request)
     {
+        $auth = Auth::user()->id;
         $select = [
             'customers.customer_name',
             'inquiries.id as ids',
@@ -89,7 +91,7 @@ class InquiryController extends Controller
             ->leftJoin('users', 'users.id' ,'=', 'inquiries.user_id')
             ->leftJoin('items', 'items.id' ,'=', 'inquiry_order.item_id')
             ->leftJoin('quotations', 'quotations.inquiry_id' ,'=', 'inquiries.id')
-            ->where('inquiries.user_id',Auth::user()->id)
+            ->where('inquiries.user_id', $auth)
             ->whereNull('quotations.id')
             ->groupBy('inquiries.id','inquiry_order.inquiry_id');
 
@@ -109,10 +111,11 @@ class InquiryController extends Controller
         #We have separated the paginate function so we can apply all the filters before that
         $inquires = $inquires->paginate($this->count);
 
+
         $sale = User::where('user_role','sale')->get();
 
         $data = [
-            'title'   => 'View Inquiries',
+            'title'   => 'Open Inquiries',
             'user'    => Auth::user(),
             'inquires'=> $inquires,
             'sales_people' => $sale,
