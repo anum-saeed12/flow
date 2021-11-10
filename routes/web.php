@@ -139,9 +139,11 @@ Route::prefix('/sourcing_team')->middleware('team')->group(function() {
         Route::get('/edit/{id}', '\App\Http\Controllers\Team\InquiryController@edit')->name('inquiry.edit.team');
         Route::post('/update/{id}', '\App\Http\Controllers\Team\InquiryController@update')->name('inquiry.update.team');
         Route::get('/delete/{id}', '\App\Http\Controllers\Team\InquiryController@delete')->name('inquiry.delete.team');
-        Route::get('/view/{id}', '\App\Http\Controllers\Team\
-        @view')->name('inquiry.view.team');
-
+        Route::get('/view/{id}', '\App\Http\Controllers\Team\InquiryController@view')->name('inquiry.view.team');
+        Route::get('/ajax-fetch-category/', '\App\Http\Controllers\Team\InquiryController@ajaxFetchCategory')->name('category.fetch.ajax.team');
+        Route::get('/ajax-fetch-item/', '\App\Http\Controllers\Team\InquiryController@ajaxFetchItem')->name('item.fetch.ajax.team');
+        #Route::get('/ajax-fetch/', '\App\Http\Controllers\Team\InquiryController@ajaxFetchBrand')->name('brand.fetch.ajax.team');
+        Route::get('/invoice/{id}', '\App\Http\Controllers\Team\InquiryController@pdfinquiry')->name('inquiry.pdfinquiry.team');
     });
     Route::prefix('/item')->group(function() {
         Route::get('/', '\App\Http\Controllers\Team\ItemController@index')->name('item.index.team');
@@ -171,6 +173,9 @@ Route::prefix('/sourcing_team')->middleware('team')->group(function() {
         Route::post('/update/{id}', '\App\Http\Controllers\Team\QuotationController@update')->name('quotation.update.team');
         Route::get('/delete/{id}', '\App\Http\Controllers\Team\QuotationController@delete')->name('quotation.delete.team');
         Route::get('/view/{id}', '\App\Http\Controllers\Team\QuotationController@view')->name('quotation.view.team');
+        Route::get('/generate/{inquiry_id}', '\App\Http\Controllers\Team\QuotationController@generateQuotation')->name('quotation.generate.team');
+        Route::get('/invoice/{id}', '\App\Http\Controllers\Team\QuotationController@pdfinquiry')->name('quotation.pdfinquiry.team');
+
     });
     Route::prefix('/vendor/quotation')->group(function() {
         Route::get('/', '\App\Http\Controllers\Team\VendorQuotationController@index')->name('vendorquotation.index.team');
@@ -181,6 +186,7 @@ Route::prefix('/sourcing_team')->middleware('team')->group(function() {
         Route::post('/update/{id}', '\App\Http\Controllers\Team\VendorQuotationController@update')->name('vendorquotation.update.team');
         Route::get('/delete/{id}', '\App\Http\Controllers\Team\VendorQuotationController@delete')->name('vendorquotation.delete.team');
         Route::get('/view/{id}', '\App\Http\Controllers\Team\VendorQuotationController@view')->name('vendorquotation.view.team');
+        Route::get('/invoice/{id}', '\App\Http\Controllers\Team\VendorQuotationController@pdfinquiry')->name('vendorquotation.pdfinquiry.team');
 
     });
 });

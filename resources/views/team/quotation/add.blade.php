@@ -10,7 +10,7 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard.team') }}">Home</a></li>
-                        <li class="breadcrumb-item">Inquiry</li>
+                        <li class="breadcrumb-item">Quotation</li>
                         <li class="breadcrumb-item active">{{$title}}</li>
                     </ol>
                 </div>
@@ -26,7 +26,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card card-info">
-                    <form class="form-horizontal" action="{{ route('inquiry.store.team') }}" method="POST" enctype="multipart/form-data">
+                    <form class="form-horizontal" action="{{ route('quotation.store.team') }}" method="POST">
                         @csrf
                         <div class="card-body pb-0">
                             <div class="row">
@@ -47,53 +47,30 @@
                                     <div class="text-danger">@error('project_name'){{ $message }}@enderror</div>
                                 </div>
 
-                                <div class="col-md-2">
+                                <div class="col-md-3">
                                     <label for="date">Date</label><br/>
                                     <input type="date" name="date" class="form-control" id="date"
                                            value="{{ old('date') }}">
                                     <div class="text-danger">@error('date'){{ $message }}@enderror</div>
                                 </div>
-
-                                <div class="col-md-2">
-                                    <label for="timeline">Timeline</label><br/>
-                                    <input type="date" name="timeline" class="form-control" id="timeline"
-                                           value="{{ old('timeline') }}">
-                                    <div class="text-danger">@error('timeline'){{ $message }}@enderror</div>
-                                </div>
-
-                                <div class="col-md-2">
+                                <div class="col-md-2 ">
                                     <label for="currency">Currency</label><br/>
-                                    <input type="text" name="currency" class="form-control" id="currency"
-                                           value="{{ old('currency') }}">
-                                    <div class="text-danger">@error('currency'){{ $message }}@enderror</div>
-                                </div>
+                                    <input type="text" name="currency" class="form-control" id="currency">
                                 </div>
                             </div>
                             <br/>
-                            <div class="row ml-3">
-                                <div class="col-md-3 category-container">
-                                    <label for="category_id">Select Category</label><br/>
-                                    <select name="category_id[]" class="form-control categories" id="category_id" data-target="#item_id" data-href="{{ route('category.fetch.ajax.team') }}" data-spinner="#category_spinner" onchange="categorySelect($(this))">
-                                        <option selected="selected" value>Select</option>
-                                        @foreach ($categories as $category)
-                                            <option value="{{ $category->id }}">{{ ucfirst($category->category_name) }}</option>
-                                        @endforeach
-                                    </select>
-                                    <div id="category_spinner"></div>
-                                    <div class="text-danger">@error('category_id'){{ $message }}@enderror</div>
-                                </div>
-                                <div class="col-md-2 item-container">
-                                    <label for="item_id">Select Item</label><br/>
-                                    <select name="item_id[]" class="form-control" id="item_id"  data-target="#brand_id" data-href="{{ route('item.fetch.ajax.team') }}" data-spinner="#item_spinner" onchange="itemSelect($(this))">
+                            <div class="row">
+                                <div class="col-md-3 item-container">
+                                    <label for="item_id">Select Item </label><br/>
+                                    <select name="item_id[]" class="form-control trigger" id="item_id" data-target="#brand_id" data-href="{{ route('item.fetch.ajax.team') }}" data-spinner="#item_spinner" onchange="itemSelect($(this))">
                                         <option selected="selected" value>Select</option>
                                         @foreach ($items as $item)
                                             <option value="{{ $item->item_name }}">{{ ucfirst($item->item_name) }}</option>
                                         @endforeach
                                     </select>
                                     <div id="item_spinner"></div>
-                                    <div class="text-danger">@error('item_id'){{ $message }}@enderror</div>
                                 </div>
-                                <div class="col-md-2 brand-container">
+                                <div class="col-md-3 item-container">
                                     <label for="brand_id">Select Brand</label><br/>
                                     <select name="brand_id[]" class="form-control" id="brand_id">
                                         <option selected="selected" value>Select</option>
@@ -101,7 +78,6 @@
                                             <option value="{{ $brand->id }}">{{ ucfirst($brand->brand_name) }}</option>
                                         @endforeach
                                     </select>
-                                    <div class="text-danger">@error('brand_id'){{ $message }}@enderror</div>
                                 </div>
                                 <div class="col-md-1 quantity-container">
                                     <label for="quantity">Quantity</label><br/>
@@ -115,12 +91,12 @@
                                     <label for="rate">Rate</label><br/>
                                     <input type="text" name="rate[]" class="form-control with_out" id="rate" data-target="#total_amount" data-into="#quantity" onkeydown="calculate($(this))" onkeypress="calculate($(this))" onkeyup="calculate($(this))" onchange="calculate($(this))">
                                 </div>
-                                <div class="col-md-1 amount-container">
+                                <div class="col-md-2 amount-container">
                                     <label for="amount">Sub-Total</label><br/>
                                     <input type="text" name="amount[]" class="form-control total n" id="amount">
                                 </div>
                                 <div class="col-md-1">
-                                    <label for="button">&nbsp;</label><br/>
+                                    <label for="unit">&nbsp;</label><br/>
                                     <button class="add_form_field btn btn-info"><span><i class="fas fa-plus-circle" aria-hidden="false"></i></span></button>
                                 </div>
                             </div>
@@ -128,28 +104,20 @@
 
                             </div>
                             <br/>
-                            <div class="row ml-3">
-                                <div class="col-md-3">
-                                <label for="inquiry_file">Upload Inquiry Files</label><br/>
-                                <div class="input-group mt-3">
-                                    <input name="inquiry_file[]" type="file"
-                                           class="form-control-file"
-                                           required="required" multiple>
-                                </div>
-                                </div>
+                            <div class="row">
                                 <div class="col-md-2 ">
                                     <label for="discount">Discount</label><br/>
                                     <input type="text" name="discount" class="form-control" id="discount"
                                            value="{{ old('discount') }}">
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 ">
                                     <label for="total">Total Amount</label><br/>
                                     <input type="text" name="total" class="form-control" id="total"
                                            value="{{ old('total') }}">
                                 </div>
-                                <div class="col-md-4">
-                                    <label for="remarks">Remarks</label><br/>
-                                    <textarea class="form-control" name="remarks" id="remarks"></textarea>
+                                <div class="col-md-6">
+                                    <label for="terms_condition">Terms & Conditions</label><br/>
+                                    <textarea class="form-control" name="terms_condition" id="terms_condition"></textarea>
                                 </div>
                             </div>
                             <br/>
@@ -160,6 +128,7 @@
                                     <button type="submit" class="btn btn-info">{{$title}}</button>
                                 </div>
                             </div>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -171,74 +140,92 @@
 @section('extras')
     <script type="text/javascript">
         $(document).ready(function() {
-
             let category_container = $('.category-container'),
                 item_container = $('.item-container'),
                 brand_container = $('.brand-container'),
                 quantity_container = $('.quantity-container'),
-                amount_container = $('.amount-container'),
-                rate_container = $('.rate-container'),
                 unit_container = $('.unit-container'),
-                $uid = $('.quantity').length;
+                rate_container = $('.rate-container'),
+                amount_container = $('.amount-container'),
                 add_button = $(".add_form_field"),
-                wrapper = $('.additional-products');
+                max_fields = 1000,
+                wrapper = $('.additional-products'),
+                $uid = $('.quantity').length;
+
+            // data-target="#brand_id" data-href="{{ route('item.fetch.ajax.team') }}"
+
+
 
             var x = 1;
             $(add_button).click(function(e) {
                 e.preventDefault();
-                $uid = $('.category').length;
+                $uid = $('.quantity').length;
+                if (x >= max_fields) {
+                    alert('You Reached the limits');
+                    return false;
+                }
 
-                let $itemRow = '<div class="row mt-3 ml-3">' +
-                '<div class="col-md-3 category-container">' +
-                    '<label for="category_id">Select Category</label><br/>' +
-                    `<select name="category_id[]" class="form-control categories" id="category_id_${$uid}" data-target="#item_id_${$uid}" data-href="{{ route('category.fetch.ajax.team') }}" data-spinner="#category_spinner_${$uid}" onchange="categorySelect($(this))">` +
-                        '<option selected="selected" value>Select</option>' +
-                        @foreach ($categories as $category)
-                            '<option value="{{ $category->id }}">{{ ucfirst($category->category_name) }}</option>'+
-                        @endforeach
-                    '</select>' +
-                    `<div id="category_spinner_${$uid}"></div>` +
-                '</div>' +
-                '<div class="col-md-2 item-container">' +
-                    '<label for="item_id">Select Item</label><br/>' +
+                let $categorySelector = //'<div class="row hello">' +
+                    '<div class="col-md-3 mt-3">' +
+                        '<label for="item_id">Select Item</label><br/>' +
+                        '<div class="row">' +
+                            '<div class="col-10">' +
+                                '<select name="item_id[]" class="form-control" id="item_id">' +
+                                    '<option selected="selected" value>Select</option> <option value="#"></option>' +
+                                '</select>' +
+                            '</div>' +
+                            '<div class="col-2">' +
+                                '<a href="#" class="delete">' +
+                                    '<i class="fas fa-trash-alt ml-2" aria-hidden="false"></i>' +
+                                '</a>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>';// +
+                    //;// +
+                    //'</div>';
+
+                let $itemRow = '<div class="row mt-3">' +
+                    '<div class="col-md-3 item-container">' +
+                    `<label for="item_id_${$uid}">Select Item </label><br/>` +
                     `<select name="item_id[]" class="form-control" id="item_id_${$uid}" data-target="#brand_id_${$uid}" data-href="{{ route('item.fetch.ajax.team') }}" data-spinner="#item_spinner_${$uid}" onchange="itemSelect($(this))">` +
                         '<option selected="selected" value>Select</option>' +
                         @foreach ($items as $item)
-                            '<option value="{{ $item->item_name }}">{{ ucfirst($item->item_name) }}</option>'+
+                            '<option value="{{ $item->item_name }}">{{ ucfirst($item->item_name) }}</option>' +
                         @endforeach
                     '</select>' +
-                    `<div id="item_spinner_${$uid}"></div>` +
-                '</div>' +
-                '<div class="col-md-2 brand-container">' +
-                    '<label for="brand_id">Select Brand</label><br/>' +
+                    `<span id="item_spinner_${$uid}"></span>` +
+                    '</div>' +
+                '<div class="col-md-3 brand-container">' +
+                    `<label for="brand_id_${$uid}">Select Brand</label><br/>` +
                     `<select name="brand_id[]" class="form-control" id="brand_id_${$uid}">` +
                         '<option selected="selected" value>Select</option>' +
-                    @foreach ($brands as $brand)
-                   '<option value="{{ $brand->id }}">{{ ucfirst($brand->brand_name) }}</option>'+
-                    @endforeach
+                        @foreach ($brands as $brand)
+                            '<option value="{{ $brand->id }}">{{ ucfirst($brand->brand_name) }}</option>' +
+                        @endforeach
                     '</select>' +
                 '</div>' +
-                    '<div class="col-md-1 quantity-container">' +
+                '<div class="col-md-1 quantity-container">' +
                     `<label for="quantity_${$uid}">Quantity</label><br/>` +
                     `<input type="text" name="quantity[]" class="form-control common quantity" id="quantity_${$uid}" data-target="#total_amount_${$uid}" data-into="#rate_${$uid}" onkeydown="calculate($(this))" onkeypress="calculate($(this))" onkeyup="calculate($(this))" onchange="calculate($(this))">`+
-                    '</div>' +
-                    '<div class="col-md-1 unit-container">' +
+                '</div>' +
+                '<div class="col-md-1 unit-container">' +
                     `<label for="unit_${$uid}">Unit</label><br/>` +
                     `<input type="text" name="unit[]" class="form-control" id="unit_${$uid}" >` +
-                    '</div>' +
-                    '<div class="col-md-1 rate-container">' +
+                '</div>' +
+                '<div class="col-md-1 rate-container">' +
                     `<label for="rate_${$uid}">Rate</label><br/>` +
                     `<input type="text" name="rate[]" class="form-control common" id="rate_${$uid}" data-target="#total_amount_${$uid}" data-into="#quantity_${$uid}" onkeydown="calculate($(this))" onkeypress="calculate($(this))" onkeyup="calculate($(this))" onchange="calculate($(this))">` +
-                    '</div>' +
-                    '<div class="col-md-1 amount-container">' +
+                '</div>' +
+                '<div class="col-md-2 amount-container">' +
                     `<label for="amount_${$uid}">Sub-Total</label><br/>` +
                     `<input type="text" name="amount[]" class="form-control total n" id="total_amount_${$uid}">` +
-                    '</div>' +
+                '</div>' +
                 '<div class="col-md-1">' +
                     '<label for="unit">&nbsp;</label><br/>' +
                     '<button class="delete btn btn-danger"><span><i class="fas fa-trash-alt" aria-hidden="false"></i></span></button>' +
                 '</div>' +
             '</div>';
+
                 x++;
                 $(wrapper).append($itemRow); // add input box
             });
@@ -267,7 +254,7 @@
             }
 
             $(document).on('keyup', '.common', sumIt,total);
-            sumIt() // run when loading
+                sumIt() // run when loading
         });
         function calculate(ele) {
             let total = 0,sum = 0, result, target=$(ele.data('target')),

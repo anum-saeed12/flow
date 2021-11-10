@@ -3,12 +3,18 @@
 namespace App\Http\Controllers\Team;
 
 use App\Http\Controllers\Controller;
+use App\Models\Brand;
 use App\Models\Category;
+use App\Models\Item;
+use App\Models\UserCategory;
 use App\Models\Vendor;
 use App\Models\VendorQuotation;
 use App\Models\VendorQuotationItem;
+use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Ramsey\Uuid\Uuid;
 
@@ -16,32 +22,44 @@ class VendorQuotationController extends Controller
 {
     public function index()
     {
-        $select = ['vendor_quotation.quotation_pdf','vendor_quotation.id','vendor_name', 'project_name', 'item_description', 'vendor_quotation.total', 'users.name'];
+        $select = [
+            'vendor_quotation.quotation_pdf',
+            'vendor_quotation.id',
+            'vendors.vendor_name',
+            'vendor_quotation.project_name',
+            'vendor_quotation.total',
+            'users.name'];
 
         $vendors_quotation = VendorQuotation::select($select)
             ->leftJoin('vendors', 'vendor_quotation.vendor_id', '=', 'vendors.id')
             ->leftJoin('users', 'users.id', '=', 'vendor_quotation.user_id')
             ->leftJoin('vendor_quotation_item', 'vendor_quotation_item.vendor_quotation_id', '=', 'vendor_quotation.id')
             ->leftJoin('categories', 'categories.id', '=', 'vendor_quotation_item.category_id')
+            ->whereIn('vendor_quotation_item.category_id', UserCategory::select('category_id as id')->where('user_id', Auth::user()->id)->get())
+            ->groupBy('vendor_quotation.id')
             ->paginate($this->count);
         $data = [
             'title'            => 'Vendor Quotation',
             'vendor_quotation' => $vendors_quotation,
-            'user'             => Auth::user(),
+            'user'             => Auth::user()
         ];
         return view('team.vendorquotation.view',$data);
     }
 
     public function add()
     {
-        $vendors = Vendor::orderBy('id','DESC')->paginate($this->count);
-        $categories = Category::orderBy('id','DESC')->paginate($this->count);
+        $vendors = Vendor::orderBy('id','DESC')->get();
+        $categories = Category::orderBy('id','DESC')->get();
+        $items = Item::orderBy('id','DESC') ->whereIn('items.category_id', UserCategory::select('category_id as id')->where('user_id', Auth::user()->id)->get())->get();
+        $brands = Brand::orderBy('id','DESC')->get();
         $data = [
             'title'       => 'Add Vendor Quotation',
             'base_url'    => env('APP_URL', 'http://127.0.0.1:8000'),
             'user'        => Auth::user(),
             'vendors'     => $vendors,
-            'categories'  => $categories
+            'categories'  => $categories,
+            'brands'      => $brands,
+            'items'       => $items
         ];
         return view('team.vendorquotation.add', $data);
     }
@@ -51,33 +69,34 @@ class VendorQuotationController extends Controller
         $request->validate([
             'vendor_id'          => 'required',
             'quotation_ref'      => 'required',
-            'total'              =>'required',
+            'quotation_pdf'      => 'required|file',
+            'project_name'       => 'required',
+            'total'              => 'required',
             'category_id'        => 'required|array',
             'category_id.*'      => 'required',
-            'item_description'   => 'required|array',
-            'item_description.*' => 'required',
+            'item_id'            => 'required|array',
+            'item_id.*'          => 'required',
+            'brand_id'           => 'required|array',
+            'brand_id.*'         => 'required',
             'quantity'           => 'required|array',
             'quantity.*'         => 'required',
             'unit'               => 'required|array',
             'unit.*'             => 'required',
-            'price'              => 'required|array',
-            'price.*'            => 'required',
+            'rate'               => 'required|array',
+            'rate.*'             => 'required',
             'amount'             => 'required|array',
-            'amount.*'           => 'required',
-            'quotation_pdf'      => 'required|file',
-            'project_name'       => 'required'
+            'amount.*'           => 'required'
         ],[
             'vendor_id.required'     => 'The vendor field is required.',
         ]);
 
-
-
         $categories   = $request->category_id;
         $quantities   = $request->quantity;
-        $descriptions = $request->item_description;
         $units        = $request->unit;
-        $prices       = $request->price;
+        $rates        = $request->rate;
         $amounts      = $request->amount;
+        $brands       = $request->brand_id;
+        $items        = $request->item_id;
 
         $id = Auth::user()->id;
         $data = $request->all();
@@ -90,13 +109,18 @@ class VendorQuotationController extends Controller
         $save = [];
 
         foreach($categories as $index => $category) {
+            $item_detail = Item::select('*')
+                ->where('item_name',$items[$index])
+                ->where('brand_id', $brands[$index])
+                ->first();
             $vendor_quotation_item = [
                 'vendor_quotation_id' => $vendor_quotation->id,
                 'category_id'         => $category,
-                'item_description'    => $descriptions[$index],
+                'brand_id'            => $brands[$index],
+                'item_id'             => $item_detail->id,
                 'quantity'            => $quantities[$index],
                 'unit'                => $units[$index],
-                'price'               => $prices[$index],
+                'rate'                => $rates[$index],
                 'amount'              => $amounts[$index],
             ];
             $save[] = (new VendorQuotationItem($vendor_quotation_item))->save();
@@ -106,6 +130,7 @@ class VendorQuotationController extends Controller
             route('vendorquotation.list.team')
         )->with('success', 'Vendor Quotation was added successfully!');
     }
+
     private function uploadPDF($file)
     {
         $filename  = Uuid::uuid4().".{$file->extension()}";
@@ -114,13 +139,209 @@ class VendorQuotationController extends Controller
         return $filename;
     }
 
+    public function delete($id)
+    {
+        $items = VendorQuotationItem::where('vendor_quotation_id',$id)->delete();
+        $quotation = VendorQuotation::find($id)->delete();
+        return redirect(
+            route('vendorquotation.list.team')
+        )->with('success', 'Vendor Quotation deleted successfully!');
+    }
+
     public function edit($id)
     {
-        $data = [
-            'title'    => 'Update Vendor Quotation',
-            'base_url' => env('APP_URL', 'http://127.0.0.1:8000'),
-            'user'     => Auth::user(),
+        $vendors = Vendor::orderBy('id','DESC')->get();
+        $brands    = Brand::orderBy('id','DESC')->get();
+        $categories  = Category::orderBy('id','DESC')->get();
+        $items     = Item::select([
+            DB::raw("DISTINCT item_name,id"),
+        ]) ->whereIn('items.category_id', UserCategory::select('category_id as id')->where('user_id', Auth::user()->id)->get())->orderBy('id','DESC')->get();
+
+        $select = [
+            "vendor_quotation.*",
+            "vendor_quotation.id as ids",
+            "vendor_quotation.total as totals",
+            #"vendor_quotation_item.*",
+            'vendors.*'
         ];
+
+        $vendor_quotation = VendorQuotation::select($select)
+            ->join('vendors','vendors.id','=','vendor_quotation.vendor_id')
+            #->join('vendor_quotation_item','vendor_quotation_item.vendor_quotation_id','=','vendor_quotation.id')
+            ->where('vendor_quotation.id', $id)
+            ->first();
+
+
+        # If inquiry was not found
+        if (!$vendor_quotation) return redirect()->back()->with('error', 'Vendor Quotation not found');
+
+        $select_items = [
+            "vendor_quotation_item.*",
+            "items.item_name"
+        ];
+
+        $vendor_quotation->items = VendorQuotationItem::select($select_items)
+            ->leftJoin('items', 'items.id', '=', 'vendor_quotation_item.item_id')
+            ->whereIn('vendor_quotation_item.category_id', UserCategory::select('category_id as id')->where('user_id', Auth::user()->id)->get())
+            ->where('vendor_quotation_item.vendor_quotation_id', $id)
+            ->get();
+
+
+        $data = [
+            'title'            => 'Edit Vendor Quotation',
+            'base_url'         => env('APP_URL', 'http://omnibiz.local'),
+            'user'             => Auth::user(),
+            'vendor_quotation' => $vendor_quotation,
+            'brands'           => $brands,
+            'vendors'          => $vendors,
+            'items'            => $items,
+            'categories'       =>$categories
+        ];
+
         return view('team.vendorquotation.edit', $data);
+    }
+
+    public function update(Request $request,$id)
+    {
+        $vendor_quotation = VendorQuotation::find($id);
+
+        if(!$vendor_quotation)
+        {
+            return redirect(
+                route('vendorquotation.list.team')
+            )->with('error', 'Vendor Quotation doesn\'t exists!');
+        }
+
+        $request->validate([
+            'vendor_id'          => 'required',
+            'quotation_ref'      => 'required',
+            'project_name'       => 'required',
+            'total'              => 'required',
+            'category_id'        => 'required|array',
+            'category_id.*'      => 'required',
+            'item_id'            => 'required|array',
+            'item_id.*'          => 'required',
+            'brand_id'           => 'required|array',
+            'brand_id.*'         => 'required',
+            'quantity'           => 'required|array',
+            'quantity.*'         => 'required',
+            'unit'               => 'required|array',
+            'unit.*'             => 'required',
+            'rate'               => 'required|array',
+            'rate.*'             => 'required',
+            'amount'             => 'required|array',
+            'amount.*'           => 'required'
+        ],[
+            'vendor_id.required'     => 'The vendor field is required.',
+        ]);
+
+        $vendor_quotation->vendor_id     = $request->vendor_id;
+        $vendor_quotation->project_name  = $request->project_name;
+        $vendor_quotation->quotation_ref = $request->quotation_ref;
+        $vendor_quotation->total         = $request->total;
+        $vendor_quotation->save();
+
+        $vendor_quotation_item = VendorQuotationItem::where('vendor_quotation_id',$vendor_quotation->id)->delete();
+
+        $items      = $request->item_id;
+        $categories = $request->category_id;
+        $brands     = $request->brand_id;
+        $quantities = $request->quantity;
+        $units      = $request->unit;
+        $rates      = $request->rate;
+        $amounts    = $request->amount;
+
+        $save = [];
+
+
+        foreach($categories as $index => $category)
+        {
+            $item_detail = Item::where('item_name',$items[$index])->where('brand_id', $brands[$index])->first();
+
+            $vendor_quotation_item = [
+                'vendor_quotation_id' => $vendor_quotation->id,
+                'category_id'         => $category,
+                'item_id'             => $item_detail->id,
+                'brand_id'            => $brands[$index],
+                'quantity'            => $quantities[$index],
+                'unit'                => $units[$index],
+                'rate'                => $rates[$index],
+                'amount'              => $amounts[$index],
+            ];
+            $save[] = (new VendorQuotationItem($vendor_quotation_item))->save();
+        }
+        return redirect(
+            route('vendorquotation.list.team')
+        )->with('success', 'Vendor Quotation was updated successfully!');
+    }
+
+    public function view($id)
+    {
+        $select=[
+            'vendor_quotation.*',
+            'vendor_quotation.created_at as creationdate',
+            'vendor_quotation.id as unique',
+            'vendor_quotation.total as totals',
+            'items.*',
+            'vendors.*',
+            'categories.*',
+            'brands.*',
+            'users.*',
+            'vendor_quotation_item.*',
+        ];
+        $vendors_quotation = VendorQuotation::select($select)
+            ->where('vendor_quotation.id',$id)
+            ->leftJoin('vendor_quotation_item', 'vendor_quotation_item.vendor_quotation_id', '=', 'vendor_quotation.id')
+            ->leftJoin('vendors', 'vendor_quotation.vendor_id', '=', 'vendors.id')
+            ->leftJoin('items', 'items.id', '=', 'vendor_quotation_item.item_id')
+            ->leftJoin('users', 'users.id', '=', 'vendor_quotation.user_id')
+            ->leftJoin('brands', 'brands.id', '=', 'vendor_quotation_item.brand_id')
+            ->leftJoin('categories', 'categories.id', '=', 'vendor_quotation_item.category_id')
+            ->whereIn('vendor_quotation_item.category_id', UserCategory::select('category_id as id')->where('user_id', Auth::user()->id)->get())
+            ->get();
+        $data = [
+            'title'            => 'Vendor Quotation',
+            'user'             => Auth::user(),
+            'quotation'        => $vendors_quotation
+        ];
+        return view('team.vendorquotation.item',$data);
+    }
+
+    public function pdfinquiry($id)
+    {
+
+        $select=[
+            'vendor_quotation.*',
+            'vendor_quotation.created_at as creationdate',
+            'vendor_quotation.id as unique',
+            'vendor_quotation.total as totals',
+            'items.*',
+            'vendors.*',
+            'categories.*',
+            'brands.*',
+            'users.*',
+            'vendor_quotation_item.*',
+        ];
+        $vendors_quotation = VendorQuotation::select($select)
+            ->where('vendor_quotation.id',$id)
+            ->leftJoin('vendor_quotation_item', 'vendor_quotation_item.vendor_quotation_id', '=', 'vendor_quotation.id')
+            ->leftJoin('vendors', 'vendor_quotation.vendor_id', '=', 'vendors.id')
+            ->leftJoin('items', 'items.id', '=', 'vendor_quotation_item.item_id')
+            ->leftJoin('users', 'users.id', '=', 'vendor_quotation.user_id')
+            ->leftJoin('brands', 'brands.id', '=', 'vendor_quotation_item.brand_id')
+            ->leftJoin('categories', 'categories.id', '=', 'vendor_quotation_item.category_id')
+            ->whereIn('vendor_quotation_item.category_id', UserCategory::select('category_id as id')->where('user_id', Auth::user()->id)->get())
+            ->get();
+
+        $vendors_quotation->creation = \Illuminate\Support\Carbon::createFromTimeStamp(strtotime($vendors_quotation[0]->creationdate))->format('d-M-Y');
+        $data = [
+            'title'      => 'Vendor Quotation Pdf',
+            'base_url'   => env('APP_URL', 'http://omnibiz.local'),
+            'user'       => Auth::user(),
+            'quotation'  => $vendors_quotation
+        ];
+        $date = "Quotation-Invoice-". Carbon::now()->format('d-M-Y')  .".pdf";
+        $pdf = PDF::loadView('team.vendorquotation.pdf-invoice', $data);
+        return $pdf->download($date);
     }
 }

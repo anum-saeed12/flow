@@ -9,8 +9,8 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard.admin') }}">Home</a></li>
-                        <li class="breadcrumb-item">Quotation</li>
+                        <li class="breadcrumb-item"><a href="{{ route('dashboard.team') }}">Home</a></li>
+                        <li class="breadcrumb-item">Item</li>
                         <li class="breadcrumb-item active">{{$title}}</li>
                     </ol>
                 </div>
@@ -24,7 +24,7 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-                    @include('admin.quotation.components.filters')
+
                 <div class="col-12">
                     @if(session()->has('success'))
                         <div class="callout callout-success" style="color:green">
@@ -51,19 +51,18 @@
                                 </form>
                             </div>
                             <div class="col-md-6 text-right pr-md-4">
-                                <div class="mr-2" style="display:inline-block;vertical-align:top;">
+                                <form method="Get" action="" style="display:inline-block;vertical-align:top;" class="mr-2">
                                     <div class="input-group">
-                                        <input type="text" id="myInput" onkeyup="myFunction()" placeholder=" Quick find" class="form-control"
+                                        <input type="text" id="myInput" onkeyup="myFunction()" placeholder=" Search" class="form-control"
                                                aria-label="Search">
                                         <div class="input-group-append">
-                                            <button class="btn btn-secondary" type="button"><i
+                                            <button class="btn btn-secondary" type="submit"><i
                                                     class="fas fa-search"></i>
                                             </button>
                                         </div>
                                     </div>
-                                </div>
-                                <a href="{{ route('quotation.add.admin') }}" class="btn btn-success"><i class="fa fa-plus-circle mr-1"></i> Add New</a>
-
+                                </form>
+                                <a href="{{ route('item.add.team') }}" class="btn btn-success"><i class="fa fa-plus-circle mr-1"></i> Add New</a>
                             </div>
                         </div>
                         <div class="card-body table-responsive p-0">
@@ -71,38 +70,44 @@
                                 <thead>
                                 <tr>
                                     <th>Sr.No.</th>
-                                    <th class="pl-0">Customer NAme</th>
-                                    <th class="pl-0">Project Name</th>
-                                    <th class="pl-0">Date</th>
-                                    <th class="pl-0">Amount</th>
-                                    <th class="pl-0">Terms & Condition</th>
+                                    <th class="pl-0">Item Name</th>
+                                    <th class="pl-0">Item Picture</th>
+                                    <th class="pl-0">Brand</th>
+                                    <th class="pl-0">Category</th>
+                                    <th class="pl-0">Item Description</th>
+                                    <th class="pl-0">Unit</th>
+                                    <th class="pl-0">Price</th>
+                                    <th class="pl-0">Weight</th>
+                                    <th class="pl-0">Height</th>
+                                    <th class="pl-0">Width</th>
                                 </tr>
                                 </thead>
                                 <tbody id="myTable">
-                                @forelse($quotations as $quotation)
+                                @foreach($items as $item)
                                     <tr style="cursor:pointer" class="no-select" data-toggle="modal"
-                                        data-href="{{ route('quotation.view.admin',$quotation->id) }}">
-                                        <td><a href="{{ route('quotation.view.admin',$quotation->id) }}">{{ $loop->iteration }}</td>
-                                        <td><a href="{{ route('quotation.view.admin',$quotation->id) }}">{{ ucfirst($quotation->customer_name) }}</td>
-                                        <td><a href="{{ route('quotation.view.admin',$quotation->id) }}">{{ ucfirst($quotation->project_name) }}</td>
-                                        <td><a href="{{ route('quotation.view.admin',$quotation->id) }}">{{ ucfirst($quotation->date) }}</td>
-                                        <td><a href="{{ route('quotation.view.admin',$quotation->id) }}">{{ ucfirst($quotation->terms_condition) }}</td>
-                                        <td class="text-right p-0">
-                                            <a class="bg-primary list-btn" href="{{ route('quotation.edit.admin',$quotation->id) }}" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
-                                            <a class="bg-danger list-btn"  href="{{ route('quotation.delete.admin',$quotation->id) }}" title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
+                                        data-href="{{ route('item.view.team',$item->id) }}">
+                                        <td><a href="{{ route('item.view.team',$item->id) }}">{{ $loop->iteration }}</td>
+                                        <td><a href="{{ route('item.view.team',$item->id) }}">{{ucfirst($item->item_name)}}</td>
+                                        <td><a href="{{ asset('storage/images/'.$item->picture) }}" target="_blank">
+                                                <div class="list-img-thumbnail" style="background-image:url('{{ asset('storage/images/'.$item->picture) }}');"></div>
+                                            </a>
                                         </td>
+                                        <td><a href="{{ route('item.view.team',$item->id) }}">{{ucfirst($item->brand_name)}}</td>
+                                        <td><a href="{{ route('item.view.team',$item->id) }}">{{ucfirst($item->category_name)}}</td>
+                                        <td><a href="{{ route('item.view.team',$item->id) }}">{{ucfirst($item->item_description)}}</td>
+                                        <td><a href="{{ route('item.view.team',$item->id) }}">{{ucfirst($item->unit)}}</td>
+                                        <td><a href="{{ route('item.view.team',$item->id) }}">{{$item->price}}</td>
+                                        <td><a href="{{ route('item.view.team',$item->id) }}">{{$item->weight}}</td>
+                                        <td><a href="{{ route('item.view.team',$item->id) }}">{{$item->height}}</td>
+                                        <td><a href="{{ route('item.view.team',$item->id) }}">{{$item->width}}</td>
                                     </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="7" class="py-3 text-center">No quotations found</td>
-                                    </tr>
-                                @endforelse
+                                @endforeach
                                 </tbody>
                             </table>
                         </div>
                     </div>
                     <div class="d-flex flex-row-reverse">
-                      {!! $quotations->links('pagination::bootstrap-4') !!}
+                      {!! $items->links('pagination::bootstrap-4') !!}
                     </div>
                 </div>
             </div>

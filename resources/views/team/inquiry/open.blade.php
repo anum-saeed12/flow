@@ -9,7 +9,7 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard.sale') }}">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('dashboard.team') }}">Home</a></li>
                         <li class="breadcrumb-item">Open Inquiry</li>
                         <li class="breadcrumb-item active">{{$title}}</li>
                     </ol>
@@ -24,7 +24,7 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-                @include('sale.inquiry.components.filters')
+                @include('team.inquiry.components.filters')
                 <div class="col-12">
                     @if(session()->has('success'))
                         <div class="callout callout-success" style="color:green">
@@ -62,7 +62,7 @@
                                         </div>
                                     </div>
                                 </form>
-                                <a href="{{ route('inquiry.add.sale') }}" class="btn btn-success"><i class="fa fa-plus-circle mr-1"></i> Add New</a>
+                                <a href="{{ route('inquiry.add.team') }}" class="btn btn-success"><i class="fa fa-plus-circle mr-1"></i> Add New</a>
 
                             </div>
                         </div>
@@ -86,15 +86,17 @@
                                         data-href="{{ route('inquiry.view.team',$inquiry->id) }}">
                                         <td><a href="{{ route('inquiry.view.team',$inquiry->id) }}">{{ $loop->iteration }}</a></td>
                                         <td><a href="{{ route('inquiry.view.team',$inquiry->id) }}">{{ ucfirst($inquiry->customer_name) }}</a></td>
-                                        <td><a href="{{ route('inquiry.view.team',$inquiry->id) }} ///">{{ ucfirst($inquiry->project_name) }}</a></td>
+                                        <td><a href="{{ route('inquiry.view.team',$inquiry->id) }}">{{ ucfirst($inquiry->project_name) }}</a></td>
                                         <td><a href="{{ route('inquiry.view.team',$inquiry->id) }}"><b>{{ $inquiry->item_count }}</b> Item(s)</a></td>
                                         <td><a href="{{ route('inquiry.view.team',$inquiry->id) }}">{{ number_format($inquiry->amount) }} {{ strtoupper($inquiry->currency) }}</a></td>
                                         <td><a href="{{ route('inquiry.view.team',$inquiry->id) }}">{{ $inquiry->name }}{!! $inquiry->id == auth()->id() ? ' (me)':'' !!}</a></td>
                                         <td><a href="{{ route('inquiry.view.team',$inquiry->id) }}">{{ ucfirst($inquiry->date) }}</a></td>
                                         <td><a href="{{ route('inquiry.view.team',$inquiry->id) }}">{{ ucfirst($inquiry->timeline) }}</a></td>
                                         <td class="text-right p-0">
-                                            <a class="bg-primary list-btn"  href="{{ route('inquiry.edit.sale',$inquiry->id) }}" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
-                                            <a class="bg-danger list-btn"  href="{{ route('inquiry.delete.sale',$inquiry->id) }}"  title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
+                                            <a class="bg-warning list-btn"  href="{{ route('quotation.generate.team',$inquiry->id) }}" title="Download Files"><i class="fas fa-download" aria-hidden="false"></i></a>
+                                            @if($inquiry->inquiry_status=='open')<a class="bg-success list-btn"  href="{{ route('quotation.generate.team',$inquiry->id) }}" title="Generate Quotation"><i class="fas fa-file" aria-hidden="false"></i></a>@endif
+                                            <a class="bg-primary list-btn"  href="{{ route('inquiry.edit.team',$inquiry->id) }}" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
+                                            <a class="bg-danger list-btn"  href="{{ route('inquiry.delete.team',$inquiry->id) }}"  title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
                                         </td>
                                     </tr>
                                 @endforeach

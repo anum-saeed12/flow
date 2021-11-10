@@ -10,18 +10,35 @@ use App\Models\Inquiry;
 use App\Models\InquiryDocument;
 use App\Models\InquiryOrder;
 use App\Models\Item;
+use App\Models\User;
+use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Ramsey\Uuid\Uuid;
 
 class InquiryController extends Controller
 {
-    public function index()
+    public function index ()
     {
         $select = [
-            'inquiries.id','customer_name', 'project_name', 'item_description', 'amount', 'users.name', 'date', 'timeline'
+            'customers.customer_name',
+            'inquiries.id',
+            'inquiries.project_name',
+            'inquiries.total',
+            'inquiries.date',
+            'inquiries.timeline',
+            'users.name',
+            'items.item_description',
+            DB::raw("(
+                CASE
+                    WHEN `quotations`.`id` iS NULL
+                        THEN 'open'
+                    ELSE 'close'
+                END
+            ) as 'inquiry_status'")
         ];
         $inquires = Inquiry::select($select)
             ->leftJoin('customers','customers.id','=','inquiries.customer_id')
@@ -30,23 +47,38 @@ class InquiryController extends Controller
             ->leftJoin('brands','brands.id' ,'=', 'inquiry_order.brand_id')
             ->leftJoin('categories', 'categories.id' ,'=', 'inquiry_order.category_id')
             ->leftJoin('users', 'users.id' ,'=', 'inquiries.user_id')
-            ->leftJoin( 'items','items.id' ,'=', 'inquiry_order.item_id')
-            ->where('inquiries.user_id','=',Auth::user()->id)
-            ->groupBy('inquiries.id','inquiry_order.inquiry_id')
-            ->paginate($this->count);
+            ->leftJoin('items', 'items.id' ,'=', 'inquiry_order.item_id')
+            ->leftJoin('quotations', 'quotations.inquiry_id' ,'=', 'inquiries.id')
+            ->groupBy('inquiries.id','inquiry_order.inquiry_id')->paginate($this->count);
+
 
         $data = [
-            'title'   => 'View Inquires',
+            'title'   => 'View Inquiries',
             'user'    => Auth::user(),
             'inquires'=> $inquires
         ];
-        return view('sale.inquiry.view',$data);
+        return view('admin.inquiry.view',$data);
     }
 
-    public function open()
+    public function open(Request $request)
     {
         $select = [
-            'inquiries.id','customer_name', 'project_name', 'item_description', 'amount', 'users.name', 'date', 'timeline'
+            'customers.customer_name',
+            'inquiries.id as ids',
+            'inquiries.project_name',
+            'inquiries.total',
+            'inquiries.date',
+            'inquiries.timeline',
+            'users.name',
+            'items.item_description',
+            DB::raw("(
+                CASE
+                    WHEN `quotations`.`id` iS NULL
+                        THEN 'open'
+                    ELSE 'close'
+                END
+            ) as 'inquiry_status'"),
+            DB::raw("COUNT(inquiry_order.id) as item_count")
         ];
         $inquires = Inquiry::select($select)
             ->leftJoin('customers','customers.id','=','inquiries.customer_id')
@@ -55,16 +87,39 @@ class InquiryController extends Controller
             ->leftJoin('brands','brands.id' ,'=', 'inquiry_order.brand_id')
             ->leftJoin('categories', 'categories.id' ,'=', 'inquiry_order.category_id')
             ->leftJoin('users', 'users.id' ,'=', 'inquiries.user_id')
-            ->leftJoin( 'items','items.id' ,'=', 'inquiry_order.item_id')
-            ->where('inquiries.user_id','=',Auth::user()->id)
-            ->groupBy('inquiries.id','inquiry_order.inquiry_id')
-            ->paginate($this->count);
+            ->leftJoin('items', 'items.id' ,'=', 'inquiry_order.item_id')
+            ->leftJoin('quotations', 'quotations.inquiry_id' ,'=', 'inquiries.id')
+            ->whereNull('quotations.id')
+            ->groupBy('inquiries.id','inquiry_order.inquiry_id');
+
+        # Applying filters
+        # 1. Applying sales person filter
+        $request->sales_person && $inquires = $inquires->where('users.id', $request->sales_person);
+        # 2. Applying customer name filter
+        $request->customer_id && $inquires = $inquires->where('customers.id', $request->customer_id);
+        # 3. Applying project name filter
+        $request->project && $inquires = $inquires->where('quotations.project_name', 'LIKE', "%$request->project%");
+        # 4. Applying start date and end date filter
+        $start_date = $request->from;
+        $end_date = $request->to;
+        $request->from && $inquires = $inquires->where('quotations.created_at', '>', $start_date);
+        $request->to && $inquires = $inquires->where('quotations.created_at', '<', $end_date);
+
+        #We have separated the paginate function so we can apply all the filters before that
+        $inquires = $inquires->paginate($this->count);
+
+        $sale = User::where('user_role','sale')->get();
+
         $data = [
-            'title'   => 'Open Inquires',
+            'title'   => 'View Inquiries',
             'user'    => Auth::user(),
-            'inquires'=> $inquires
+            'inquires'=> $inquires,
+            'sales_people' => $sale,
+            'request' => $request,
+            'customers' =>Customer::all(),
+            'reset_url' => route('inquiry.list.admin')
         ];
-        return view('sale.inquiry.open',$data);
+        return view('admin.inquiry.open',$data);
     }
 
     public function add()
@@ -83,7 +138,7 @@ class InquiryController extends Controller
             'customers'  => $customers,
             'items'      => $items
         ];
-        return view('sale.inquiry.add', $data);
+        return view('admin.inquiry.add', $data);
     }
 
     public function store(Request $request)
@@ -93,7 +148,7 @@ class InquiryController extends Controller
             'project_name'   => 'required',
             'date'           => 'required',
             'timeline'       => 'required',
-            'total'       => 'required',
+            'total'          => 'required',
             'remarks'        => 'sometimes',
             'rate'           => 'required|array',
             'rate.*'         => 'required',
@@ -107,8 +162,8 @@ class InquiryController extends Controller
             'quantity.*'     => 'required',
             'unit'           => 'required|array',
             'unit.*'         => 'required',
-            'amount'           => 'required|array',
-            'amount.*'         => 'required',
+            'amount'         => 'required|array',
+            'amount.*'       => 'required',
             'inquiry_file'   => 'required|array',
             'inquiry_file.*' => 'required|',
         ],[
@@ -146,10 +201,15 @@ class InquiryController extends Controller
         }
 
         foreach($categories as $index => $category) {
+            $item_detail = Item::select('*')
+                ->where('item_name',$items[$index])
+                ->where('brand_id', $brands[$index])
+                ->first();
+
             $inquiry_item = [
                 'inquiry_id'   => $inquiry->id,
                 'category_id'  => $category,
-                'item_id'      => $items[$index],
+                'item_id'      => $item_detail->id,
                 'brand_id'     => $brands[$index],
                 'quantity'     => $quantities[$index],
                 'unit'         => $units[$index],
@@ -159,8 +219,88 @@ class InquiryController extends Controller
             $save[] = (new InquiryOrder($inquiry_item))->save();
         }
         return redirect(
-            route('inquiry.list.sale')
+            route('inquiry.list.admin')
         )->with('success', 'Inquiry was added successfully!');
+    }
+
+    public function update(Request $request,$id)
+    {
+        $inquiry = Inquiry::find($id);
+
+        if(!$inquiry)
+        {
+            return redirect(
+                route('inquiry.list.admin')
+            )->with('error', 'Inquiry doesn\'t exists!');
+        }
+
+        $request->validate([
+            'customer_id'    => 'required',
+            'project_name'   => 'required',
+            'date'           => 'required',
+            'currency'       => 'required',
+            'discount'       => 'sometimes',
+            'timeline'       => 'required',
+            'total'          => 'required',
+            'remarks'        => 'sometimes',
+            'rate'           => 'required|array',
+            'rate.*'         => 'required',
+            'item_id'        => 'required|array',
+            'item_id.*'      => 'required',
+            'brand_id'       => 'required|array',
+            'brand_id.*'     => 'required',
+            'quantity'       => 'required|array',
+            'quantity.*'     => 'required',
+            'unit'           => 'required|array',
+            'unit.*'         => 'required',
+            'amount'         => 'required|array',
+            'amount.*'       => 'required',
+        ],[
+            'customer_id.required'     => 'The customer field is required.',
+            'project_name.required'    => 'The project name field is required.'
+        ]);
+
+        $inquiry->customer_id = $request->customer_id;
+        $inquiry->project_name = $request->project_name;
+        $inquiry->date = $request->date;
+        $inquiry->currency = $request->currency;
+        $inquiry->discount = $request->discount;
+        $inquiry->remarks = $request->remarks;
+        $inquiry->total = $request->total;
+        $inquiry->save();
+
+        $inquiry_item = InquiryOrder::where('inquiry_id',$inquiry->id)->delete();
+
+        $items      = $request->item_id;
+        $categories = $request->category_id;
+        $brands     = $request->brand_id;
+        $quantities = $request->quantity;
+        $units      = $request->unit;
+        $rates      = $request->rate;
+        $amounts    = $request->amount;
+
+        $save = [];
+
+        foreach($categories as $index => $category) {
+            $item_detail = Item::select('*')
+                ->where('item_name',$items[$index])
+                ->where('brand_id', $brands[$index])
+                ->first();
+            $inquiry_item = [
+                'inquiry_id'   => $inquiry->id,
+                'category_id'  => $category,
+                'item_id'      => $item_detail->id,
+                'brand_id'     => $brands[$index],
+                'quantity'     => $quantities[$index],
+                'unit'         => $units[$index],
+                'rate'         => $rates[$index],
+                'amount'       => $amounts[$index],
+            ];
+            $save[] = (new InquiryOrder($inquiry_item))->save();
+        }
+        return redirect(
+            route('inquiry.list.admin')
+        )->with('success', 'Inquiry was updated successfully!');
     }
 
     private function uploadPDF($file)
@@ -173,20 +313,64 @@ class InquiryController extends Controller
 
     public function edit($id)
     {
-        $data = [
-            'title'    => 'Update Inquiry',
-            'base_url' => env('APP_URL', 'http://127.0.0.1:8000'),
-            'user'     => Auth::user(),
+        $customers = Customer::orderBy('id','DESC')->get();
+        $brands    = Brand::orderBy('id','DESC')->get();
+        $categories    = Category::orderBy('id','DESC')->get();
+        $items     = Item::select([
+            DB::raw("DISTINCT item_name,id"),
+        ])->orderBy('id','DESC')->get();
+
+        $select = [
+            "customers.*",
+            #   "inquiry_order.*",
+            "inquiries.*",
         ];
-        return view('sale.inquiry.edit', $data);
+
+        $inquiry = Inquiry::select($select)
+            ->join('customers','customers.id','=','inquiries.customer_id')
+            # ->join('inquiry_order','inquiry_order.inquiry_id','=','inquiries.id')
+            ->where('inquiries.id', $id)
+            ->first();
+
+        # If inquiry was not found
+        if (!$inquiry) return redirect()->back()->with('error', 'Inquiry not found');
+
+        $select_item = [
+            "inquiry_order.*",
+            "items.item_name"
+        ];
+
+        $inquiry->items = InquiryOrder::select($select_item)
+            ->join('items', 'items.id', '=', 'inquiry_order.item_id')
+            ->where('inquiry_order.inquiry_id', $id)
+            ->get();
+
+        $data = [
+            'title'     => 'Edit Inquiry',
+            'base_url'  => env('APP_URL', 'http://omnibiz.local'),
+            'user'      => Auth::user(),
+            'inquiry'   => $inquiry,
+            'brands'    => $brands,
+            'customers' => $customers,
+            'items'     => $items,
+            'categories'=>$categories
+        ];
+
+        return view('admin.inquiry.edit', $data);
     }
 
     public function view($id)
     {
-        $select = [
-            'inquiries.id','customer_name', 'project_name', 'item_description', 'amount', 'users.name', 'date', 'timeline'
+        $select=[
+            'inquiries.*',
+            'inquiries.id as unique',
+            'items.*',
+            'categories.*',
+            'brands.*',
+            'inquiry_order.*',
+            'customers.*',
         ];
-        $inquires = Inquiry::select('*')
+        $inquires = Inquiry::select($select)
             ->where('inquiries.id',$id)
             ->leftJoin('customers','customers.id','=','inquiries.customer_id')
             ->leftJoin('inquiry_documents','inquiry_documents.inquiry_id','=','inquiries.id')
@@ -195,15 +379,62 @@ class InquiryController extends Controller
             ->leftJoin('categories', 'categories.id' ,'=', 'inquiry_order.category_id')
             ->leftJoin('users', 'users.id' ,'=', 'inquiries.user_id')
             ->leftJoin( 'items','items.id' ,'=', 'inquiry_order.item_id')
-            ->where('inquiries.user_id','=',Auth::user()->id)
             ->groupBy('inquiries.id','inquiry_order.inquiry_id')
             ->get();
+
+
         $data = [
-            'title'      => 'Inquiry',
+            'title'   => 'View Inquires',
+            'user'    => Auth::user(),
+            'inquiry'=> $inquires
+        ];
+        return view('admin.inquiry.item',$data);
+    }
+
+    public function delete($id)
+    {
+        $document = InquiryDocument::where('inquiry_id',$id)->delete();
+        $order    = InquiryOrder::where('inquiry_id',$id)->delete();
+        $inquiry = Inquiry::find($id)->delete();
+        return redirect(
+            route('inquiry.list.admin')
+        )->with('success', 'Inquiry deleted successfully!');
+    }
+
+    public function pdfinquiry($id)
+    {
+        $select=[
+            'inquiries.*',
+            'inquiries.created_at as creationdate',
+            'inquiries.id as unique',
+            'items.*',
+            'categories.*',
+            'brands.*',
+            'inquiry_order.*',
+            'customers.*',
+        ];
+        $inquires = Inquiry::select($select)
+            ->where('inquiries.id',$id)
+            ->leftJoin('customers','customers.id','=','inquiries.customer_id')
+            ->leftJoin('inquiry_documents','inquiry_documents.inquiry_id','=','inquiries.id')
+            ->leftJoin('inquiry_order','inquiry_order.inquiry_id', '=', 'inquiries.id')
+            ->leftJoin('brands','brands.id' ,'=', 'inquiry_order.brand_id')
+            ->leftJoin('categories', 'categories.id' ,'=', 'inquiry_order.category_id')
+            ->leftJoin('users', 'users.id' ,'=', 'inquiries.user_id')
+            ->leftJoin( 'items','items.id' ,'=', 'inquiry_order.item_id')
+            ->groupBy('inquiries.id','inquiry_order.inquiry_id')
+            ->get();
+
+        $inquires->creation = Carbon::createFromTimeStamp(strtotime($inquires[0]->creationdate))->format('d-M-Y');
+
+        $data = [
+            'title'      => 'Inquiry Pdf',
             'base_url'   => env('APP_URL', 'http://omnibiz.local'),
             'user'       => Auth::user(),
-            'inquiry'  => $inquires
+            'inquiry'=> $inquires
         ];
-        return view('sale.inquiry.item',$data);
+        $date = "Inquiry-Invoice-". Carbon::now()->format('d-M-Y')  .".pdf";
+        $pdf = PDF::loadView('admin.inquiry.pdf-invoice', $data);
+        return $pdf->download($date);
     }
 }

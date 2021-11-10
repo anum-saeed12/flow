@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Item;
+use App\Models\UserCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -19,6 +20,7 @@ class ItemController extends Controller
         $items = Item::select('*')
                        ->leftJoin('categories', 'categories.id', '=', 'items.category_id')
                        ->leftJoin('brands', 'brands.id', '=', 'items.brand_id')
+                       ->whereIn('items.category_id', UserCategory::select('category_id as id')->where('user_id', Auth::user()->id)->get())
                        ->paginate($this->count);
         $data = [
             'title'   => 'Items',
