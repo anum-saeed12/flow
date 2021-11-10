@@ -200,12 +200,14 @@ Route::prefix('/manager')->middleware('manager')->group(function() {
         Route::get('/index', '\App\Http\Controllers\Manager\InquiryController@index')->name('inquiry.list.manager');
         Route::get('/open', '\App\Http\Controllers\Manager\InquiryController@open')->name('inquiry.open.manager');
         Route::get('/add', '\App\Http\Controllers\Manager\InquiryController@add')->name('inquiry.add.manager');
-        Route::get('/{id}/generate-quotation', '\App\Http\Controllers\Manager\InquiryController@generateQuotation')->name('inquiry.generate.quotation.admin');
         Route::post('/store', '\App\Http\Controllers\Manager\InquiryController@store')->name('inquiry.store.manager');
         Route::get('/edit/{id}', '\App\Http\Controllers\Manager\InquiryController@edit')->name('inquiry.edit.manager');
         Route::post('/update/{id}', '\App\Http\Controllers\Manager\InquiryController@update')->name('inquiry.update.manager');
         Route::get('/delete/{id}', '\App\Http\Controllers\Manager\InquiryController@delete')->name('inquiry.delete.manager');
         Route::get('/view/{id}', '\App\Http\Controllers\Manager\InquiryController@view')->name('inquiry.view.manager');
+        Route::get('/invoice/{id}', '\App\Http\Controllers\Manager\InquiryController@pdfinquiry')->name('inquiry.pdfinquiry.manager');
+        Route::get('/ajax-fetch-category/', '\App\Http\Controllers\Manager\InquiryController@ajaxFetchCategory')->name('category.fetch.ajax.manager');
+        Route::get('/ajax-fetch-item/', '\App\Http\Controllers\Manager\InquiryController@ajaxFetchItem')->name('item.fetch.ajax.manager');
     });
     Route::prefix('/item')->group(function() {
         Route::get('/', '\App\Http\Controllers\Manager\ItemController@index')->name('item.index.manager');
@@ -231,10 +233,12 @@ Route::prefix('/manager')->middleware('manager')->group(function() {
         Route::get('/customer', '\App\Http\Controllers\Manager\QuotationController@customer')->name('customerquotation.list.manager');
         Route::get('/add', '\App\Http\Controllers\Manager\QuotationController@add')->name('quotation.add.manager');
         Route::post('/store', '\App\Http\Controllers\Manager\QuotationController@store')->name('quotation.store.manager');
+        Route::get('/generate/{inquiry_id}', '\App\Http\Controllers\Manager\QuotationController@generateQuotation')->name('quotation.generate.manager');
         Route::get('/edit/{id}', '\App\Http\Controllers\Manager\QuotationController@edit')->name('quotation.edit.manager');
         Route::post('/update/{id}', '\App\Http\Controllers\Manager\QuotationController@update')->name('quotation.update.manager');
         Route::get('/delete/{id}', '\App\Http\Controllers\Manager\QuotationController@delete')->name('quotation.delete.manager');
         Route::get('/view/{id}', '\App\Http\Controllers\Manager\QuotationController@view')->name('quotation.view.manager');
+        Route::get('/invoice/{id}', '\App\Http\Controllers\Manager\QuotationController@pdfinquiry')->name('quotation.pdfinquiry.manager');
     });
     Route::prefix('/vendor/quotation')->group(function() {
         Route::get('/', '\App\Http\Controllers\Manager\VendorQuotationController@index')->name('vendorquotation.index.manager');
@@ -245,6 +249,8 @@ Route::prefix('/manager')->middleware('manager')->group(function() {
         Route::post('/update/{id}', '\App\Http\Controllers\Manager\VendorQuotationController@update')->name('vendorquotation.update.manager');
         Route::get('/delete/{id}', '\App\Http\Controllers\Manager\VendorQuotationController@delete')->name('vendorquotation.delete.manager');
         Route::get('/view/{id}', '\App\Http\Controllers\Manager\VendorQuotationController@view')->name('vendorquotation.view.manager');
+        Route::get('/invoice/{id}', '\App\Http\Controllers\Manager\VendorQuotationController@pdfinquiry')->name('vendorquotation.pdfinquiry.manager');
+
     });
 });
 
@@ -262,6 +268,9 @@ Route::prefix('/sale_person')->middleware('sale')->group(function() {
         Route::post('/update/{id}', '\App\Http\Controllers\Sales\InquiryController@update')->name('inquiry.update.sale');
         Route::get('/delete/{id}', '\App\Http\Controllers\Sales\InquiryController@delete')->name('inquiry.delete.sale');
         Route::get('/view/{id}', '\App\Http\Controllers\Sales\InquiryController@view')->name('inquiry.view.sale');
+        Route::get('/invoice/{id}', '\App\Http\Controllers\Sales\InquiryController@pdfinquiry')->name('inquiry.pdfinquiry.sale');
+        Route::get('/ajax-fetch-category/', '\App\Http\Controllers\Sales\InquiryController@ajaxFetchCategory')->name('category.fetch.ajax.sale');
+        Route::get('/ajax-fetch-item/', '\App\Http\Controllers\Sales\InquiryController@ajaxFetchItem')->name('item.fetch.ajax.sale');
     });
 });
 

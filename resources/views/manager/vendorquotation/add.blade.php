@@ -23,6 +23,9 @@
 @section('content')
 <section class="content">
     <div class="container-fluid">
+        @if($errors->any())
+            {{ implode('', $errors->all('<div>:message</div>')) }}
+        @endif
         <div class="row">
             <div class="col-md-12">
                 <div class="card card-info">
@@ -63,16 +66,35 @@
                             <div class="row">
                                 <div class="col-md-3 category-container">
                                     <label for="category_id">Select Category</label><br/>
-                                    <select name="category_id[]" class="form-control" id="category_id">
-                                        <option selected="selected" value>Select</option>
+                                    <select name="category_id[]" class="form-control categories" id="category_id" data-target="#item_id" data-href="{{ route('category.fetch.ajax.manager') }}" data-spinner="#category_spinner" onchange="categorySelect($(this))">
+                                        <option selected="selected" value>Select Category</option>
                                         @foreach ($categories as $category)
                                             <option value="{{ $category->id }}">{{ ucfirst($category->category_name) }}</option>
                                         @endforeach
                                     </select>
+                                    <div id="category_spinner"></div>
+                                    <div class="text-danger">@error('category_id'){{ $message }}@enderror</div>
                                 </div>
-                                <div class="col-md-3 description-container">
-                                    <label for="item_description">Item Description</label><br/>
-                                    <input type="text" name="item_description[]" class="form-control" id="item_description">
+                                <div class="col-md-2 item-container">
+                                    <label for="item_id">Select Item</label><br/>
+                                    <select name="item_id[]" class="form-control" id="item_id"  data-target="#brand_id" data-href="{{ route('item.fetch.ajax.manager') }}" data-spinner="#item_spinner" onchange="itemSelect($(this))">
+                                        <option selected="selected" value>Select Item</option>
+                                        @foreach ($items as $item)
+                                            <option value="{{ $item->item_name }}">{{ ucfirst($item->item_name) }}</option>
+                                        @endforeach
+                                    </select>
+                                    <div id="item_spinner"></div>
+                                    <div class="text-danger">@error('item_id'){{ $message }}@enderror</div>
+                                </div>
+                                <div class="col-md-2 brand-container">
+                                    <label for="brand_id">Select Brand</label><br/>
+                                    <select name="brand_id[]" class="form-control" id="brand_id">
+                                        <option selected="selected" value>Select Brand</option>
+                                        @foreach ($brands as $brand)
+                                            <option value="{{ $brand->id }}">{{ ucfirst($brand->brand_name) }}</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="text-danger">@error('brand_id'){{ $message }}@enderror</div>
                                 </div>
                                 <div class="col-md-1 quantity-container">
                                     <label for="quantity">Quantity</label><br/>
@@ -83,10 +105,10 @@
                                     <input type="text" name="unit[]" class="form-control" id="unit">
                                 </div>
                                 <div class="col-md-1 rate-container">
-                                    <label for="price">Price</label><br/>
-                                    <input type="text" name="price[]" class="form-control with_out" id="price" data-target="#total_amount" data-into="#quantity" onkeydown="calculate($(this))" onkeypress="calculate($(this))" onkeyup="calculate($(this))" onchange="calculate($(this))">
+                                    <label for="rate">Rate</label><br/>
+                                    <input type="text" name="rate[]" class="form-control with_out" id="rate" data-target="#total_amount" data-into="#quantity" onkeydown="calculate($(this))" onkeypress="calculate($(this))" onkeyup="calculate($(this))" onchange="calculate($(this))">
                                 </div>
-                                <div class="col-md-2 amount-container">
+                                <div class="col-md-1 amount-container">
                                     <label for="amount">Sub-Total</label><br/>
                                     <input type="text" name="amount[]" class="form-control total n" id="amount">
                                 </div>
@@ -96,7 +118,6 @@
                                 </div>
                             </div>
                             <div class="additional-products">
-
                             </div>
                             <br/>
                             <div class="row">
@@ -144,17 +165,12 @@
                 price_container = $('.price-container'),
                 amount_container = $('.amount-container'),
                 add_button = $(".add_form_field"),
-                max_fields = 1000,
                 wrapper = $('.additional-products');
             $uid = $('.quantity').length;
 
             var x = 1;
             $(add_button).click(function(e) {
                 e.preventDefault();
-                if (x >= max_fields) {
-                    alert('You Reached the limits');
-                    return false;
-                }
 
                 let $categorySelector = //'<div class="row hello">' +
                     '<div class="col-md-3 mt-3">' +
@@ -175,33 +191,50 @@
                     //;// +
                     //'</div>';
 
-                let $itemRow = '<div class="row mt-3">' +
+
+                let $itemRow = '<div class="row mt-3 ">' +
                     '<div class="col-md-3 category-container">' +
-                    '<label for="category_id">Select Category </label><br/>' +
-                    '<select name="category_id[]" class="form-control" id="category_id">' +
-                        '<option selected="selected" value>Select</option>' +
+                    '<label for="category_id">Select Category</label><br/>' +
+                    `<select name="category_id[]" class="form-control categories" id="category_id_${$uid}" data-target="#item_id_${$uid}" data-href="{{ route('category.fetch.ajax.manager') }}" data-spinner="#category_spinner_${$uid}" onchange="categorySelect($(this))">` +
+                    '<option selected="selected" value>Select</option>' +
                     @foreach ($categories as $category)
-                        '<option value="{{ $category->id }}">{{ ucfirst($category->category_name) }}</option>' +
+                        '<option value="{{ $category->id }}">{{ ucfirst($category->category_name) }}</option>'+
                     @endforeach
-                    '</select>' +
+                        '</select>' +
+                    `<div id="category_spinner_${$uid}"></div>` +
                     '</div>' +
-                '<div class="col-md-3 description-container">' +
-                    '<label for="item_description">Item Description</label><br/>' +
-                    '<input type="text" name="item_description[]" class="form-control" id="item_description"}}">' +
-                '</div>' +
+                    '<div class="col-md-2 item-container">' +
+                    '<label for="item_id">Select Item</label><br/>' +
+                    `<select name="item_id[]" class="form-control" id="item_id_${$uid}" data-target="#brand_id_${$uid}" data-href="{{ route('item.fetch.ajax.manager') }}" data-spinner="#item_spinner_${$uid}" onchange="itemSelect($(this))">` +
+                    '<option selected="selected" value>Select</option>' +
+                    @foreach ($items as $item)
+                        '<option value="{{ $item->item_name }}">{{ ucfirst($item->item_name) }}</option>'+
+                    @endforeach
+                        '</select>' +
+                    `<div id="item_spinner_${$uid}"></div>` +
+                    '</div>' +
+                    '<div class="col-md-2 brand-container">' +
+                    '<label for="brand_id">Select Brand</label><br/>' +
+                    `<select name="brand_id[]" class="form-control" id="brand_id_${$uid}">` +
+                    '<option selected="selected" value>Select</option>' +
+                    @foreach ($brands as $brand)
+                        '<option value="{{ $brand->id }}">{{ ucfirst($brand->brand_name) }}</option>'+
+                    @endforeach
+                        '</select>' +
+                    '</div>' +
                     '<div class="col-md-1 quantity-container">' +
                     `<label for="quantity_${$uid}">Quantity</label><br/>` +
-                    `<input type="text" name="quantity[]" class="form-control common quantity" id="quantity_${$uid}" data-target="#total_amount_${$uid}" data-into="#price_${$uid}" onkeydown="calculate($(this))" onkeypress="calculate($(this))" onkeyup="calculate($(this))" onchange="calculate($(this))">`+
+                    `<input type="text" name="quantity[]" class="form-control common quantity" id="quantity_${$uid}" data-target="#total_amount_${$uid}" data-into="#rate_${$uid}" onkeydown="calculate($(this))" onkeypress="calculate($(this))" onkeyup="calculate($(this))" onchange="calculate($(this))">`+
                     '</div>' +
                     '<div class="col-md-1 unit-container">' +
                     `<label for="unit_${$uid}">Unit</label><br/>` +
                     `<input type="text" name="unit[]" class="form-control" id="unit_${$uid}" >` +
                     '</div>' +
-                    '<div class="col-md-1 price-container">' +
-                    `<label for="price_${$uid}">Price</label><br/>` +
-                    `<input type="text" name="price[]" class="form-control common" id="price_${$uid}" data-target="#total_amount_${$uid}" data-into="#quantity_${$uid}" onkeydown="calculate($(this))" onkeypress="calculate($(this))" onkeyup="calculate($(this))" onchange="calculate($(this))">` +
+                    '<div class="col-md-1 rate-container">' +
+                    `<label for="rate_${$uid}">Rate</label><br/>` +
+                    `<input type="text" name="rate[]" class="form-control common" id="rate_${$uid}" data-target="#total_amount_${$uid}" data-into="#quantity_${$uid}" onkeydown="calculate($(this))" onkeypress="calculate($(this))" onkeyup="calculate($(this))" onchange="calculate($(this))">` +
                     '</div>' +
-                    '<div class="col-md-2 amount-container">' +
+                    '<div class="col-md-1 amount-container">' +
                     `<label for="amount_${$uid}">Sub-Total</label><br/>` +
                     `<input type="text" name="amount[]" class="form-control total n" id="total_amount_${$uid}">` +
                     '</div>' +
@@ -210,7 +243,6 @@
                     '<button class="delete btn btn-danger"><span><i class="fas fa-trash-alt" aria-hidden="false"></i></span></button>' +
                     '</div>' +
                     '</div>';
-
                 x++;
                 $(wrapper).append($itemRow); // add input box
             });
@@ -221,7 +253,7 @@
             })
             $('.with_out').keyup(function() {
                 var txtFirstNumberValue = document.getElementById('quantity').value;
-                var txtSecondNumberValue = document.getElementById('price').value;
+                var txtSecondNumberValue = document.getElementById('rate').value;
                 var result = parseInt(txtFirstNumberValue) * parseInt(txtSecondNumberValue);
                 if (!isNaN(result)) {
                     document.getElementById('amount').value = result;
@@ -260,5 +292,9 @@
             sumOfTotal.val(0);
             //$('#total').val(sum_of_sub_total);
         }
+
     </script>
 @stop
+@include('includes.selectajax')
+
+

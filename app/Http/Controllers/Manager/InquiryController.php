@@ -10,6 +10,8 @@ use App\Models\Inquiry;
 use App\Models\InquiryDocument;
 use App\Models\InquiryOrder;
 use App\Models\Item;
+use App\Models\User;
+use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -19,7 +21,7 @@ use Ramsey\Uuid\Uuid;
 
 class InquiryController extends Controller
 {
-    public function index()
+    public function index ()
     {
         $select = [
             'customers.customer_name',
@@ -47,8 +49,8 @@ class InquiryController extends Controller
             ->leftJoin('users', 'users.id' ,'=', 'inquiries.user_id')
             ->leftJoin('items', 'items.id' ,'=', 'inquiry_order.item_id')
             ->leftJoin('quotations', 'quotations.inquiry_id' ,'=', 'inquiries.id')
-            ->groupBy('inquiries.id','inquiry_order.inquiry_id')
-            ->paginate($this->count);
+            ->groupBy('inquiries.id','inquiry_order.inquiry_id')->paginate($this->count);
+
 
         $data = [
             'title'   => 'View Inquiries',
@@ -58,12 +60,11 @@ class InquiryController extends Controller
         return view('manager.inquiry.view',$data);
     }
 
-    public function open()
+    public function open(Request $request)
     {
-
-    $select = [
+        $select = [
             'customers.customer_name',
-            'inquiries.id',
+            'inquiries.id as ids',
             'inquiries.project_name',
             'inquiries.total',
             'inquiries.date',
@@ -76,7 +77,8 @@ class InquiryController extends Controller
                         THEN 'open'
                     ELSE 'close'
                 END
-            ) as 'inquiry_status'")
+            ) as 'inquiry_status'"),
+            DB::raw("COUNT(inquiry_order.id) as item_count")
         ];
         $inquires = Inquiry::select($select)
             ->leftJoin('customers','customers.id','=','inquiries.customer_id')
@@ -88,13 +90,34 @@ class InquiryController extends Controller
             ->leftJoin('items', 'items.id' ,'=', 'inquiry_order.item_id')
             ->leftJoin('quotations', 'quotations.inquiry_id' ,'=', 'inquiries.id')
             ->whereNull('quotations.id')
-            ->groupBy('inquiries.id','inquiry_order.inquiry_id')
-            ->paginate($this->count);
+            ->groupBy('inquiries.id','inquiry_order.inquiry_id');
+
+        # Applying filters
+        # 1. Applying sales person filter
+        $request->sales_person && $inquires = $inquires->where('users.id', $request->sales_person);
+        # 2. Applying customer name filter
+        $request->customer_id && $inquires = $inquires->where('customers.id', $request->customer_id);
+        # 3. Applying project name filter
+        $request->project && $inquires = $inquires->where('quotations.project_name', 'LIKE', "%$request->project%");
+        # 4. Applying start date and end date filter
+        $start_date = $request->from;
+        $end_date = $request->to;
+        $request->from && $inquires = $inquires->where('quotations.created_at', '>', $start_date);
+        $request->to && $inquires = $inquires->where('quotations.created_at', '<', $end_date);
+
+        #We have separated the paginate function so we can apply all the filters before that
+        $inquires = $inquires->paginate($this->count);
+
+        $sale = User::where('user_role','sale')->get();
 
         $data = [
             'title'   => 'View Inquiries',
             'user'    => Auth::user(),
-            'inquires'=> $inquires
+            'inquires'=> $inquires,
+            'sales_people' => $sale,
+            'request' => $request,
+            'customers' =>Customer::all(),
+            'reset_url' => route('inquiry.open.manager')
         ];
         return view('manager.inquiry.open',$data);
     }
@@ -178,10 +201,15 @@ class InquiryController extends Controller
         }
 
         foreach($categories as $index => $category) {
+            $item_detail = Item::select('*')
+                ->where('item_name',$items[$index])
+                ->where('brand_id', $brands[$index])
+                ->first();
+
             $inquiry_item = [
                 'inquiry_id'   => $inquiry->id,
                 'category_id'  => $category,
-                'item_id'      => $items[$index],
+                'item_id'      => $item_detail->id,
                 'brand_id'     => $brands[$index],
                 'quantity'     => $quantities[$index],
                 'unit'         => $units[$index],
@@ -211,6 +239,7 @@ class InquiryController extends Controller
             'project_name'   => 'required',
             'date'           => 'required',
             'currency'       => 'required',
+            'discount'       => 'sometimes',
             'timeline'       => 'required',
             'total'          => 'required',
             'remarks'        => 'sometimes',
@@ -226,8 +255,6 @@ class InquiryController extends Controller
             'unit.*'         => 'required',
             'amount'         => 'required|array',
             'amount.*'       => 'required',
-            'inquiry_file'   => 'required|array',
-            'inquiry_file.*' => 'required|',
         ],[
             'customer_id.required'     => 'The customer field is required.',
             'project_name.required'    => 'The project name field is required.'
@@ -252,17 +279,17 @@ class InquiryController extends Controller
         $rates      = $request->rate;
         $amounts    = $request->amount;
 
-        $data = $request->all();
-        $inquiry = new Inquiry($data);
-        $inquiry->save();
-
         $save = [];
 
         foreach($categories as $index => $category) {
+             $item_detail = Item::select('*')
+                ->where('item_name',$items[$index])
+                ->where('brand_id', $brands[$index])
+                ->first();
             $inquiry_item = [
                 'inquiry_id'   => $inquiry->id,
                 'category_id'  => $category,
-                'item_id'      => $items[$index],
+                'item_id'      => $item_detail->id,
                 'brand_id'     => $brands[$index],
                 'quantity'     => $quantities[$index],
                 'unit'         => $units[$index],
@@ -288,27 +315,34 @@ class InquiryController extends Controller
     {
         $customers = Customer::orderBy('id','DESC')->get();
         $brands    = Brand::orderBy('id','DESC')->get();
+        $categories    = Category::orderBy('id','DESC')->get();
         $items     = Item::select([
-            DB::raw("DISTINCT item_name"),
+            DB::raw("DISTINCT item_name,id"),
         ])->orderBy('id','DESC')->get();
 
-        $inquiry = Inquiry::select('*')
+        $select = [
+            "customers.*",
+         #   "inquiry_order.*",
+            "inquiries.*",
+        ];
+
+        $inquiry = Inquiry::select($select)
             ->join('customers','customers.id','=','inquiries.customer_id')
-            ->join('inquiry_order','inquiry_order.inquiry_id','=','inquiries.id')
+           # ->join('inquiry_order','inquiry_order.inquiry_id','=','inquiries.id')
             ->where('inquiries.id', $id)
             ->first();
 
         # If inquiry was not found
         if (!$inquiry) return redirect()->back()->with('error', 'Inquiry not found');
 
-        $select = [
+        $select_item = [
             "inquiry_order.*",
             "items.item_name"
         ];
 
-        $inquiry->items = InquiryOrder::select()
+        $inquiry->items = InquiryOrder::select($select_item)
             ->join('items', 'items.id', '=', 'inquiry_order.item_id')
-            ->where('inquiry_id', $id)
+            ->where('inquiry_order.inquiry_id', $id)
             ->get();
 
         $data = [
@@ -318,7 +352,8 @@ class InquiryController extends Controller
             'inquiry'   => $inquiry,
             'brands'    => $brands,
             'customers' => $customers,
-            'items'     => $items
+            'items'     => $items,
+            'categories'=>$categories
         ];
 
         return view('manager.inquiry.edit', $data);
@@ -326,7 +361,16 @@ class InquiryController extends Controller
 
     public function view($id)
     {
-        $inquires = Inquiry::select('*')
+        $select=[
+            'inquiries.*',
+            'inquiries.id as unique',
+            'items.*',
+            'categories.*',
+            'brands.*',
+            'inquiry_order.*',
+            'customers.*',
+        ];
+        $inquires = Inquiry::select($select)
             ->where('inquiries.id',$id)
             ->leftJoin('customers','customers.id','=','inquiries.customer_id')
             ->leftJoin('inquiry_documents','inquiry_documents.inquiry_id','=','inquiries.id')
@@ -337,6 +381,7 @@ class InquiryController extends Controller
             ->leftJoin( 'items','items.id' ,'=', 'inquiry_order.item_id')
             ->groupBy('inquiries.id','inquiry_order.inquiry_id')
             ->get();
+
 
         $data = [
             'title'   => 'View Inquires',
@@ -354,5 +399,68 @@ class InquiryController extends Controller
         return redirect(
             route('inquiry.list.manager')
         )->with('success', 'Inquiry deleted successfully!');
+    }
+
+    public function pdfinquiry($id)
+    {
+        $select=[
+            'inquiries.*',
+            'inquiries.created_at as creationdate',
+            'inquiries.id as unique',
+            'items.*',
+            'categories.*',
+            'brands.*',
+            'inquiry_order.*',
+            'customers.*',
+        ];
+        $inquires = Inquiry::select($select)
+            ->where('inquiries.id',$id)
+            ->leftJoin('customers','customers.id','=','inquiries.customer_id')
+            ->leftJoin('inquiry_documents','inquiry_documents.inquiry_id','=','inquiries.id')
+            ->leftJoin('inquiry_order','inquiry_order.inquiry_id', '=', 'inquiries.id')
+            ->leftJoin('brands','brands.id' ,'=', 'inquiry_order.brand_id')
+            ->leftJoin('categories', 'categories.id' ,'=', 'inquiry_order.category_id')
+            ->leftJoin('users', 'users.id' ,'=', 'inquiries.user_id')
+            ->leftJoin( 'items','items.id' ,'=', 'inquiry_order.item_id')
+            ->groupBy('inquiries.id','inquiry_order.inquiry_id')
+            ->get();
+
+        $inquires->creation = Carbon::createFromTimeStamp(strtotime($inquires[0]->creationdate))->format('d-M-Y');
+
+        $data = [
+            'title'      => 'Inquiry Pdf',
+            'base_url'   => env('APP_URL', 'http://omnibiz.local'),
+            'user'       => Auth::user(),
+            'inquiry'=> $inquires
+        ];
+        $date = "Inquiry-Invoice-". Carbon::now()->format('d-M-Y')  .".pdf";
+        $pdf = PDF::loadView('manager.inquiry.pdf-invoice', $data);
+        return $pdf->download($date);
+    }
+
+    public function ajaxFetchCategory(Request $request)
+    {
+        $request->validate([
+            'category' => 'required'
+        ]);
+        $category_id = $request->category;
+        $category_items = Item::select([DB::raw('DISTINCT item_name')])
+            ->where('category_id', $category_id)
+            ->get();
+        return response($category_items, 200);
+    }
+
+    public function ajaxFetchItem(Request $request)
+    {
+        $request->validate([
+            'item' => 'required'
+        ]);
+        $item_name = $request->item;
+        $item_categories = Item::select(['brands.brand_name', 'brands.id'])
+            ->join('brands', 'brands.id', '=', 'items.brand_id')
+            ->where('items.item_name','like',"%{$item_name}%")
+            ->groupBy('brands.id')
+            ->get();
+        return response($item_categories, 200);
     }
 }

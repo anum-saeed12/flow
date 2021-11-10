@@ -117,7 +117,7 @@ class InquiryController extends Controller
             'sales_people' => $sale,
             'request' => $request,
             'customers' =>Customer::all(),
-            'reset_url' => route('inquiry.list.admin')
+            'reset_url' => route('inquiry.open.admin')
         ];
         return view('admin.inquiry.open',$data);
     }

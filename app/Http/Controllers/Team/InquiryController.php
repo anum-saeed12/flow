@@ -125,7 +125,7 @@ class InquiryController extends Controller
             'sales_people' => User::where('user_role','sale')->get(),
             'customers' => Customer::all(),
             'request' => $request,
-            'reset_url' => route('inquiry.list.team')
+            'reset_url' => route('inquiry.open.team')
         ];
         return view('team.inquiry.open',$data);
     }

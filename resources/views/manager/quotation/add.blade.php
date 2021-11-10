@@ -187,7 +187,7 @@
                 let $itemRow = '<div class="row mt-3">' +
                     '<div class="col-md-3 item-container">' +
                     `<label for="item_id_${$uid}">Select Item </label><br/>` +
-                    `<select name="item_id[]" class="form-control" id="item_id_${$uid}" data-target="#brand_id_${$uid}" data-href="{{ route('item.fetch.ajax.manager') }}" data-spinner="#item_spinner_${$uid}" onchange="itemSelect($(this))">>` +
+                    `<select name="item_id[]" class="form-control" id="item_id_${$uid}" data-target="#brand_id_${$uid}" data-href="{{ route('item.fetch.ajax.manager') }}" data-spinner="#item_spinner_${$uid}" onchange="itemSelect($(this))">` +
                         '<option selected="selected" value>Select</option>' +
                         @foreach ($items as $item)
                             '<option value="{{ $item->item_name }}">{{ ucfirst($item->item_name) }}</option>' +
@@ -275,24 +275,6 @@
             sumOfTotal.val(0);
             //$('#total').val(sum_of_sub_total);
         }
-        function itemSelect(ele) {
-            let target = ele.data('target'), href = ele.data('href'), item_id = ele.val(), spinner = ele.data('spinner'), brands;
-            $.ajax({
-                dataType: 'json',
-                url: `${href}?item=${item_id}`,
-                beforeSend: function() {
-                    $(spinner).text('Loading brands...');
-                },
-                success: function(data) {
-                    $(spinner).html('');
-                    brands += '<option>Select Brand</option>';
-                    $.each(data, function(index, json){
-                        brands += `<option value="${json.id}">${json.brand_name}</option>`;
-                    })
-                    $(target).html(brands);
-                }
-            });
-            // data-target="#brand_id" data-href="{{ route('item.fetch.ajax.manager') }}" onchange="itemSelect($(this))" onfocus="itemSelect($(this))" onblur="itemSelect($(this))">
-        }
     </script>
 @stop
+@include('includes.selectajax')

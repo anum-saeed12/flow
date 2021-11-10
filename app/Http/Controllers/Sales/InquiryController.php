@@ -49,15 +49,15 @@ class InquiryController extends Controller
             ->leftJoin('users', 'users.id' ,'=', 'inquiries.user_id')
             ->leftJoin('items', 'items.id' ,'=', 'inquiry_order.item_id')
             ->leftJoin('quotations', 'quotations.inquiry_id' ,'=', 'inquiries.id')
-            ->groupBy('inquiries.id','inquiry_order.inquiry_id')->paginate($this->count);
-
+            ->where('inquiries.user_id',Auth::user()->id)
+            ->groupBy('inquiries.id','inquiry_order.inquiry_id');
 
         $data = [
             'title'   => 'View Inquiries',
             'user'    => Auth::user(),
             'inquires'=> $inquires
         ];
-        return view('admin.inquiry.view',$data);
+        return view('sale.inquiry.view',$data);
     }
 
     public function open(Request $request)
@@ -89,6 +89,7 @@ class InquiryController extends Controller
             ->leftJoin('users', 'users.id' ,'=', 'inquiries.user_id')
             ->leftJoin('items', 'items.id' ,'=', 'inquiry_order.item_id')
             ->leftJoin('quotations', 'quotations.inquiry_id' ,'=', 'inquiries.id')
+            ->where('inquiries.user_id',Auth::user()->id)
             ->whereNull('quotations.id')
             ->groupBy('inquiries.id','inquiry_order.inquiry_id');
 
@@ -117,9 +118,9 @@ class InquiryController extends Controller
             'sales_people' => $sale,
             'request' => $request,
             'customers' =>Customer::all(),
-            'reset_url' => route('inquiry.list.admin')
+            'reset_url' => route('inquiry.open.sale')
         ];
-        return view('admin.inquiry.open',$data);
+        return view('sale.inquiry.open',$data);
     }
 
     public function add()
@@ -138,7 +139,7 @@ class InquiryController extends Controller
             'customers'  => $customers,
             'items'      => $items
         ];
-        return view('admin.inquiry.add', $data);
+        return view('sale.inquiry.add', $data);
     }
 
     public function store(Request $request)
@@ -219,7 +220,7 @@ class InquiryController extends Controller
             $save[] = (new InquiryOrder($inquiry_item))->save();
         }
         return redirect(
-            route('inquiry.list.admin')
+            route('inquiry.list.sale')
         )->with('success', 'Inquiry was added successfully!');
     }
 
@@ -230,7 +231,7 @@ class InquiryController extends Controller
         if(!$inquiry)
         {
             return redirect(
-                route('inquiry.list.admin')
+                route('inquiry.list.sale')
             )->with('error', 'Inquiry doesn\'t exists!');
         }
 
@@ -299,7 +300,7 @@ class InquiryController extends Controller
             $save[] = (new InquiryOrder($inquiry_item))->save();
         }
         return redirect(
-            route('inquiry.list.admin')
+            route('inquiry.list.sale')
         )->with('success', 'Inquiry was updated successfully!');
     }
 
@@ -356,7 +357,7 @@ class InquiryController extends Controller
             'categories'=>$categories
         ];
 
-        return view('admin.inquiry.edit', $data);
+        return view('sale.inquiry.edit', $data);
     }
 
     public function view($id)
@@ -388,7 +389,7 @@ class InquiryController extends Controller
             'user'    => Auth::user(),
             'inquiry'=> $inquires
         ];
-        return view('admin.inquiry.item',$data);
+        return view('sale.inquiry.item',$data);
     }
 
     public function delete($id)
@@ -397,7 +398,7 @@ class InquiryController extends Controller
         $order    = InquiryOrder::where('inquiry_id',$id)->delete();
         $inquiry = Inquiry::find($id)->delete();
         return redirect(
-            route('inquiry.list.admin')
+            route('inquiry.list.sale')
         )->with('success', 'Inquiry deleted successfully!');
     }
 
@@ -434,7 +435,33 @@ class InquiryController extends Controller
             'inquiry'=> $inquires
         ];
         $date = "Inquiry-Invoice-". Carbon::now()->format('d-M-Y')  .".pdf";
-        $pdf = PDF::loadView('admin.inquiry.pdf-invoice', $data);
+        $pdf = PDF::loadView('sale.inquiry.pdf-invoice', $data);
         return $pdf->download($date);
+    }
+
+    public function ajaxFetchCategory(Request $request)
+    {
+        $request->validate([
+            'category' => 'required'
+        ]);
+        $category_id = $request->category;
+        $category_items = Item::select([DB::raw('DISTINCT item_name')])
+            ->where('category_id', $category_id)
+            ->get();
+        return response($category_items, 200);
+    }
+
+    public function ajaxFetchItem(Request $request)
+    {
+        $request->validate([
+            'item' => 'required'
+        ]);
+        $item_name = $request->item;
+        $item_categories = Item::select(['brands.brand_name', 'brands.id'])
+            ->join('brands', 'brands.id', '=', 'items.brand_id')
+            ->where('items.item_name','like',"%{$item_name}%")
+            ->groupBy('brands.id')
+            ->get();
+        return response($item_categories, 200);
     }
 }

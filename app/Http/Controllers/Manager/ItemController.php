@@ -34,10 +34,10 @@ class ItemController extends Controller
         $brands     = Brand::orderBy('id','DESC')->paginate($this->count);
 
         $data = [
-            'title'    => 'Add Item',
-            'base_url' => env('APP_URL', 'http://127.0.0.1:8000'),
-            'user'     => Auth::user(),
-            'brands'    => $brands,
+            'title'      => 'Add Item',
+            'base_url'   => env('APP_URL', 'http://127.0.0.1:8000'),
+            'user'       => Auth::user(),
+            'brands'     => $brands,
             'categories' => $categories
         ];
         return view('manager.item.add', $data);
@@ -54,11 +54,11 @@ class ItemController extends Controller
         $brands     = Brand::orderBy('id','DESC')->paginate($this->count);
 
         $data = [
-            'title'    => 'Update Item',
-            'base_url' => env('APP_URL', 'http://127.0.0.1:8000'),
-            'user'     => Auth::user(),
-            'data'     => $data,
-            'brands'    => $brands,
+            'title'      => 'Update Item',
+            'base_url'   => env('APP_URL', 'http://127.0.0.1:8000'),
+            'user'       => Auth::user(),
+            'data'       => $data,
+            'brands'     => $brands,
             'categories' => $categories
         ];
         return view('manager.item.edit', $data);

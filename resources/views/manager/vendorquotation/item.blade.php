@@ -24,8 +24,7 @@
     <div class="container-fluid">
         <div class="row mb-3">
             <div class="col-12">
-                <a href="#" type="submit" class="btn btn-info toastrDefaultSuccess mr-2 btn-sm" target="btnActionIframe"><i class="fa fa-print mr-1"></i> Print Quotation</a>
-                <a href="#" type="submit" class="btn btn-info toastrDefaultSuccess btn-sm" target="btnActionIframe"><i class="far fa-file-alt mr-1"></i> Create Quotation Pdf</a>
+                <a href="{{ route('vendorquotation.pdfinquiry.manager',$quotation[0]->unique) }}" type="submit" class="btn btn-info toastrDefaultSuccess btn-sm" target="btnActionIframe"><i class="far fa-file-alt mr-1"></i> Create Quotation Pdf</a>
                 <iframe name="btnActionIframe" style="display:none;" onload="setTimeout(function(){this.src=''},1000)"></iframe>
             </div>
         </div>
@@ -78,6 +77,7 @@
                                         <thead>
                                         <tr>
                                             <th>Sr.no</th>
+                                            <th>Item Name</th>
                                             <th>Item Description</th>
                                             <th>Category</th>
                                             <th>Quantity</th>
@@ -90,11 +90,12 @@
                                         @foreach($quotation as $item)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
+                                            <td>{{ ucwords($item['item_name']) }}</td>
                                             <td>{{ ucwords($item['item_description']) }}</td>
                                             <td>{{ ucwords($item['category_name']) }}</td>
                                             <td>{{ ucwords($item['quantity']) }}</td>
                                             <td>{{ ucwords($item['unit']) }}</td>
-                                            <td>{{ ucwords($item['price']) }}</td>
+                                            <td>{{ ucwords($item['rate']) }}</td>
                                             <td>{{ ucwords($item['amount']) }}</td>
                                         </tr>
                                         @endforeach
@@ -110,7 +111,7 @@
                                         <table class="table">
                                            <tr>
                                                 <th style="width:50%">Total Amount:</th>
-                                                <td>{{ $item['total'] }}</td>
+                                                <td>{{ $item['totals'] }}</td>
                                             </tr>
                                         </table>
                                     </div>

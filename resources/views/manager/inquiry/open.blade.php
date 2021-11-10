@@ -83,20 +83,20 @@
                                 <tbody id="myTable">
                                 @foreach($inquires as $inquiry)
                                     <tr style="cursor:pointer" class="no-select" data-toggle="modal"
-                                        data-href="{{ route('inquiry.view.manager',$inquiry->id) }}">
-                                        <td><a href="{{ route('inquiry.view.manager',$inquiry->id) }}">{{ $loop->iteration }}</td>
-                                        <td><a href="{{ route('inquiry.view.manager',$inquiry->id) }}">{{ ucfirst($inquiry->customer_name) }}</td>
-                                        <td><a href="{{ route('inquiry.view.manager',$inquiry->id) }}">{{ ucfirst($inquiry->project_name) }}</td>
-                                        <td><a href="{{ route('inquiry.view.manager',$inquiry->id) }}">{{ ucfirst($inquiry->item_description) }}</td>
-                                        <td><a href="{{ route('inquiry.view.manager',$inquiry->id) }}">{{ $inquiry->total }}</td>
-                                        <td><a href="{{ route('inquiry.view.manager',$inquiry->id) }}">{{ $inquiry->name }}</td>
-                                        <td><a href="{{ route('inquiry.view.manager',$inquiry->id) }}">{{ ucfirst($inquiry->date) }}</td>
-                                        <td><a href="{{ route('inquiry.view.manager',$inquiry->id) }}">{{ ucfirst($inquiry->timeline) }}</td>
+                                        data-href="{{ route('inquiry.view.manager',$inquiry->ids) }}">
+                                        <td><a href="{{ route('inquiry.view.manager',$inquiry->ids) }}">{{ $loop->iteration }}</td>
+                                        <td><a href="{{ route('inquiry.view.manager',$inquiry->ids) }}">{{ ucfirst($inquiry->customer_name) }}</td>
+                                        <td><a href="{{ route('inquiry.view.manager',$inquiry->ids) }}">{{ ucfirst($inquiry->project_name) }}</td>
+                                        <td><a href="{{ route('inquiry.view.manager',$inquiry->ids) }}">{{ ucfirst($inquiry->item_description) }}</td>
+                                        <td><a href="{{ route('inquiry.view.manager',$inquiry->ids) }}">{{ $inquiry->total }}</td>
+                                        <td><a href="{{ route('inquiry.view.manager',$inquiry->ids) }}">{{ $inquiry->name }}</td>
+                                        <td><a href="{{ route('inquiry.view.manager',$inquiry->ids) }}">{{ ucfirst($inquiry->date) }}</td>
+                                        <td><a href="{{ route('inquiry.view.manager',$inquiry->ids) }}">{{ ucfirst($inquiry->timeline) }}</td>
                                         <td class="text-right p-0">
-                                            <a class="bg-warning list-btn"  href="{{ route('quotation.generate.manager',$inquiry->id) }}" title="Download Files"><i class="fas fa-download" aria-hidden="false"></i></a>
-                                            @if($inquiry->inquiry_status=='open')<a class="bg-success list-btn"  href="{{ route('quotation.generate.manager',$inquiry->id) }}" title="Generate Quotation"><i class="fas fa-file" aria-hidden="false"></i></a>@endif
-                                            <a class="bg-primary list-btn"  href="{{ route('inquiry.edit.manager',$inquiry->id) }}" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
-                                            <a class="bg-danger list-btn"  href="{{ route('inquiry.delete.manager',$inquiry->id) }}"  title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
+                                            <a class="bg-warning list-btn"  href="{{ route('quotation.generate.manager',$inquiry->ids) }}" title="Download Files"><i class="fas fa-download" aria-hidden="false"></i></a>
+                                            @if($inquiry->inquiry_status=='open')<a class="bg-success list-btn"  href="{{ route('quotation.generate.manager',$inquiry->ids) }}" title="Generate Quotation"><i class="fas fa-file" aria-hidden="false"></i></a>@endif
+                                            <a class="bg-primary list-btn"  href="{{ route('inquiry.edit.manager',$inquiry->ids) }}" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
+                                            <a class="bg-danger list-btn"  href="{{ route('inquiry.delete.manager',$inquiry->ids) }}"  title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
                                         </td>
                                     </tr>
                                 @endforeach

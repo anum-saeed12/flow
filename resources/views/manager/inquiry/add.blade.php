@@ -87,7 +87,7 @@
                                     <select name="item_id[]" class="form-control" id="item_id"  data-target="#brand_id" data-href="{{ route('item.fetch.ajax.manager') }}" data-spinner="#item_spinner" onchange="itemSelect($(this))">
                                         <option selected="selected" value>Select</option>
                                         @foreach ($items as $item)
-                                            <option value="{{ $item->id }}">{{ ucfirst($item->item_name) }}</option>
+                                            <option value="{{ $item->item_name }}">{{ ucfirst($item->item_name) }}</option>
                                         @endforeach
                                     </select>
                                     <div id="item_spinner"></div>
@@ -137,7 +137,12 @@
                                            required="required" multiple>
                                 </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-2 ">
+                                    <label for="discount">Discount</label><br/>
+                                    <input type="text" name="discount" class="form-control" id="discount"
+                                           value="{{ old('discount') }}">
+                                </div>
+                                <div class="col-md-2">
                                     <label for="total">Total Amount</label><br/>
                                     <input type="text" name="total" class="form-control" id="total"
                                            value="{{ old('total') }}">
@@ -176,16 +181,11 @@
                 unit_container = $('.unit-container'),
                 $uid = $('.quantity').length;
                 add_button = $(".add_form_field"),
-                max_fields = 10,
                 wrapper = $('.additional-products');
 
             var x = 1;
             $(add_button).click(function(e) {
                 e.preventDefault();
-                if (x >= max_fields) {
-                    alert('You Reached the limits');
-                    return false;
-                }
                 $uid = $('.category').length;
 
                 let $itemRow = '<div class="row mt-3 ml-3">' +
@@ -204,7 +204,7 @@
                     `<select name="item_id[]" class="form-control" id="item_id_${$uid}" data-target="#brand_id_${$uid}" data-href="{{ route('item.fetch.ajax.manager') }}" data-spinner="#item_spinner_${$uid}" onchange="itemSelect($(this))">` +
                         '<option selected="selected" value>Select</option>' +
                         @foreach ($items as $item)
-                            '<option value="{{ $item->id }}">{{ ucfirst($item->item_name) }}</option>'+
+                            '<option value="{{ $item->item_name }}">{{ ucfirst($item->item_name) }}</option>'+
                         @endforeach
                     '</select>' +
                     `<div id="item_spinner_${$uid}"></div>` +
@@ -273,7 +273,7 @@
             let total = 0,sum = 0, result, target=$(ele.data('target')),
                 first = ele.val(), second = $(ele.data('into')).val(),
                 sub_total, sum_of_sub_total = 0, sumOfTotal = $('#total');
-            result = parseFloat(first) * parseFloat(second);
+                result = parseFloat(first) * parseFloat(second);
             if (!isNaN(result)) {
                 $(target).val(Math.round(result));
                 // Lets loop through all the total inputs
@@ -288,41 +288,6 @@
             sumOfTotal.val(0);
             //$('#total').val(sum_of_sub_total);
         }
-        function itemSelect(ele) {
-            let target = ele.data('target'), href = ele.data('href'), item_id = ele.val(), spinner = ele.data('spinner'), brands;
-            $.ajax({
-                dataType: 'json',
-                url: `${href}?item=${item_id}`,
-                beforeSend: function() {
-                    $(spinner).text('Loading brands...');
-                },
-                success: function(data) {
-                    $(spinner).html('');
-                    brands += '<option>Select Brand</option>';
-                    $.each(data, function(index, json){
-                        brands += `<option value="${json.id}">${json.brand_name}</option>`;
-                    })
-                    $(target).html(brands);
-                }
-            });
-        }
-        function categorySelect(ele) {
-            let target = ele.data('target'), href = ele.data('href'), item_id = ele.val(), spinner = ele.data('spinner'), brands;
-            $.ajax({
-                dataType: 'json',
-                url: `${href}?category=${item_id}`,
-                beforeSend: function() {
-                    $(spinner).text('Loading items...');
-                },
-                success: function(data) {
-                    $(spinner).html('');
-                    brands += '<option>Select Item</option>';
-                    $.each(data, function(index, json){
-                        brands += `<option value="${json.item_name}">${json.item_name}</option>`;
-                    })
-                    $(target).html(brands);
-                }
-            });
-        }
     </script>
 @stop
+@include('includes.selectajax')

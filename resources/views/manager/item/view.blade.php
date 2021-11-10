@@ -100,10 +100,6 @@
                                         <td><a href="{{ route('item.view.manager',$item->id) }}">{{$item->weight}}</td>
                                         <td><a href="{{ route('item.view.manager',$item->id) }}">{{$item->height}}</td>
                                         <td><a href="{{ route('item.view.manager',$item->id) }}">{{$item->width}}</td>
-                                        <td class="text-right p-0">
-                                            <a class="bg-primary list-btn"  href="{{ route('item.edit.manager',$item->id) }}" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
-                                            <a class="bg-danger list-btn"  href="{{ route('item.delete.manager',$item->id) }}"  title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
-                                        </td>
                                     </tr>
                                 @endforeach
                                 </tbody>

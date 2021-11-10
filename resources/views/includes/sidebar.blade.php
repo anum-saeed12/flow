@@ -148,14 +148,6 @@
 
                 @sale()
                 <li class="nav-item has-treeview">
-                    <a href="{{ route('inquiry.list.' . auth()->user()->user_role) }}" class="nav-link">
-                        <i class="fas fa-file nav-icon"></i>
-                        <p>
-                            Inquiry
-                        </p>
-                    </a>
-                </li>
-                <li class="nav-item has-treeview">
                     <a href="{{ route('inquiry.open.' . auth()->user()->user_role) }}" class="nav-link">
                         <i class="fas fa-pen-square nav-icon"></i>
                         <p>

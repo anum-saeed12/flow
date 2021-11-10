@@ -51,7 +51,7 @@ class CustomerController extends Controller
             'address'           => 'required'
         ], [
                 'customer_name.required'      => 'The customer name field is required.',
-                'attention_person.required'    => 'The attention person name field is required.'
+                'attention_person.required'   => 'The attention person name field is required.'
             ]
         );
 
@@ -81,11 +81,11 @@ class CustomerController extends Controller
 
         $request->validate([
             'customer_name'     =>  'sometimes',
-            'attention_person'   =>  'sometimes',
+            'attention_person'  =>  'sometimes',
             'address'           =>  'sometimes'
         ],[
             'customer_name.required'      => 'The customer name field is required.',
-            'attention_person.required'    => 'The attention person name field is required.'
+            'attention_person.required'   => 'The attention person name field is required.'
         ]);
         $exist = Customer::where('customer_name',$request->customer_name)
             ->where('address',$request->address)
