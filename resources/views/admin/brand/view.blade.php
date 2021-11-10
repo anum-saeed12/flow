@@ -77,7 +77,7 @@
                                 </tr>
                                 </thead>
                                 <tbody id="myTable">
-                                @foreach($brands as $brand)
+                                @forelse($brands as $brand)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ ucfirst($brand->brand_name) }}</td>
@@ -88,7 +88,11 @@
                                             <a class="bg-danger list-btn"  href="{{ route('brand.delete.admin',$brand->id) }}"  title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
                                         </td>
                                     </tr>
-                                @endforeach
+                                    @empty
+                                        <tr>
+                                            <td colspan="7" class="py-3 text-center">No brands found</td>
+                                        </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>

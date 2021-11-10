@@ -78,7 +78,7 @@
                                 </tr>
                                 </thead>
                                 <tbody id="myTable">
-                                @foreach($users as $user)
+                                @forelse($users as $user)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ ucfirst($user->name) }}</td>
@@ -90,7 +90,11 @@
                                             <a class="bg-danger list-btn"  href="{{ route('user.delete.admin',$user->id) }}"  title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
                                         </td>
                                     </tr>
-                                @endforeach
+                                    @empty
+                                        <tr>
+                                            <td colspan="7" class="py-3 text-center">No users found</td>
+                                        </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>

@@ -93,7 +93,7 @@
                                 </tr>
                                 </thead>
                                 <tbody id="myTable">
-                                @foreach($categories as $category)
+                                @forelse($categories as $category)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ ucfirst($category->category_name) }}</td>
@@ -102,7 +102,11 @@
                                             <a class="bg-danger list-btn"  href="{{ route('category.delete.admin',$category->id) }}"  title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
                                         </td>
                                     </tr>
-                                @endforeach
+                                    @empty
+                                        <tr>
+                                            <td colspan="7" class="py-3 text-center">No categories found</td>
+                                        </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>

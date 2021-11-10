@@ -77,7 +77,7 @@
                                 </tr>
                                 </thead>
                                 <tbody id="myTable">
-                                @foreach($customer as $cus)
+                                @forelse($customer as $cus)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ ucfirst($cus->customer_name) }}</td>
@@ -88,7 +88,11 @@
                                             <a class="bg-danger list-btn"  href="{{ route('customer.delete.team' ,$cus->id) }}"  title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
                                         </td>
                                     </tr>
-                                @endforeach
+                                    @empty
+                                        <tr>
+                                            <td colspan="7" class="py-3 text-center">No customers found</td>
+                                        </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>

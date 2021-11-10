@@ -83,7 +83,7 @@
                                 </tr>
                                 </thead>
                                 <tbody id="myTable">
-                                @foreach($items as $item)
+                                @forelse($items as $item)
                                     <tr style="cursor:pointer" class="no-select" data-toggle="modal"
                                         data-href="{{ route('item.view.team',$item->id) }}">
                                         <td><a href="{{ route('item.view.team',$item->id) }}">{{ $loop->iteration }}</td>
@@ -101,7 +101,11 @@
                                         <td><a href="{{ route('item.view.team',$item->id) }}">{{$item->height}}</td>
                                         <td><a href="{{ route('item.view.team',$item->id) }}">{{$item->width}}</td>
                                     </tr>
-                                @endforeach
+                                @empty
+                                    <tr>
+                                        <td colspan="7" class="py-3 text-center">No items found</td>
+                                    </tr>
+                                @endforelse
                                 </tbody>
                             </table>
                         </div>

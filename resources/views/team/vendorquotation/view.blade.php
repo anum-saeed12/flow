@@ -78,7 +78,7 @@
                                 </tr>
                                 </thead>
                                 <tbody id="myTable">
-                                @foreach($vendor_quotation as $quotation)
+                                @forelse($vendor_quotation as $quotation)
                                     <tr style="cursor:pointer" class="no-select" data-toggle="modal"
                                         data-href="{{ route('vendorquotation.view.team',$quotation->id) }}">
                                         <td><a href="{{ route('vendorquotation.view.team',$quotation->id) }}">{{ $loop->iteration }}</a></td>
@@ -92,7 +92,11 @@
                                             <a class="bg-danger list-btn"  href="{{ route('vendorquotation.delete.team',$quotation->id) }}" title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
                                         </td>
                                     </tr>
-                                    @endforeach
+                                @empty
+                                    <tr>
+                                        <td colspan="7" class="py-3 text-center">No vendor quotations found</td>
+                                    </tr>
+                                @endforelse
                                 </tbody>
                             </table>
                         </div>

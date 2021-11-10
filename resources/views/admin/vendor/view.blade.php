@@ -78,7 +78,7 @@
                                 </tr>
                                 </thead>
                                 <tbody id="myTable">
-                                @foreach($vendors as $vendor)
+                                @forelse($vendors as $vendor)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ ucfirst($vendor->vendor_name) }}</td>
@@ -93,7 +93,11 @@
                                         </td>
                                     </tr>
                                 </tbody>
-                                @endforeach
+                                @empty
+                                    <tr>
+                                        <td colspan="7" class="py-3 text-center">No vendors found</td>
+                                    </tr>
+                                @endforelse
                             </table>
                         </div>
                     </div>

@@ -81,7 +81,7 @@
                                 </tr>
                                 </thead>
                                 <tbody id="myTable">
-                                @foreach($inquiries as $inquiry)
+                                @forelse($inquiries as $inquiry)
                                     <tr style="cursor:pointer" class="no-select" data-toggle="modal"
                                         data-href="{{ route('inquiry.view.team',$inquiry->id) }}">
                                         <td><a href="{{ route('inquiry.view.team',$inquiry->id) }}">{{ $loop->iteration }}</a></td>
@@ -99,7 +99,11 @@
                                             <a class="bg-danger list-btn"  href="{{ route('inquiry.delete.team',$inquiry->id) }}"  title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
                                         </td>
                                     </tr>
-                                @endforeach
+                                @empty
+                                    <tr>
+                                        <td colspan="7" class="py-3 text-center">No inquiries found</td>
+                                    </tr>
+                                @endforelse
                                 </tbody>
                             </table>
                         </div>

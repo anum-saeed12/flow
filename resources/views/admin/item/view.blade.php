@@ -83,7 +83,7 @@
                                 </tr>
                                 </thead>
                                 <tbody id="myTable">
-                                @foreach($items as $item)
+                                @forelse($items as $item)
                                     <tr style="cursor:pointer" class="no-select" data-toggle="modal"
                                         data-href="{{ route('item.view.admin',$item->id) }}">
                                         <td><a href="{{ route('item.view.admin',$item->id) }}">{{ $loop->iteration }}</td>
@@ -105,7 +105,11 @@
                                             <a class="bg-danger list-btn"  href="{{ route('item.delete.admin',$item->id) }}"  title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
                                         </td>
                                     </tr>
-                                @endforeach
+                                @empty
+                                    <tr>
+                                        <td colspan="7" class="py-3 text-center">No items found</td>
+                                    </tr>
+                                @endforelse
                                 </tbody>
                             </table>
                         </div>
