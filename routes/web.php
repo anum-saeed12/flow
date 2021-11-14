@@ -52,6 +52,8 @@ Route::prefix('/admin')->middleware('admin')->group(function() {
         Route::get('/delete/{id}', '\App\Http\Controllers\Admin\InquiryController@delete')->name('inquiry.delete.admin');
         Route::get('/view/{id}', '\App\Http\Controllers\Admin\InquiryController@view')->name('inquiry.view.admin');
         Route::get('/invoice/{id}', '\App\Http\Controllers\Admin\InquiryController@pdfinquiry')->name('inquiry.pdfinquiry.admin');
+        Route::get('/invoice-documents/{id}', '\App\Http\Controllers\Admin\InquiryController@fetchDocuments')->name('inquiry.documents.admin');
+        Route::get('/invoice-documents/download/{document_id}', '\App\Http\Controllers\Admin\InquiryController@downloadDocument')->name('inquiry.documents.download.admin');
     });
     Route::prefix('/customer')->group(function() {
         Route::get('/', '\App\Http\Controllers\Admin\CustomerController@index')->name('customer.index.admin');

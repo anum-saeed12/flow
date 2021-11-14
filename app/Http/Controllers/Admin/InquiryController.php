@@ -437,4 +437,17 @@ class InquiryController extends Controller
         $pdf = PDF::loadView('admin.inquiry.pdf-invoice', $data);
         return $pdf->download($date);
     }
+
+    public function fetchDocuments($id)
+    {
+        $documents = InquiryDocument::select('file_path', 'id')->where('inquiry_id', $id)->get();
+        return view('admin.inquiry.file-download', compact('documents'));
+    }
+
+    public function downloadDocument($id)
+    {
+        $document = InquiryDocument::find($id);
+        if (!$document) return redirect(route('inquiry.list.admin'))->with('error', 'Document not found!');
+        return Storage::download("public/inquiry/{$document->file_path}");
+    }
 }
