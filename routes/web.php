@@ -274,3 +274,6 @@ Route::prefix('/sale_person')->middleware('sale')->group(function() {
     });
 });
 
+Route::post('/import-items', '\App\Http\Controllers\ImportController@importItem')->middleware('auth')->name('item.import');
+Route::get('/import-items/{id}', '\App\Http\Controllers\ImportController@viewImport')->middleware('auth')->name('import.report');
+

@@ -10,7 +10,7 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard.admin') }}">Home</a></li>
-                        <li class="breadcrumb-item">Item</li>
+                        <li class="breadcrumb-item">Import Item</li>
                         <li class="breadcrumb-item active">{{$title}}</li>
                     </ol>
                 </div>
@@ -62,7 +62,6 @@
                                         </div>
                                     </div>
                                 </form>
-                                <a href="{{ route('item.add.admin') }}" class="btn btn-success"><i class="fa fa-plus-circle mr-1"></i> Add New</a>
                                 <form action="{{ route('item.import') }}" method="post" enctype="multipart/form-data" style="display:inline;" id="importItemForm">
                                     @csrf
                                     <label href="{{ route('item.add.admin') }}" class="btn btn-primary ml-2 mb-0" for="importItemsFile">
@@ -79,7 +78,6 @@
                                 <tr>
                                     <th>Sr.No.</th>
                                     <th class="pl-0">Item Name</th>
-                                    <th class="pl-0">Item Picture</th>
                                     <th class="pl-0">Brand</th>
                                     <th class="pl-0">Category</th>
                                     <th class="pl-0">Item Description</th>
@@ -91,27 +89,19 @@
                                 </tr>
                                 </thead>
                                 <tbody id="myTable">
-                                @forelse($items as $item)
+                                @forelse($import_data as $item)
                                     <tr style="cursor:pointer" class="no-select" data-toggle="modal"
-                                        data-href="{{ route('item.view.admin',$item->id) }}">
-                                        <td><a href="{{ route('item.view.admin',$item->id) }}">{{ $loop->iteration }}</td>
-                                        <td><a href="{{ route('item.view.admin',$item->id) }}">{{ucfirst($item->item_name)}}</td>
-                                        <td><a href="{{ asset('storage/images/'.$item->picture) }}" target="_blank">
-                                                <div class="list-img-thumbnail" style="background-image:url('{{ asset('storage/images/'.$item->picture) }}');"></div>
-                                            </a>
-                                        </td>
-                                        <td><a href="{{ route('item.view.admin',$item->id) }}">{{ucfirst($item->brand_name)}}</td>
-                                        <td><a href="{{ route('item.view.admin',$item->id) }}">{{ucfirst($item->category_name)}}</td>
-                                        <td><a href="{{ route('item.view.admin',$item->id) }}">{{ucfirst($item->item_description)}}</td>
-                                        <td><a href="{{ route('item.view.admin',$item->id) }}">{{ucfirst($item->unit)}}</td>
-                                        <td><a href="{{ route('item.view.admin',$item->id) }}">{{$item->price}}</td>
-                                        <td><a href="{{ route('item.view.admin',$item->id) }}">{{$item->weight}}</td>
-                                        <td><a href="{{ route('item.view.admin',$item->id) }}">{{$item->height}}</td>
-                                        <td><a href="{{ route('item.view.admin',$item->id) }}">{{$item->width}}</td>
-                                        <td class="text-right p-0">
-                                            <a class="bg-primary list-btn"  href="{{ route('item.edit.admin',$item->id) }}" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
-                                            <a class="bg-danger list-btn"  href="{{ route('item.delete.admin',$item->id) }}"  title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>
-                                        </td>
+                                        data-href="#">
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ucfirst($item->item_name)}}</td>
+                                        <td>{{ucfirst($item->brand_name)}}</td>
+                                        <td>{{ucfirst($item->category_name)}}</td>
+                                        <td>{{ucfirst($item->item_description)}}</td>
+                                        <td>{{ucfirst($item->unit)}}</td>
+                                        <td>{{$item->price}}</td>
+                                        <td>{{$item->weight}}</td>
+                                        <td>{{$item->height}}</td>
+                                        <td>{{$item->width}}</td>
                                     </tr>
                                 @empty
                                     <tr>
@@ -123,7 +113,7 @@
                         </div>
                     </div>
                     <div class="d-flex flex-row-reverse">
-                      {!! $items->links('pagination::bootstrap-4') !!}
+                      {!! $import_data->links('pagination::bootstrap-4') !!}
                     </div>
                 </div>
             </div>
