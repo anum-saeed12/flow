@@ -169,7 +169,7 @@
                                         </div>
                                         <div class="col-md-2 amount-container">
                                             <label for="amount_{{ $loop->iteration }}">Sub-Total</label><br/>
-                                            <input type="text" name="amount[]" value="{!! floatval($inquiry_item->amount) * intval($inquiry_item->quantity) !!}" class="form-control total n" id="total_amount_{{ $loop->iteration }}">
+                                            <input type="text" name="amount[]" value="{!! floatval($inquiry_item->rate) * intval($inquiry_item->quantity) !!}" class="form-control total n" id="total_amount_{{ $loop->iteration }}">
                                         </div>
                                         <div class="col-md-1">
                                             <label for="unit">&nbsp;</label><br/>

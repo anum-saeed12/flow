@@ -94,7 +94,7 @@
                                     </div>
                                     <div class="col-md-2 amount-container">
                                         <label for="amount">Sub-Total</label><br/>
-                                        <input type="text" name="amount[]" value="{!! floatval($quotation->items[0]->amount) * intval($quotation->items[0]->quantity) !!}" class="form-control total n" id="amount">
+                                        <input type="text" name="amount[]" value="{!! floatval($quotation->items[0]->rate) * intval($quotation->items[0]->quantity) !!}" class="form-control total n" id="amount">
                                     </div>
                                     <div class="col-md-1">
                                         <label for="unit">&nbsp;</label><br/>

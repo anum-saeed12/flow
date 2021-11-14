@@ -328,7 +328,7 @@ class InquiryController extends Controller
         ]);
         $category_id = $request->category;
         $category_items = Item::select([DB::raw('DISTINCT item_name')])
-            ->where('category_id', $category_id)
+            ->whereIn('category_id', UserCategory::select('category_id as id')->where('user_id', Auth::user()->id)->get())
             ->get();
         return response($category_items, 200);
     }
@@ -383,6 +383,86 @@ class InquiryController extends Controller
         $date = "Inquiry-Invoice-". Carbon::now()->format('d-M-Y')  .".pdf";
         $pdf = PDF::loadView('team.inquiry.pdf-invoice', $data);
         return $pdf->download($date);
+    }
+
+    public function update(Request $request,$id)
+    {
+        $inquiry = Inquiry::find($id);
+
+        if(!$inquiry)
+        {
+            return redirect(
+                route('inquiry.list.team')
+            )->with('error', 'Inquiry doesn\'t exists!');
+        }
+
+        $request->validate([
+            'customer_id'    => 'required',
+            'project_name'   => 'required',
+            'date'           => 'required',
+            'currency'       => 'required',
+            'discount'       => 'sometimes',
+            'timeline'       => 'required',
+            'total'          => 'required',
+            'remarks'        => 'sometimes',
+            'rate'           => 'required|array',
+            'rate.*'         => 'required',
+            'item_id'        => 'required|array',
+            'item_id.*'      => 'required',
+            'brand_id'       => 'required|array',
+            'brand_id.*'     => 'required',
+            'quantity'       => 'required|array',
+            'quantity.*'     => 'required',
+            'unit'           => 'required|array',
+            'unit.*'         => 'required',
+            'amount'         => 'required|array',
+            'amount.*'       => 'required',
+        ],[
+            'customer_id.required'     => 'The customer field is required.',
+            'project_name.required'    => 'The project name field is required.'
+        ]);
+
+        $inquiry->customer_id = $request->customer_id;
+        $inquiry->project_name = $request->project_name;
+        $inquiry->date = $request->date;
+        $inquiry->currency = $request->currency;
+        $inquiry->discount = $request->discount;
+        $inquiry->remarks = $request->remarks;
+        $inquiry->total = $request->total;
+        $inquiry->save();
+
+        $inquiry_item = InquiryOrder::where('inquiry_id',$inquiry->id)->whereIn('category_id', UserCategory::select('category_id as id')->where('user_id', Auth::user()->id)->get())->delete();
+
+        $items      = $request->item_id;
+        $categories = $request->category_id;
+        $brands     = $request->brand_id;
+        $quantities = $request->quantity;
+        $units      = $request->unit;
+        $rates      = $request->rate;
+        $amounts    = $request->amount;
+
+        $save = [];
+
+        foreach($categories as $index => $category) {
+            $item_detail = Item::select('*')
+                ->where('item_name',$items[$index])
+                ->where('brand_id', $brands[$index])
+                ->first();
+            $inquiry_item = [
+                'inquiry_id'   => $inquiry->id,
+                'category_id'  => $category,
+                'item_id'      => $item_detail->id,
+                'brand_id'     => $brands[$index],
+                'quantity'     => $quantities[$index],
+                'unit'         => $units[$index],
+                'rate'         => $rates[$index],
+                'amount'       => $amounts[$index],
+            ];
+            $save[] = (new InquiryOrder($inquiry_item))->save();
+        }
+        return redirect(
+            route('inquiry.list.team')
+        )->with('success', 'Inquiry was updated successfully!');
     }
 
 }
