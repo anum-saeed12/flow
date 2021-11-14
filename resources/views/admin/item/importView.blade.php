@@ -53,8 +53,7 @@
                             <div class="col-md-6 text-right pr-md-4">
                                 <form method="Get" action="" style="display:inline-block;vertical-align:top;" class="mr-2">
                                     <div class="input-group">
-                                        <input type="text" id="myInput" onkeyup="myFunction()" placeholder=" Search" class="form-control"
-                                               aria-label="Search">
+                                        <input type="text" id="myInput" onkeyup="myFunction()" placeholder=" Quick find" class="form-control">
                                         <div class="input-group-append">
                                             <button class="btn btn-secondary" type="submit"><i
                                                     class="fas fa-search"></i>
@@ -62,13 +61,14 @@
                                         </div>
                                     </div>
                                 </form>
-                                <form action="{{ route('item.import') }}" method="post" enctype="multipart/form-data" style="display:inline;" id="importItemForm">
+                                <a href="{{ route('item.add.admin') }}" class="btn btn-danger"><i class="fa fa-times mr-1"></i> Cancel</a>
+                                <form action="{{ route('item.import.approve') }}" method="post" style="display:inline;">
                                     @csrf
-                                    <label href="{{ route('item.add.admin') }}" class="btn btn-primary ml-2 mb-0" for="importItemsFile">
-                                        <input style="display:none;" type="file" id="importItemsFile" name="itemsFile" onchange="$('#importItemForm').submit()"/>
-                                        <i class="fa fa-download mr-1"></i>
-                                        Import
-                                    </label>
+                                    <input type="hidden" name="batch_id" value="{{ $batch_id }}">
+                                    <button type="submit" class="btn btn-success ml-2 mb-0">
+                                        <i class="fa fa-arrow-circle-right mr-1"></i>
+                                        Continue
+                                    </button>
                                 </form>
                             </div>
                         </div>
@@ -89,10 +89,10 @@
                                 </tr>
                                 </thead>
                                 <tbody id="myTable">
-                                @forelse($import_data as $item)
+                                @forelse($imported_data as $item)
                                     <tr style="cursor:pointer" class="no-select" data-toggle="modal"
                                         data-href="#">
-                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $loop->iteration + intval(($imported_data->currentPage() - 1) * $imported_data->count()) }}</td>
                                         <td>{{ucfirst($item->item_name)}}</td>
                                         <td>{{ucfirst($item->brand_name)}}</td>
                                         <td>{{ucfirst($item->category_name)}}</td>
@@ -113,7 +113,7 @@
                         </div>
                     </div>
                     <div class="d-flex flex-row-reverse">
-                      {!! $import_data->links('pagination::bootstrap-4') !!}
+                      {!! $imported_data->appends($_GET)->links('pagination::bootstrap-4') !!}
                     </div>
                 </div>
             </div>

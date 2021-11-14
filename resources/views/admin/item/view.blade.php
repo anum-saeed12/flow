@@ -94,7 +94,7 @@
                                 @forelse($items as $item)
                                     <tr style="cursor:pointer" class="no-select" data-toggle="modal"
                                         data-href="{{ route('item.view.admin',$item->id) }}">
-                                        <td><a href="{{ route('item.view.admin',$item->id) }}">{{ $loop->iteration }}</td>
+                                        <td><a href="{{ route('item.view.admin',$item->id) }}">{{ $loop->iteration + intval(($items->currentPage() - 1) * $items->count()) }}</td>
                                         <td><a href="{{ route('item.view.admin',$item->id) }}">{{ucfirst($item->item_name)}}</td>
                                         <td><a href="{{ asset('storage/images/'.$item->picture) }}" target="_blank">
                                                 <div class="list-img-thumbnail" style="background-image:url('{{ asset('storage/images/'.$item->picture) }}');"></div>
@@ -123,7 +123,7 @@
                         </div>
                     </div>
                     <div class="d-flex flex-row-reverse">
-                      {!! $items->links('pagination::bootstrap-4') !!}
+                      {!! $items->appends($_GET)->links('pagination::bootstrap-4') !!}
                     </div>
                 </div>
             </div>

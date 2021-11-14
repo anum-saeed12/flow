@@ -14,4 +14,12 @@ class Brand extends Model
     protected $table = 'brands';
     protected $fillable = ['brand_name','attention_person','country','created_at','updated_at'];
 
+    public static function add($brand_name)
+    {
+        $new_brand = new self();
+        $new_brand->brand_name = $brand_name;
+        $new_brand->save();
+        return $new_brand->id;
+    }
+
 }

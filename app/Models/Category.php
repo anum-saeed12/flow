@@ -15,4 +15,12 @@ class Category extends Model
     protected $fillable = ['category_name','created_at','updated_at'];
 
     public $timestamps = false;
+
+    public static function add($category_name)
+    {
+        $new_category = new self();
+        $new_category->category_name = $category_name;
+        $new_category->save();
+        return $new_category->id;
+    }
 }
