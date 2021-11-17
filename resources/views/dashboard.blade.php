@@ -23,8 +23,7 @@
         <div class="container-fluid">
             <div class="row">
 
-                {{--EMPLOYEE BOX--}}
-                <div class="col-lg-3 col-6">
+                {{--EMPLOYEE BOX--}}                <div class="col-lg-3 col-6">
                     <div class="small-box bg-white">
                         <div class="inner">
                             <h3>{{ number_format($employees->total) }}</h3>

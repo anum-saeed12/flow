@@ -71,7 +71,6 @@
                                 <thead>
                                 <tr>
                                     <th>Sr.No.</th>
-                                    <th class="pl-0">Name</th>
                                     <th class="pl-0">Username</th>
                                     <th class="pl-0">Email</th>
                                     <th class="pl-0">User Role</th>
@@ -81,10 +80,9 @@
                                 @forelse($users as $user)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ ucfirst($user->name) }}</td>
                                         <td>{{ ucfirst($user->username) }}</td>
                                         <td>{{ ucfirst($user->email) }}</td>
-                                        <td>{{ $user->user_role == 'admin' ? 'Admin' : '' }}{{ $user->user_role == 'team' ? 'Sourcing Team' : '' }}{{ $user->user_role == 'manager' ? 'Manager' : '' }}{{ $user->user_role == 'sale' ? 'Sales Person' : '' }}</td>
+                                        <td>{{ $user->user_role == 'admin' ? 'Admin' : '' }}{{ $user->user_role == 'employee' ? 'Employee' : '' }}</td>
                                         <td class="text-right p-0">
                                             <a class="bg-primary list-btn"  href="{{ route('user.edit.admin',$user->id) }}" title="Edit"><i class="fas fa-tools" aria-hidden="false"></i></a>
                                             <a class="bg-danger list-btn"  href="{{ route('user.delete.admin',$user->id) }}"  title="Delete"><i class="fas fa-trash-alt" aria-hidden="false"></i></a>

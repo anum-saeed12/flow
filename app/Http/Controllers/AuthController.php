@@ -9,8 +9,6 @@
  */
 namespace App\Http\Controllers;
 
-use App\Models\Client;
-use App\Models\Subscription;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -119,6 +117,7 @@ class AuthController extends Controller
         # Checks if the password is correct or not
         if (!Hash::check($request->password, $user->password)) return back()->with('error', 'Invalid credentials!');
 
+
         # Generate a new session for the user
         $credentials = $request->only('email', 'password');
 
@@ -191,17 +190,6 @@ class AuthController extends Controller
         ];
         # If everything went well
         return view('billing.pending-verification',$data);
-    }
-
-    # This function uploads the receipt file to the server
-    private function uploadReceipt($file)
-    {
-        $filename = Uuid::uuid4().".{$file->extension()}";
-        $private_path = $file->storeAs(
-            'public/receipts', $filename
-        );
-        $public_path = Storage::url("receipts/$filename");
-        return $public_path;
     }
 
     public function logout()

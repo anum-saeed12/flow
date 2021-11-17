@@ -24,6 +24,7 @@ class CreateTaskUsersTable extends Migration
             $table->unsignedBigInteger('updated_by');
             $table->foreign('created_by')->references('id')->on('users')->nullable();
             $table->foreign('updated_by')->references('id')->on('users')->nullable();
+            $table->timestamp('deleted_at')->nullable();
             $table->timestamps();
         });
     }

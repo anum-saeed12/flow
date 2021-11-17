@@ -9,6 +9,8 @@ class Listicle extends Model
 {
     use HasFactory;
 
+    protected $table = 'listicles';
+
     protected $fillable = [
         'name',
         'project_description',
