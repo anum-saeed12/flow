@@ -2,42 +2,44 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Tymon\JWTAuth\Contracts\JWTSubject;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory;
-    use SoftDeletes;
-
-    protected $table = 'users';
-    protected $hidden = ['password','remember_token'];
-    protected $fillable = ['email', 'username','name', 'password', 'user_role', 'created_by'];
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
-     * Get the identifier that will be stored in the subject claim of the JWT.
+     * The attributes that are mass assignable.
      *
-     * @return mixed
+     * @var string[]
      */
-    public function getJWTIdentifier()
-    {
-        return $this->getKey();
-    }
+    protected $fillable = [
+        'username',
+        'email',
+        'password',
+        'user_role'
+    ];
+
     /**
-     * Return a key value array, containing any custom claims to be added to the JWT.
+     * The attributes that should be hidden for serialization.
      *
-     * @return array
+     * @var array
      */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 
-    public function getJWTCustomClaims()
-    {
-        return [];
-    }
-
-    public function category()
-    {
-        return $this->hasOne(UserCategory::class, 'user_id', 'id');
-    }
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+    ];
 }
