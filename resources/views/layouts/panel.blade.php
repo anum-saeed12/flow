@@ -12,7 +12,7 @@
         @include('includes.sidebar')
 
         {{-- Content Wrapper. Contains page content --}}
-        <div class="content-wrapper">
+        <div class="content-wrapper ">
 
             @yield('breadcrumbs')
 
@@ -25,6 +25,7 @@
 
     @include('includes.js')
 
+    @yield('body.js')
     @yield('extras')
     @yield('filters.js')
 </body>

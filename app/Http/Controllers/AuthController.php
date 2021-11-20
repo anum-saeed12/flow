@@ -14,9 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Ramsey\Uuid\Uuid;
 
 /**
  * This controller manages the user authentication
@@ -31,9 +29,7 @@ class AuthController extends Controller
     private $homepage = [
         # Middleware    =>     Route name
         'admin'    => 'dashboard.admin',
-        'sale'     => 'dashboard.sale',
-        'manager'  => 'dashboard.manager',
-        'team'     => 'dashboard.team',
+        'employee' => 'dashboard.sale',
     ];
     /**
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View

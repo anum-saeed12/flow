@@ -45,3 +45,32 @@ label.normal {margin-bottom:5px!important;color:#666;line-height:normal;font-wei
 .list-img-thumbnail {display:block;height:90px;width:75px;background:transparent center center no-repeat;background-size:cover;content:'';cursor:pointer;transition:.3s all;}
 .list-img-thumbnail:hover {background-size:cover;transform:scale(2);box-shadow:0 0 6px #999;}
 .category-selector {border: 1px solid #ccc;padding:1rem;}
+
+.content-wrapper {overflow-y:auto;}
+
+.list-container {white-space:nowrap;}
+.list-container:after {display:block;clear:both;content:"";}
+.list-container .list {background:#fff;display:inline-block;width:calc(100% / 4 - 16px);border:1px solid #ccc;margin:0 8px 16px;white-space:normal;}
+.list-container .list .title {padding:6px 8px;border-bottom:1px solid #ccc;margin:0;position:relative;}
+.list-container .list .title h6 {padding:0;margin:0;width:calc(100% - 30px);display:inline-block;}
+.list-container .list .title .actions {width:30px;text-align:center;display:inline-block;}
+.list-container .list h6 {font-weight:600;}
+.list-container .list p {padding:3px 8px;font-size:.8rem;line-height:normal}
+.list-container .list .task-container {padding:8px;}
+.list-container .list .task-container.empty {}
+.list-container .list .task-container.count-0:before,
+.list-container .list .task-container.empty:before {white-space:normal;display:block;content:"This list has no tasks. You can create new tasks by clickin on the button.";font-style:italic;font-weight:200;font-size:.8rem;margin-bottom:2rem;}
+.list-container .list .task-container .task {}
+
+.member-container {margin-top:1rem;}
+.member-container:empty {content:"No members assigned";font-style:italic;font-size:12px;}
+.member-container .member {position:relative;display:inline-block;width:40px;height:40px;background:transparent no-repeat center center;background-size:contain;border-radius:100%;margin-right:.5rem}
+.member-container .member *.remove {position:absolute;top:-4px;right:-4px;background:#666;width:14px;height:14px;font-size:14px;line-height:14px;color:#fff;text-decoration:none;text-align:center;border-radius:100%;}
+
+.btn-more {background:transparent;border:none;border-radius:4px;}
+.btn-more:hover {background:#ccc;}
+.menu-container {width:90%;position:absolute;top:33px;right:0;background:#fff;border:1px solid #ccc;padding:3px;border-radius:4px;box-shadow:2px 2px 4px #ccc;}
+.menu-container ul {list-style:none;margin:0;padding:0;}
+.menu-container ul li {}
+.menu-container ul li a {display:block;padding:5px 8px;color:inherit;white-space:nowrap;overflow:hidden;text-align:left;}
+.menu-container ul li a:hover {background:#eee;border-radius:4px;}

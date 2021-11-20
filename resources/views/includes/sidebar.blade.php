@@ -23,6 +23,14 @@
                 </li>
                 @endadmin
 
+                <li class="nav-item has-treeview">
+                        <a href="{{ route(auth()->user()->user_role.'.list.index') }}" class="nav-link">
+                        <i class="fas fa-users nav-icon"></i>
+                        <p>
+                            Tasks
+                        </p>
+                    </a>
+                </li>
 
                 <li class="nav-item mb-5">
                     <a href="{{ route('logout') }}" class="nav-link">

@@ -229,5 +229,8 @@ return [
         'PDF' => Barryvdh\DomPDF\Facade::class,
 
     ],
-
+    'class' => [
+        'list' => '',
+        'task' => '',
+    ]
 ];

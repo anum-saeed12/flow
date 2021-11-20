@@ -66,8 +66,6 @@ class Kernel extends HttpKernel
         #These Middlewares are used to check which user is login in.
 
         'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
-        'sale' => \App\Http\Middleware\EnsureUserIsSalesPerson::class,
-        'manager' => \App\Http\Middleware\EnsureUserIsManager::class,
-        'team' => \App\Http\Middleware\EnsureUserIsSourcingTeam::class
+        'employee' => \App\Http\Middleware\EnsureUserIsEmployee::class,
     ];
 }
