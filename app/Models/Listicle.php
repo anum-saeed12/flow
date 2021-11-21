@@ -13,7 +13,7 @@ class Listicle extends Model
 
     protected $fillable = [
         'name',
-        'project_description',
+        'description',
         'created_by',
         'updated_by'
     ];

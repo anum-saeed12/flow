@@ -32,11 +32,9 @@ Route::prefix('/admin')->middleware('admin')->group(function() {
     # Dashboard
     Route::get('/', '\App\Http\Controllers\DashboardController@admin')->name('dashboard.admin');
 
-    Route::resource('/list', \App\Http\Controllers\Admin\ListController::class, [
-        'as' => 'admin'
-    ]);
-    Route::resource('/task', \App\Http\Controllers\Admin\TaskController::class);
-    Route::resource('/assignment', \App\Http\Controllers\Admin\AssignmentController::class);
+    Route::resource('/list', \App\Http\Controllers\Admin\ListController::class, ['as' => 'admin']);
+    Route::resource('/task', \App\Http\Controllers\Admin\TaskController::class, ['as' => 'admin']);
+    Route::resource('/assignment', \App\Http\Controllers\Admin\AssignmentController::class, ['as' => 'admin']);
 
     Route::prefix('/user')->group(function() {
         Route::get('/', '\App\Http\Controllers\Admin\UserController@index')->name('user.index.admin');
@@ -55,8 +53,8 @@ Route::middleware('employee')->group(function() {
     # Dashboard
     Route::get('/', '\App\Http\Controllers\DashboardController@employee')->name('dashboard.employee');
 
-    Route::resource('/list', \App\Http\Controllers\Employee\ListController::class);
-    Route::resource('/task', \App\Http\Controllers\Employee\TaskController::class);
-    Route::resource('/assignment', \App\Http\Controllers\Employee\AssignmentController::class);
+    Route::resource('/list', \App\Http\Controllers\Employee\ListController::class, ['as' => 'employee']);
+    Route::resource('/task', \App\Http\Controllers\Employee\TaskController::class, ['as' => 'employee']);
+    Route::resource('/assignment', \App\Http\Controllers\Employee\AssignmentController::class, ['as' => 'employee']);
 });
 
