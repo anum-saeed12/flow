@@ -9,7 +9,7 @@
                         {{$title}}
                         <a href="#" class="btn btn-primary btn-sm text-left ml-2" data-toggle="modal" data-target="#newListModal">
                             <i class="fa fa-plus mr-1"></i>
-                            Create New Task
+                            Create New List
                         </a>
                     </h1>
                 </div>

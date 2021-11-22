@@ -60,6 +60,7 @@ label.normal {margin-bottom:5px!important;color:#666;line-height:normal;font-wei
 .list-container .list .task-container.empty {}
 .list-container .list .task-container.count-0:before,
 .list-container .list .task-container.empty:before {white-space:normal;display:block;content:"This list has no tasks. You can create new tasks by clickin on the button.";font-style:italic;font-weight:200;font-size:.8rem;margin-bottom:2rem;}
+.list-container .list .task-container.count-0.empty:before {content:"There is no list, You can create a new list by clicking the button below.";}
 .list-container .list .task-container .task {}
 
 .member-container {margin-top:1rem;}

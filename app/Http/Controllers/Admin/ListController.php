@@ -22,6 +22,7 @@ class ListController extends Controller
             (Object) ['id' => 4, 'title' => 'Bugs & Issues', 'description' => '', 'tasks' => []],
             (Object) ['id' => 5, 'title' => 'Testing', 'description' => '', 'tasks' => []],
         ];
+        $listings = Listicle::with('tasks')->get();
         $data = [
             'title'  => 'Tasks',
             'listings' => $listings
@@ -49,7 +50,7 @@ class ListController extends Controller
         $new_list = new Listicle();
         $new_list->title = $request->input('title');
         $new_list->description = $request->input('description');
-        $new_list->added_by = Auth::id();
+        $new_list->created_by = Auth::id();
         $new_list->save();
 
         return redirect()->back()->with('success', 'List has been created');

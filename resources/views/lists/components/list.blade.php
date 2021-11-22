@@ -6,9 +6,9 @@
             </button>
             <div class="menu-container" style="display:none;" id="m{{ md5($list->id) }}">
                 <ul class="menu list-menu">
-                    <li><a href="#" data-toggle="modal" data-target="#list{{ $list->id }}">Edit</a></li>
+                    <li><a href="#" data-toggle="modal" data-target="#editListModal{{ $list->id }}">Edit</a></li>
                     <li><a href="#">Archive</a></li>
-                    <li><a href="#" data-toggle="modal" data-target="#mMem{{ $list->id }}">Add Members</a></li>
+                    <li><a href="#" data-toggle="modal" data-target="#editMembersModal{{ $list->id }}">Add Members</a></li>
                 </ul>
             </div>
         </div>
@@ -19,11 +19,11 @@
         @endforelse
     </div>
     <div class="p-2">
-        <a href="#" class="btn btn-link btn-sm btn-block text-left" data-toggle="modal" data-target="#mD{{ $list->id }}">
+        <a href="#" class="btn btn-link btn-sm btn-block text-left" data-toggle="modal" data-target="#newTaskModal{{ $list->id }}">
             <i class="fa fa-plus mr-1"></i>
             Create New Task
         </a>
-        <div id="mD{{ $list->id }}" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div id="newTaskModal{{ $list->id }}" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-md">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -37,10 +37,13 @@
                             @csrf
                             <input type="hidden" name="list_id" value="{{ $list->id }}">
                             <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Task">
+                                <input name="title" type="text" class="form-control" placeholder="Task">
                             </div>
                             <div class="form-group">
-                                <textarea class="form-control" placeholder="Description"></textarea>
+                                <textarea name="description" class="form-control" placeholder="Description"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <input name="points" type="number" class="form-control" placeholder="Points">
                             </div>
                             <div class="form-group">
                                 <input class="form-control" type="text" value="List: {{ $list->title }}" disabled>
@@ -60,7 +63,7 @@
                 </div>
             </div>
         </div>
-        <div id="mMem{{ $list->id }}" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div id="editMembersModal{{ $list->id }}" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-md">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -91,11 +94,11 @@
                 </div>
             </div>
         </div>
-        <div id="list{{ $list->id }}" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div id="editListModal{{ $list->id }}" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-md">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">New list</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Edit {{ $list->title }}</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
