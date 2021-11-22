@@ -50,7 +50,7 @@ label.normal {margin-bottom:5px!important;color:#666;line-height:normal;font-wei
 
 .list-container {white-space:nowrap;}
 .list-container:after {display:block;clear:both;content:"";}
-.list-container .list {background:#fff;display:inline-block;width:calc(100% / 4 - 16px);border:1px solid #ccc;margin:0 8px 16px;white-space:normal;}
+.list-container .list {background:#fff;display:inline-block;width:calc(100% / 4 - 16px);border:1px solid #ccc;margin:0 8px 16px;white-space:normal;vertical-align:top;}
 .list-container .list .title {padding:6px 8px;border-bottom:1px solid #ccc;margin:0;position:relative;}
 .list-container .list .title h6 {padding:0;margin:0;width:calc(100% - 30px);display:inline-block;}
 .list-container .list .title .actions {width:30px;text-align:center;display:inline-block;}
@@ -61,7 +61,11 @@ label.normal {margin-bottom:5px!important;color:#666;line-height:normal;font-wei
 .list-container .list .task-container.count-0:before,
 .list-container .list .task-container.empty:before {white-space:normal;display:block;content:"This list has no tasks. You can create new tasks by clickin on the button.";font-style:italic;font-weight:200;font-size:.8rem;margin-bottom:2rem;}
 .list-container .list .task-container.count-0.empty:before {content:"There is no list, You can create a new list by clicking the button below.";}
-.list-container .list .task-container .task {}
+.list-container .list .task-container *.task {display:block;border:1px solid #ccc;border-radius:4px;text-decoration:none;color:inherit;}
+.list-container .list .task-container *.task:not(:first-child) {margin-top:10px;}
+.list-container .list .task-container *.task:hover {background: #dcebf1;}
+.list-container .list .task-container *.task h6 {padding:3px 8px;margin:0;}
+.list-container .list .task-container *.task p {padding:3px 8px 8px;}
 
 .member-container {margin-top:1rem;}
 .member-container:empty {content:"No members assigned";font-style:italic;font-size:12px;}
@@ -75,3 +79,22 @@ label.normal {margin-bottom:5px!important;color:#666;line-height:normal;font-wei
 .menu-container ul li {}
 .menu-container ul li a {display:block;padding:5px 8px;color:inherit;white-space:nowrap;overflow:hidden;text-align:left;}
 .menu-container ul li a:hover {background:#eee;border-radius:4px;}
+
+
+/* Customize the label (the container) */
+.completed-container {padding:.5rem 0;height:38px;display:inline-block;position:relative;cursor:pointer;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;margin:0;vertical-align:top;}
+/* Hide the browser's default checkbox */
+.completed-container input[type='checkbox'] {position:absolute;opacity:0;cursor:pointer;height:0;width:0;display:none;}
+/* Create a custom checkbox */
+.completed {border-radius:4px;background-color:transparent;padding:.5rem 1rem;border:1px solid #2196F3;color:#2196F3;height:38px;}
+/* On mouse-over, add a grey background color */
+.completed-container:hover input ~ .completed {background-color:#e6f0f8;}
+/* When the checkbox is checked, add a blue background */
+.completed-container input:checked ~ .completed {background-color:#2196F3;color:#fff;padding:.5rem 1rem .5rem 1.8rem;}
+/* Create the checkmark/indicator (hidden when not checked) */
+.completed:before {content: "";position: absolute;display: none;}
+/* Show the checkmark when checked */
+.completed-container input:checked ~ .completed:before {display:block;}
+.completed-container input:checked ~ .completed:after {content:"d"}
+/* Style the checkmark/indicator */
+.completed-container .completed:before {left:.8rem;top:.7rem;width:7px;height:14px;border:solid white;border-width:0 3px 3px 0;-webkit-transform:rotate(45deg);-ms-transform:rotate(45deg);transform:rotate(45deg);}

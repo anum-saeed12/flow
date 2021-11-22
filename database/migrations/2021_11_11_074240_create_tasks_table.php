@@ -18,11 +18,12 @@ class CreateTasksTable extends Migration
             $table->string('title')->nullable();
             $table->string('description')->nullable();
             $table->string('points')->nullable();
+            $table->boolean('completed')->default(0);
             $table->timestamp('start_date')->nullable();
             $table->timestamp('end_date')->nullable();
             $table->unsignedBigInteger('list_id');
-            $table->unsignedBigInteger('created_by');
-            $table->unsignedBigInteger('updated_by');
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
             $table->foreign('list_id')->references('id')->on('listicles')->nullable();
             $table->foreign('created_by')->references('id')->on('users')->nullable();
             $table->foreign('updated_by')->references('id')->on('users')->nullable();

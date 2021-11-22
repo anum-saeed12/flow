@@ -43,7 +43,7 @@
                                 <textarea name="description" class="form-control" placeholder="Description"></textarea>
                             </div>
                             <div class="form-group">
-                                <input name="points" type="number" class="form-control" placeholder="Points">
+                                <input name="points" type="number" class="form-control" placeholder="Points" value="1">
                             </div>
                             <div class="form-group">
                                 <input class="form-control" type="text" value="List: {{ $list->title }}" disabled>
@@ -56,7 +56,7 @@
                             </div>
                             <div class="text-right">
                                 <button type="button" class="btn btn-outline-danger mr-2" data-dismiss="modal">Cancel</button>
-                                <button type="button" class="btn btn-primary"><i class="fa fa-plus mr-2"></i>Create</button>
+                                <button type="submit" class="btn btn-primary"><i class="fa fa-plus mr-2"></i>Create</button>
                             </div>
                         </form>
                     </div>
