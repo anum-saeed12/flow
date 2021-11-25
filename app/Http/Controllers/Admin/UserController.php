@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -55,9 +56,8 @@ class UserController extends Controller
         $rules = [
             'email'      => 'required',
             'username'   => 'required',
-            'name'       => 'required',
             'password'   => 'required',
-            'user_role'  => 'required|in:admin,sale,manager,team'
+            'user_role'  => 'required|in:admin,employee'
         ];
 
         $request->validate($rules);
@@ -70,25 +70,6 @@ class UserController extends Controller
             return redirect(
                 route('user.list.admin')
             )->with('success', 'User already exists!!');
-        }
-
-        if($request->user_role == 'team')
-        {
-            # Verify if categories exist
-            $verification = Category::select('id')->whereIn('id', $request->category_id)->get();
-            if (count($request->category_id) != $verification->count()) return redirect()->back()->with('error', 'Please select valid categories');
-
-            $data             =  $request->all();
-            $user             =  new User($data);
-            $user['password'] =  Hash::make($request->password);
-            $user->save();
-
-            foreach ($request->category_id as $category) {
-                $user_category = new UserCategory();
-                $user_category->category_id = $category;
-                $user_category->user_id = $user->id;
-                $user_category->save();
-            }
         }
 
         $data             =  $request->all();
@@ -109,7 +90,7 @@ class UserController extends Controller
             'email'      => 'sometimes|required',
             'username'   => 'sometimes|required',
             #'password'   => 'sometimes|required',
-            'user_role'  => 'sometimes|required|in:admin,sale,manager,team'
+            'user_role'  => 'sometimes|required|in:admin,employee'
         ]);
 
         $request->input('email')       &&  $user->email        = $request->input('email');

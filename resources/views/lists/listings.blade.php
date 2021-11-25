@@ -41,8 +41,15 @@
                             </div>
                             <div class="form-group">
                                 <input  class="form-control" type="text" placeholder="Search to add members...">
-                                <div class="member-container">
-                                    @include('templates.member-icon', ['image' => 'https://pyxis.nymag.com/v1/imgs/fb4/6c0/70a4c87afa1ed28bbe965d1b2f5271f340-13-humans-season2.rsquare.w700.jpg'])@include('templates.member-icon', ['image' => 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXw3NjA4Mjc3NHx8ZW58MHx8fHw%3D&w=1000&q=80'])
+                                <div class="row">
+                                    @foreach($users as $user)
+                                        <div class="col-6">
+                                            <label for="u{{ $user->id }}">
+                                                <input type="checkbox" name="members[]" value="{{ $user->id }}">
+                                                {{ $user->username }}
+                                            </label>
+                                        </div>
+                                    @endforeach
                                 </div>
                             </div>
                             <div class="text-right">

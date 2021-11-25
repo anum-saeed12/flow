@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Listicle;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,17 +16,12 @@ class ListController extends Controller
      */
     public function index()
     {
-        $listings = [
-            (Object) ['id' => 1, 'title' => 'Backlog', 'description' => 'Backlog description', 'tasks' => []],
-            (Object) ['id' => 2, 'title' => 'In Progress', 'description' => '', 'tasks' => []],
-            (Object) ['id' => 3, 'title' => 'Completed', 'description' => 'Yo bro', 'tasks' => []],
-            (Object) ['id' => 4, 'title' => 'Bugs & Issues', 'description' => '', 'tasks' => []],
-            (Object) ['id' => 5, 'title' => 'Testing', 'description' => '', 'tasks' => []],
-        ];
         $listings = Listicle::with('tasks')->get();
+        $users = User::all();
         $data = [
             'title'  => 'Tasks',
-            'listings' => $listings
+            'listings' => $listings,
+            'users' => $users
         ];
         return view('lists.listings', $data);
     }
