@@ -40,12 +40,14 @@
                                 <textarea name="description" class="form-control" placeholder="Description"></textarea>
                             </div>
                             <div class="form-group">
-                                <input  class="form-control" type="text" placeholder="Search to add members...">
+                                <input  class="form-control" type="text" placeholder="Quick find...">
+                            </div>
+                            <div class="form-group">
                                 <div class="row">
                                     @foreach($users as $user)
                                         <div class="col-6">
                                             <label for="u{{ $user->id }}">
-                                                <input type="checkbox" name="members[]" value="{{ $user->id }}">
+                                                <input id="u{{ $user->id }}" type="checkbox" name="members[]" value="{{ $user->id }}" class="mr-2">
                                                 {{ $user->username }}
                                             </label>
                                         </div>

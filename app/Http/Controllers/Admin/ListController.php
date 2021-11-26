@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Listicle;
+use App\Models\ListUser;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -48,6 +49,16 @@ class ListController extends Controller
         $new_list->description = $request->input('description');
         $new_list->created_by = Auth::id();
         $new_list->save();
+
+        # If members are provided, add members to the newly created list
+        if ($request->input('members')) {
+            foreach($request->input('members') as $member) {
+                $new_member = new ListUser();
+                $new_member->user_id = $member;
+                $new_member->list_id = $new_list->id;
+                $new_member->save();
+            }
+        }
 
         return redirect()->back()->with('success', 'List has been created');
     }
