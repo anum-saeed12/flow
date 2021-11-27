@@ -104,6 +104,19 @@ class ListController extends Controller
         $updated_list->updated_by = Auth::id();
         $updated_list->save();
 
+        # Remove previous records for members
+        $old_members = ListUser::where('list_id', $id)->delete();
+
+        # If members are provided, add members to the newly created list
+        if ($request->input('members')) {
+            foreach($request->input('members') as $member) {
+                $new_member = new ListUser();
+                $new_member->user_id = $member;
+                $new_member->list_id = $id;
+                $new_member->save();
+            }
+        }
+
         return redirect()->back()->with('success', 'List has been updated');
     }
 
@@ -115,6 +128,8 @@ class ListController extends Controller
     public function destroy($id)
     {
         $list = Listicle::find($id);
+        # Remove members
+        $remove_members = ListUser::where('list_id', $id)->delete();
         $list->delete();
 
         return redirect()->back()->with('success', 'List has been deleted');

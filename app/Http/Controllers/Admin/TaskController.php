@@ -105,21 +105,67 @@ class TaskController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-        //
+        # Expected Parameters
+        # 1. Title (List Title)_
+        # 2. Description
+        # 3. Points
+        # 4. Start Date (Optional)
+        # 5. End Date (Optional)
+
+        $request->validate([
+            'title' => 'required|max:150',
+            'description' => 'required|max:300',
+            'points' => 'required|numeric',
+            'list_id' => 'required|exists:App\Models\Listicle,id'
+        ]);
+
+        $updated_task = Task::find($id);
+
+        # Checks if the task has been completed
+        if ($updated_task->completed == 1) return redirect()->back()->with('error', 'Task has already been completed!');
+
+        $updated_task->title = $request->input('title');
+        $updated_task->description = $request->input('description');
+        $updated_task->points = $request->input('points');
+        $updated_task->list_id = $request->input('list_id');
+        $request->start_date && $updated_task->start_date = $request->input('start_date');
+        $request->end_date && $updated_task->end_date = $request->input('end_date');
+        $updated_task->created_by = Auth::id();
+        $updated_task->save();
+
+        # Remove previous records for members
+        $old_members = TaskUser::where('list_id', $id)->delete();
+
+        # If members are provided, add members to the list
+        if ($request->input('members')) {
+            foreach($request->input('members') as $member) {
+                $new_member = new TaskUser();
+                $new_member->user_id = $member;
+                $new_member->task_id = $updated_task->id;
+                $new_member->points = 0;
+                $new_member->created_by = Auth::id();
+                $new_member->save();
+            }
+        }
+
+        return redirect()->back()->with('success', 'Task has been updated');
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        //
+        $list = Task::find($id);
+        # Remove members
+        $remove_members = TaskUser::where('list_id', $id)->delete();
+        $list->delete();
+
+        return redirect()->back()->with('success', 'Task has been deleted');
     }
 }
