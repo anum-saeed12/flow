@@ -1,8 +1,6 @@
 <div class="list">
     <div class="title">
-        <h6>{{ ucwords($project->title) }}</h6>
-        @admin
-        <div class="actions">
+        <h6>{{ ucwords($project->title) }}</h6>@admin<div class="actions">
             <button class="more btn-more" type="button" data-target="#m{{ md5($project->id) }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fa fa-ellipsis-h"></i>
             </button>
@@ -13,8 +11,7 @@
                     <li><a href="#" data-toggle="modal" data-target="#editMembersModal{{ $project->id }}">Add Members</a></li>
                 </ul>
             </div>
-        </div>
-        @endadmin
+        </div>@endadmin
     </div>
     <div class="task-container count-{{ count($project->tasks) }}">
         @forelse($project->tasks as $task)@include('tasks.components.task', [compact('task'),'members'=>members($task->id, 'task')])@empty
