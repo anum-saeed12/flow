@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Task;
+use App\Models\TaskUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -61,6 +62,18 @@ class TaskController extends Controller
 
 
         $new_task->save();
+
+        # If members are provided, add members to the newly created list
+        if ($request->input('members')) {
+            foreach($request->input('members') as $member) {
+                $new_member = new TaskUser();
+                $new_member->user_id = $member;
+                $new_member->task_id = $new_task->id;
+                $new_member->points = 0;
+                $new_member->created_by = Auth::id();
+                $new_member->save();
+            }
+        }
 
         return redirect()->back()->with('success', 'Task has been added');
     }

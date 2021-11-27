@@ -1,25 +1,49 @@
 <?php
 
-use App\Models\Brand;
-use App\Models\Item;
+use App\Models\User;
+use App\Models\TaskUser;
+use App\Models\ListUser;
 
-if (!function_exists('fetchBrandsForItem'))
+if (!function_exists('members'))
 {
-    function fetchBrandsForItem($item_name)
+    function members($id, $type='task')
     {
-        $brand = (new Brand())->getTable();
-        $item = (new Item())->getTable();
+        $model = $type=='task'?'TaskUser':'ListUser';
+
+        $table = $type=='task'?(new TaskUser())->getTable():(new ListUser())->getTable();
+        $users = (new User())->getTable();
 
         $select = [
-            "{$brand}.brand_name",
-            "{$brand}.id",
+            "{$users}.id",
+            "{$users}.username",
+            "{$users}.user_role",
         ];
 
-        $brands = Item::select($select)
-            ->join($brand, "{$brand}.id", "=", "{$item}.brand_id")
-            ->where('item_name', "$item_name")
-            ->get();
+        #$model == 'task' && $select[] = "{$table}.points";
 
-        return $brands;
+        $members = $type=='task' ?
+            TaskUser::select($select)
+            ->join($users, "{$users}.id", "=", "{$table}.user_id")
+            ->where("{$table}.task_id", $id)
+            ->get()
+            :
+            ListUser::select($select)
+                ->join($users, "{$users}.id", "=", "{$table}.user_id")
+                ->where("{$table}.list_id", $id)
+                ->get();
+
+        $user_ids = [];
+        foreach($members as $member) $user_ids[] = $member->id;
+
+        return $user_ids;
+    }
+}
+
+if (!function_exists('crop'))
+{
+    function crop($string, $limit=40)
+    {
+        if (strlen($string) <= $limit) return $string;
+        return substr($string, 0, $limit) . "...";
     }
 }

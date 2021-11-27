@@ -39,6 +39,7 @@
                             <div class="form-group">
                                 <textarea name="description" class="form-control" placeholder="Description"></textarea>
                             </div>
+                            <h6>Members</h6>
                             <div class="form-group">
                                 <input  class="form-control" type="text" placeholder="Quick find...">
                             </div>
@@ -46,8 +47,8 @@
                                 <div class="row">
                                     @foreach($users as $user)
                                         <div class="col-6">
-                                            <label for="u{{ $user->id }}">
-                                                <input id="u{{ $user->id }}" type="checkbox" name="members[]" value="{{ $user->id }}" class="mr-2">
+                                            <label for="nlu{{ $user->id }}">
+                                                <input id="nlu{{ $user->id }}" type="checkbox" name="members[]" value="{{ $user->id }}" class="mr-2">
                                                 {{ $user->username }}
                                             </label>
                                         </div>
@@ -71,7 +72,7 @@
         <div class="row">
             <div class="col">
                 <div class="list-container">
-                    @forelse($listings as $list)@include('lists.components.list', compact('list'))@empty
+                    @forelse($listings as $list)@include('lists.components.list',[compact('list'),'list_members'=>members($list->id,'list')])@empty
                         @include('lists.components.empty')
                     @endforelse
                 </div>

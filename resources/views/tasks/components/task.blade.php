@@ -1,6 +1,6 @@
 <a href="#" class="task" data-toggle="modal" data-target="#taskEditModal{{ $task->id }}">
     <h6>{{ $task->title }}</h6>
-    <p>{{ $task->description }}</p>
+    <p>{{ crop($task->description) }}</p>
 </a>
 <div id="taskEditModal{{ $task->id }}" class="modal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-md">
@@ -29,9 +29,18 @@
                         <input class="form-control" type="text" value="List: {{ $list->title }}" disabled>
                     </div>
                     <div class="form-group">
-                        <input  class="form-control" type="text" placeholder="Search to add members...">
-                        <div class="member-container">
-                            @include('templates.member-icon', ['image' => 'https://pyxis.nymag.com/v1/imgs/fb4/6c0/70a4c87afa1ed28bbe965d1b2f5271f340-13-humans-season2.rsquare.w700.jpg'])@include('templates.member-icon', ['image' => 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXw3NjA4Mjc3NHx8ZW58MHx8fHw%3D&w=1000&q=80'])
+                        <input  class="form-control" type="text" placeholder="Quick find...">
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            @foreach($users as $user)
+                                <div class="col-6">
+                                    <label for="ntu{{ $user->id }}">
+                                        <input id="ntu{{ $user->id }}" type="checkbox" name="members[]" value="{{ $user->id }}" class="mr-2"{!! in_array($user->id, $members)?' checked':'' !!}>
+                                        {{ $user->username }}
+                                    </label>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
                     <div class="text-right">

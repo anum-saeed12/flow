@@ -20,8 +20,8 @@ class CreateTaskUsersTable extends Migration
             $table->foreign('user_id')->references('id')->on('users')->nullable();
             $table->foreign('task_id')->references('id')->on('tasks')->nullable();
             $table->unsignedInteger('points')->default('0');
-            $table->unsignedBigInteger('created_by');
-            $table->unsignedBigInteger('updated_by');
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
             $table->foreign('created_by')->references('id')->on('users')->nullable();
             $table->foreign('updated_by')->references('id')->on('users')->nullable();
             $table->timestamp('deleted_at')->nullable();

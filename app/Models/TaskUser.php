@@ -19,11 +19,11 @@ class TaskUser extends Model
         'updated_by'
     ];
 
-    public function created ()
+    public function created_by ()
     {
         return $this->hasOne(User::class, 'id', 'created_by');
     }
-    public function updated ()
+    public function updated_by ()
     {
         return $this->hasOne(User::class, 'id', 'updated_by');
     }

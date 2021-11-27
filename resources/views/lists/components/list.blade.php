@@ -1,7 +1,7 @@
 <div class="list">
     <div class="title">
         <h6>{{ $list->title }}</h6><div class="actions">
-            <button class="more btn-more" type="button" data-target="#m{{ md5($list->id) }}">
+            <button class="more btn-more" type="button" data-target="#m{{ md5($list->id) }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fa fa-ellipsis-h"></i>
             </button>
             <div class="menu-container" style="display:none;" id="m{{ md5($list->id) }}">
@@ -14,7 +14,7 @@
         </div>
     </div>
     <div class="task-container count-{{ count($list->tasks) }}">
-        @forelse($list->tasks as $task)@include('tasks.components.task', compact('task'))@empty
+        @forelse($list->tasks as $task)@include('tasks.components.task', [compact('task'),'members'=>members($task->id, 'task')])@empty
             @include('tasks.components.empty-task')
         @endforelse
     </div>
@@ -48,10 +48,20 @@
                             <div class="form-group">
                                 <input class="form-control" type="text" value="List: {{ $list->title }}" disabled>
                             </div>
+                            <h6>Members</h6>
                             <div class="form-group">
-                                <input  class="form-control" type="text" placeholder="Search to add members...">
-                                <div class="member-container">
-                                    @include('templates.member-icon', ['image' => 'https://pyxis.nymag.com/v1/imgs/fb4/6c0/70a4c87afa1ed28bbe965d1b2f5271f340-13-humans-season2.rsquare.w700.jpg'])@include('templates.member-icon', ['image' => 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXw3NjA4Mjc3NHx8ZW58MHx8fHw%3D&w=1000&q=80'])
+                                <input  class="form-control" type="text" placeholder="Quick find...">
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    @foreach($users as $user)
+                                        <div class="col-6">
+                                            <label for="ntu{{ $user->id }}">
+                                                <input id="ntu{{ $user->id }}" type="checkbox" name="members[]" value="{{ $user->id }}" class="mr-2">
+                                                {{ $user->username }}
+                                            </label>
+                                        </div>
+                                    @endforeach
                                 </div>
                             </div>
                             <div class="text-right">
@@ -114,9 +124,18 @@
                                 <textarea class="form-control" placeholder="Description">{{ $list->description }}</textarea>
                             </div>
                             <div class="form-group">
-                                <input  class="form-control" type="text" placeholder="Search to add members...">
-                                <div class="member-container">
-                                    @include('templates.member-icon', ['image' => 'https://pyxis.nymag.com/v1/imgs/fb4/6c0/70a4c87afa1ed28bbe965d1b2f5271f340-13-humans-season2.rsquare.w700.jpg'])@include('templates.member-icon', ['image' => 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MXw3NjA4Mjc3NHx8ZW58MHx8fHw%3D&w=1000&q=80'])
+                                <input  class="form-control" type="text" placeholder="Quick find...">
+                            </div>
+                            <div class="form-group">
+                                <div class="row">
+                                    @foreach($users as $user)
+                                        <div class="col-6">
+                                            <label for="ntu{{ $user->id }}">
+                                                <input id="ntu{{ $user->id }}" type="checkbox" name="members[]" value="{{ $user->id }}" class="mr-2"{!! in_array($user->id, $list_members)?' checked':'' !!}>
+                                                {{ $user->username }}
+                                            </label>
+                                        </div>
+                                    @endforeach
                                 </div>
                             </div>
                             <div class="text-right">
