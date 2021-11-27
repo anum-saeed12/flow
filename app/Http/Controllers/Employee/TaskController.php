@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Employee;
 
 use App\Http\Controllers\Controller;
 use App\Models\Task;
+use App\Models\TaskUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -63,6 +64,24 @@ class TaskController extends Controller
         $new_task->save();
 
         return redirect()->back()->with('success', 'Task has been added');
+    }
+
+    public function completed(Request $request, $task_id)
+    {
+        $task = Task::find($task_id);
+        if (!$task) return redirect()->back()->with('error','Task not found');
+        if ($task->completed == 1) return redirect()->back()->with('error','Task has already been completed');
+
+        $update_points = TaskUser::where('task_id', $task_id)
+            ->where('user_id', Auth::id())
+            ->update(['points' => $task->points]);
+
+        $task->completed = 1;
+        $task->save();
+
+        if ($request->wantsJson()) return showSuccessMessage("Task has been marked as completed");
+
+        return redirect()->back()->with('success', 'Task has been marked as completed');
     }
 
     /**
