@@ -47,3 +47,27 @@ if (!function_exists('crop'))
         return substr($string, 0, $limit) . "...";
     }
 }
+
+if (!function_exists('tasks'))
+{
+    function tasks($project_id,$user_id=null)
+    {
+
+        $select = [
+            'tasks.title',
+            'tasks.id',
+            'tasks.description',
+            'tasks.start_date',
+            'tasks.end_date',
+            'tasks.points',
+            'tasks.completed',
+        ];
+
+        $tasks = TaskUser::select($select)
+            ->join('tasks','tasks.id','=','task_users.task_id')
+            ->where('tasks.project_id',$project_id);
+
+        if(!is_null($user_id)) $tasks= $tasks->where('task_users.user_id',$user_id);
+        return $tasks->groupBy('tasks.project_id')->get();
+    }
+}

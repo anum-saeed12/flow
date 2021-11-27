@@ -24,7 +24,7 @@ class ProjectController extends Controller
             (Object) ['id' => 4, 'title' => 'Bugs & Issues', 'description' => '', 'tasks' => []],
             (Object) ['id' => 5, 'title' => 'Testing', 'description' => '', 'tasks' => []],
         ];
-        $projects = Project::with('tasks')->get();
+        $projects = Project::get();
           $users = User::all();
         $data = [
             'title'  => 'Project & Tasks',

@@ -13,11 +13,22 @@
             </div>
         </div>@endadmin
     </div>
+   @admin
     <div class="task-container count-{{ count($project->tasks) }}">
         @forelse($project->tasks as $task)@include('tasks.components.task', [compact('task'),'members'=>members($task->id, 'task')])@empty
             @include('tasks.components.empty-task')
         @endforelse
     </div>
+    @endadmin
+
+    @employee
+    <div class="task-container count-{{ count(tasks($project->id,auth()->id())) }}">
+        @forelse( tasks($project->id,auth()->id()) as $task)@include('tasks.components.task', [compact('task'),'members'=>members($task->id, 'task')])@empty
+            @include('tasks.components.empty-task')
+        @endforelse
+    </div>
+    @endemployee
+
     @admin
     <div class="p-2">
         <a href="#" class="btn btn-link btn-sm btn-block text-left" data-toggle="modal" data-target="#newTaskModal{{ $project->id }}">
