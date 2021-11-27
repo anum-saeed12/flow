@@ -40,6 +40,7 @@ class UserController extends Controller
             'users.user_role',
         ];
         $user = User::select($select)
+            ->where('id', $id)
             ->first();
 
         $data = [
@@ -84,36 +85,23 @@ class UserController extends Controller
 
     public function update (Request $request,$id)
     {
+        $rules = [
+            'email'      => 'required',
+            'username'   => 'required',
+            'password'   => 'required',
+            'user_role'  => 'required|in:admin,employee'
+        ];
+
+        $request->validate($rules);
+
         $user = User::find($id);
 
-        $request->validate([
-            'email'      => 'sometimes|required',
-            'username'   => 'sometimes|required',
-            #'password'   => 'sometimes|required',
-            'user_role'  => 'sometimes|required|in:admin,employee'
-        ]);
-
-        $request->input('email')       &&  $user->email        = $request->input('email');
-        empty($request->passowrd)      ||  $user->password     = Hash::make($request->input('password'));
-        $request->input('username')    &&  $user->username     = $request->input('username');
-        $request->input('user_role')   &&  $user->user_role    = $request->input('user_role');
+        $request->input('email')     && $user->email     = $request->input('email');
+        empty($request->passowrd)         || $user->password  = Hash::make($request->input('password'));
+        $request->input('username')  && $user->username  = $request->input('username');
+        $request->input('user_role') && $user->user_role = $request->input('user_role');
         $user->save();
 
-        if($request->user_role == 'team')
-        {
-            # Verify if categories exist
-            $verification = Category::select('id')->whereIn('id', $request->category_id)->get();
-            if (count($request->category_id) != $verification->count()) return redirect()->back()->with('error', 'Please select valid categories');
-
-            $delete_old_categories = UserCategory::where('user_id', $user->id)->delete();
-
-            foreach ($request->category_id as $category) {
-                $user_category = new UserCategory();
-                $user_category->category_id = $category;
-                $user_category->user_id = $user->id;
-                $user_category->save();
-            }
-        }
 
         return redirect(
             route('user.list.admin')
