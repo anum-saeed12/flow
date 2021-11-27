@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Employee;
 
 use App\Http\Controllers\Controller;
-use App\Models\Listicle;
+use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,7 +22,7 @@ class ListController extends Controller
             (Object) ['id' => 4, 'title' => 'Bugs & Issues', 'description' => '', 'tasks' => []],
             (Object) ['id' => 5, 'title' => 'Testing', 'description' => '', 'tasks' => []],
         ];
-        $listings = Listicle::with('tasks')->get();
+        $listings = Project::with('tasks')->get();
         $data = [
             'title'  => 'Tasks',
             'listings' => $listings
@@ -47,7 +47,7 @@ class ListController extends Controller
             'description' => 'required|max:300'
         ]);
 
-        $new_list = new Listicle();
+        $new_list = new Project();
         $new_list->title = $request->input('title');
         $new_list->description = $request->input('description');
         $new_list->created_by = Auth::id();
@@ -91,7 +91,7 @@ class ListController extends Controller
             'description' => 'required|max:300'
         ]);
 
-        $updated_list = Listicle::find($id);
+        $updated_list = Project::find($id);
         $updated_list->title = $request->input('title');
         $updated_list->description = $request->input('description');
         $updated_list->updated_by = Auth::id();
@@ -107,7 +107,7 @@ class ListController extends Controller
      */
     public function destroy($id)
     {
-        $list = Listicle::find($id);
+        $list = Project::find($id);
         $list->delete();
 
         return redirect()->back()->with('success', 'List has been deleted');

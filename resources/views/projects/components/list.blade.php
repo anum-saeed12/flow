@@ -1,29 +1,29 @@
 <div class="list">
     <div class="title">
-        <h6>{{ $list->title }}</h6><div class="actions">
-            <button class="more btn-more" type="button" data-target="#m{{ md5($list->id) }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <h6>{{ $project->title }}</h6><div class="actions">
+            <button class="more btn-more" type="button" data-target="#m{{ md5($project->id) }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fa fa-ellipsis-h"></i>
             </button>
-            <div class="menu-container" style="display:none;" id="m{{ md5($list->id) }}">
+            <div class="menu-container" style="display:none;" id="m{{ md5($project->id) }}">
                 <ul class="menu list-menu">
-                    <li><a href="#" data-toggle="modal" data-target="#editListModal{{ $list->id }}">Edit</a></li>
-                    <li><a href="#">Archive</a></li>
-                    <li><a href="#" data-toggle="modal" data-target="#editMembersModal{{ $list->id }}">Add Members</a></li>
+                    <li><a href="#" data-toggle="modal" data-target="#editListModal{{ $project->id }}">Edit</a></li>
+                    <li><a href="#">Delete</a></li>
+                    <li><a href="#" data-toggle="modal" data-target="#editMembersModal{{ $project->id }}">Add Members</a></li>
                 </ul>
             </div>
         </div>
     </div>
-    <div class="task-container count-{{ count($list->tasks) }}">
-        @forelse($list->tasks as $task)@include('tasks.components.task', [compact('task'),'members'=>members($task->id, 'task')])@empty
+    <div class="task-container count-{{ count($project->tasks) }}">
+        @forelse($project->tasks as $task)@include('tasks.components.task', [compact('task'),'members'=>members($task->id, 'task')])@empty
             @include('tasks.components.empty-task')
         @endforelse
     </div>
     <div class="p-2">
-        <a href="#" class="btn btn-link btn-sm btn-block text-left" data-toggle="modal" data-target="#newTaskModal{{ $list->id }}">
+        <a href="#" class="btn btn-link btn-sm btn-block text-left" data-toggle="modal" data-target="#newTaskModal{{ $project->id }}">
             <i class="fa fa-plus mr-1"></i>
             Create New Task
         </a>
-        <div id="newTaskModal{{ $list->id }}" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div id="newTaskModal{{ $project->id }}" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-md">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -35,7 +35,7 @@
                     <div class="modal-body">
                         <form action="{{ route(auth()->user()->user_role . '.task.store') }}" method="post">
                             @csrf
-                            <input type="hidden" name="list_id" value="{{ $list->id }}">
+                            <input type="hidden" name="project_id" value="{{ $project->id }}">
                             <div class="form-group">
                                 <input name="title" type="text" class="form-control" placeholder="Task">
                             </div>
@@ -46,7 +46,7 @@
                                 <input name="points" type="number" class="form-control" placeholder="Points" value="1">
                             </div>
                             <div class="form-group">
-                                <input class="form-control" type="text" value="List: {{ $list->title }}" disabled>
+                                <input class="form-control" type="text" value="Porject: {{ $project->title }}" disabled>
                             </div>
                             <h6>Members</h6>
                             <div class="form-group">
@@ -73,7 +73,7 @@
                 </div>
             </div>
         </div>
-        <div id="editMembersModal{{ $list->id }}" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div id="editMembersModal{{ $project->id }}" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-md">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -93,7 +93,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <input class="form-control" type="text" value="List: {{ $list->title }}" disabled>
+                                <input class="form-control" type="text" value="Project: {{ $project->title }}" disabled>
                             </div>
                             <div class="text-right">
                                 <button type="button" class="btn btn-outline-danger mr-2" data-dismiss="modal">Cancel</button>
@@ -104,24 +104,24 @@
                 </div>
             </div>
         </div>
-        <div id="editListModal{{ $list->id }}" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div id="editListModal{{ $project->id }}" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-md">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Edit {{ $list->title }}</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Edit {{ $project->title }}</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form action="{{ route(auth()->user()->user_role . '.list.update', $list->id) }}" method="post">
+                        <form action="{{ route(auth()->user()->user_role . '.project.update', $project->id) }}" method="post">
                             @csrf
                             @method('patch')
                             <div class="form-group">
-                                <input type="text" class="form-control" placeholder="List title" value="{{ $list->title }}">
+                                <input type="text" class="form-control" placeholder="Project title" value="{{ $project->title }}">
                             </div>
                             <div class="form-group">
-                                <textarea class="form-control" placeholder="Description">{{ $list->description }}</textarea>
+                                <textarea class="form-control" placeholder="Description">{{ $project->description }}</textarea>
                             </div>
                             <div class="form-group">
                                 <input  class="form-control" type="text" placeholder="Quick find...">

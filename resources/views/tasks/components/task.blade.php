@@ -15,7 +15,7 @@
                 <form action="{{ route(auth()->user()->user_role . '.task.update', $task->id) }}" method="post">
                     @csrf
                     @method('patch')
-                    <input type="hidden" name="list_id" value="{{ $list->id }}">
+                    <input type="hidden" name="project_id" value="{{ $list->id }}">
                     <div class="form-group">
                         <input name="title" type="text" class="form-control" placeholder="Task" value="{{ $task->title }}">
                     </div>

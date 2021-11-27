@@ -38,7 +38,7 @@ class TaskController extends Controller
     public function store(Request $request)
     {
         # Expected Parameters
-        # 1. Title (List Title)_
+        # 1. Title (Project Title)_
         # 2. Description
         # 3. Points
         # 4. Start Date (Optional)
@@ -48,14 +48,14 @@ class TaskController extends Controller
             'title' => 'required|max:150',
             'description' => 'required|max:300',
             'points' => 'required|numeric',
-            'list_id' => 'required|exists:App\Models\Listicle,id'
+            'project_id' => 'required|exists:App\Models\Project,id'
         ]);
 
         $new_task = new Task();
         $new_task->title = $request->input('title');
         $new_task->description = $request->input('description');
         $new_task->points = $request->input('points');
-        $new_task->list_id = $request->input('list_id');
+        $new_task->project_id = $request->input('project_id');
         $request->start_date && $new_task->start_date = $request->input('start_date');
         $request->end_date && $new_task->end_date = $request->input('end_date');
         $new_task->created_by = Auth::id();
@@ -63,7 +63,7 @@ class TaskController extends Controller
 
         $new_task->save();
 
-        # If members are provided, add members to the newly created list
+        # If members are provided, add members to the newly created project
         if ($request->input('members')) {
             foreach($request->input('members') as $member) {
                 $new_member = new TaskUser();
@@ -109,7 +109,7 @@ class TaskController extends Controller
     public function update(Request $request, $id)
     {
         # Expected Parameters
-        # 1. Title (List Title)_
+        # 1. Title (Project Title)_
         # 2. Description
         # 3. Points
         # 4. Start Date (Optional)
@@ -119,7 +119,7 @@ class TaskController extends Controller
             'title' => 'required|max:150',
             'description' => 'required|max:300',
             'points' => 'required|numeric',
-            'list_id' => 'required|exists:App\Models\Listicle,id'
+            'project_id' => 'required|exists:App\Models\Project,id'
         ]);
 
         $updated_task = Task::find($id);
@@ -130,16 +130,16 @@ class TaskController extends Controller
         $updated_task->title = $request->input('title');
         $updated_task->description = $request->input('description');
         $updated_task->points = $request->input('points');
-        $updated_task->list_id = $request->input('list_id');
+        $updated_task->project_id = $request->input('project_id');
         $request->start_date && $updated_task->start_date = $request->input('start_date');
         $request->end_date && $updated_task->end_date = $request->input('end_date');
         $updated_task->created_by = Auth::id();
         $updated_task->save();
 
         # Remove previous records for members
-        $old_members = TaskUser::where('list_id', $id)->delete();
+        $old_members = TaskUser::where('project_id', $id)->delete();
 
-        # If members are provided, add members to the list
+        # If members are provided, add members to the project
         if ($request->input('members')) {
             foreach($request->input('members') as $member) {
                 $new_member = new TaskUser();
@@ -161,10 +161,10 @@ class TaskController extends Controller
      */
     public function destroy($id)
     {
-        $list = Task::find($id);
+        $project = Task::find($id);
         # Remove members
-        $remove_members = TaskUser::where('list_id', $id)->delete();
-        $list->delete();
+        $remove_members = TaskUser::where('project_id', $id)->delete();
+        $project->delete();
 
         return redirect()->back()->with('success', 'Task has been deleted');
     }

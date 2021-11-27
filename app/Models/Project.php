@@ -13,19 +13,23 @@ class Project extends Model
 
     protected $fillable = [
         'name',
-        'project_description',
+        'description',
+        'sorting_order',
         'created_by',
         'updated_by'
     ];
 
-    public function created ()
+    public function _created ()
     {
         return $this->hasOne(User::class, 'id', 'created_by');
     }
-    public function updated ()
+    public function _updated ()
     {
         return $this->hasOne(User::class, 'id', 'updated_by');
     }
-
+    public function tasks()
+    {
+        return $this->hasMany(Task::class, 'project_id', 'id');
+    }
 
 }

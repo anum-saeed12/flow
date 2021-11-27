@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Listicle;
-use App\Models\ListUser;
+use App\Models\Project;
+use App\Models\ProjectUser;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class ListController extends Controller
+class ProjectController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,14 +17,14 @@ class ListController extends Controller
      */
     public function index()
     {
-        $listings = Listicle::with('tasks')->get();
+        $projects = Project::with('tasks')->get();
         $users = User::all();
         $data = [
-            'title'  => 'Tasks',
-            'listings' => $listings,
+            'title'  => 'Projects',
+            'projects' => $projects,
             'users' => $users
         ];
-        return view('lists.listings', $data);
+        return view('projects.listings', $data);
     }
 
     /**
@@ -35,7 +35,7 @@ class ListController extends Controller
     public function store(Request $request)
     {
         # Expected parameters
-        # 1. List Title
+        # 1. Project Title
         # 2. Description
         # 3. Members (array)
 
@@ -44,23 +44,23 @@ class ListController extends Controller
             'description' => 'required|max:300'
         ]);
 
-        $new_list = new Listicle();
-        $new_list->title = $request->input('title');
-        $new_list->description = $request->input('description');
-        $new_list->created_by = Auth::id();
-        $new_list->save();
+        $new_project = new Project();
+        $new_project->title = $request->input('title');
+        $new_project->description = $request->input('description');
+        $new_project->created_by = Auth::id();
+        $new_project->save();
 
-        # If members are provided, add members to the newly created list
+        # If members are provided, add members to the newly created project
         if ($request->input('members')) {
             foreach($request->input('members') as $member) {
-                $new_member = new ListUser();
+                $new_member = new ProjectUser();
                 $new_member->user_id = $member;
-                $new_member->list_id = $new_list->id;
+                $new_member->project_id = $new_project->id;
                 $new_member->save();
             }
         }
 
-        return redirect()->back()->with('success', 'List has been created');
+        return redirect()->back()->with('success', 'Project has been created');
     }
 
     /**
@@ -98,26 +98,26 @@ class ListController extends Controller
             'description' => 'required|max:300'
         ]);
 
-        $updated_list = Listicle::find($id);
-        $updated_list->title = $request->input('title');
-        $updated_list->description = $request->input('description');
-        $updated_list->updated_by = Auth::id();
-        $updated_list->save();
+        $updated_project = Project::find($id);
+        $updated_project->title = $request->input('title');
+        $updated_project->description = $request->input('description');
+        $updated_project->updated_by = Auth::id();
+        $updated_project->save();
 
         # Remove previous records for members
-        $old_members = ListUser::where('list_id', $id)->delete();
+        $old_members = ProjectUser::where('project_id', $id)->delete();
 
-        # If members are provided, add members to the newly created list
+        # If members are provided, add members to the newly created project
         if ($request->input('members')) {
             foreach($request->input('members') as $member) {
-                $new_member = new ListUser();
+                $new_member = new ProjectUser();
                 $new_member->user_id = $member;
-                $new_member->list_id = $id;
+                $new_member->project_id = $id;
                 $new_member->save();
             }
         }
 
-        return redirect()->back()->with('success', 'List has been updated');
+        return redirect()->back()->with('success', 'Project has been updated');
     }
 
     /**
@@ -127,11 +127,11 @@ class ListController extends Controller
      */
     public function destroy($id)
     {
-        $list = Listicle::find($id);
+        $project = Project::find($id);
         # Remove members
-        $remove_members = ListUser::where('list_id', $id)->delete();
-        $list->delete();
+        $remove_members = ProjectUser::where('project_id', $id)->delete();
+        $project->delete();
 
-        return redirect()->back()->with('success', 'List has been deleted');
+        return redirect()->back()->with('success', 'Project has been deleted');
     }
 }

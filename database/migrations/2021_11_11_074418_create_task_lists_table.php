@@ -15,9 +15,9 @@ class CreateTaskListsTable extends Migration
     {
         Schema::create('task_lists', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('list_id');
+            $table->unsignedBigInteger('project_id');
             $table->unsignedBigInteger('task_id');
-            $table->foreign('list_id')->references('id')->on('listicles')->nullable();
+            $table->foreign('project_id')->references('id')->on('projects')->nullable();
             $table->foreign('task_id')->references('id')->on('tasks')->nullable();
             $table->timestamps();
         });

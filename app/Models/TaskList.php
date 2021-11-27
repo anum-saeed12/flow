@@ -12,13 +12,13 @@ class TaskList extends Model
     protected $table = 'task_lists';
 
     protected $fillable = [
-        'list_id',
+        'project_id',
         'task_id'
     ];
 
     public function list ()
     {
-        return $this->hasOne(Listicle::class, 'id', 'list_id');
+        return $this->hasOne(Project::class, 'id', 'project_id');
     }
     public function task ()
     {

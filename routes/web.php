@@ -32,7 +32,7 @@ Route::prefix('/admin')->middleware('admin')->group(function() {
     # Dashboard
     Route::get('/', '\App\Http\Controllers\DashboardController@admin')->name('dashboard.admin');
 
-    Route::resource('/list', \App\Http\Controllers\Admin\ListController::class, ['as' => 'admin']);
+    Route::resource('/project', \App\Http\Controllers\Admin\ProjectController::class, ['as' => 'admin']);
     Route::resource('/task', \App\Http\Controllers\Admin\TaskController::class, ['as' => 'admin']);
     Route::resource('/assignment', \App\Http\Controllers\Admin\AssignmentController::class, ['as' => 'admin']);
 

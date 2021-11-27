@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateListUsersTable extends Migration
+class CreateProjectUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateListUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('list_users', function (Blueprint $table) {
+        Schema::create('project_users', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('list_id')->nullable();
+            $table->unsignedBigInteger('project_id')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
-            $table->foreign('list_id')->references('id')->on('listicles')->nullable();
+            $table->foreign('project_id')->references('id')->on('projects')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->nullable();
             $table->timestamps();
         });
@@ -30,6 +30,6 @@ class CreateListUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('list_users');
+        Schema::dropIfExists('project_users');
     }
 }

@@ -9,7 +9,7 @@
                         {{$title}}
                         <a href="#" class="btn btn-primary btn-sm text-left ml-2" data-toggle="modal" data-target="#newListModal">
                             <i class="fa fa-plus mr-1"></i>
-                            Create New List
+                            Create New Project
                         </a>
                     </h1>
                 </div>
@@ -25,16 +25,16 @@
             <div class="modal-dialog modal-md">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">New list</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">New Project</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form action="{{ route(auth()->user()->user_role . '.list.store') }}" method="post">
+                        <form action="{{ route(auth()->user()->user_role . '.project.store') }}" method="post">
                             @csrf
                             <div class="form-group">
-                                <input name="title" type="text" class="form-control" placeholder="List name">
+                                <input name="title" type="text" class="form-control" placeholder="Project name">
                             </div>
                             <div class="form-group">
                                 <textarea name="description" class="form-control" placeholder="Description"></textarea>
@@ -72,8 +72,8 @@
         <div class="row">
             <div class="col">
                 <div class="list-container">
-                    @forelse($listings as $list)@include('lists.components.list',[compact('list'),'list_members'=>members($list->id,'list')])@empty
-                        @include('lists.components.empty')
+                    @forelse($projects as $project)@include('projects.components.list',[compact('project'),'list_members'=>members($project->id,'project')])@empty
+                        @include('projects.components.empty')
                     @endforelse
                 </div>
             </div>

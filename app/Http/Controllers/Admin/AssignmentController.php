@@ -3,10 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\ListUser;
-use App\Models\TaskUser;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class AssignmentController extends Controller
 {
@@ -18,14 +15,14 @@ class AssignmentController extends Controller
     public function store(Request $request)
     {
         # Expected parameters
-        # 1. target_id (List/Task)
+        # 1. target_id (Project/Task)
         # 2. user_id
         # 3. Type
 
         $request->validate([
             'target_id' => 'required',
             'user_id'   => 'required',
-            'type'      => 'required|in:list,task'
+            'type'      => 'required|in:project,task'
         ]);
 
         $target_class = strtolower($request->input('type')) . 'User';
@@ -59,14 +56,14 @@ class AssignmentController extends Controller
     public function destroy(Request $request)
     {
         # Expected parameters
-        # 1. target_id (List/Task)
+        # 1. target_id (Project/Task)
         # 2. user_id
         # 2. Type
 
         $request->validate([
             'target_id' => 'required',
             'user_id' => 'required',
-            'type' => 'required|in:list,task'
+            'type' => 'required|in:project,task'
         ]);
 
         $target_class = strtolower($request->input('type')) . 'User';
