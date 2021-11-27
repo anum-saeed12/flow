@@ -56,5 +56,6 @@ Route::middleware('employee')->group(function() {
     Route::resource('/project', \App\Http\Controllers\Employee\ProjectController::class, ['as' => 'employee']);
     Route::resource('/task', \App\Http\Controllers\Employee\TaskController::class, ['as' => 'employee']);
     Route::resource('/assignment', \App\Http\Controllers\Employee\AssignmentController::class, ['as' => 'employee']);
+    Route::get('/task/{task_id}/completed','\App\Http\Controllers\Employee\TaskController@completed')->name('employee.task.completed');
 });
 

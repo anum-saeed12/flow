@@ -19,8 +19,8 @@ class CreateTasksTable extends Migration
             $table->string('description')->nullable();
             $table->string('points')->nullable();
             $table->boolean('completed')->default(0);
-            $table->timestamp('start_date')->nullable();
-            $table->timestamp('end_date')->nullable();
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
             $table->unsignedBigInteger('project_id');
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();

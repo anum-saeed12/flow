@@ -29,7 +29,7 @@ class AuthController extends Controller
     private $homepage = [
         # Middleware    =>     Route name
         'admin'    => 'dashboard.admin',
-        'employee' => 'dashboard.admin',
+        'employee' => 'dashboard.employee',
     ];
     /**
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
@@ -124,68 +124,6 @@ class AuthController extends Controller
         }
 
         return redirect(route($this->homepage[$user->user_role]));
-    }
-
-    /**
-     * @param Request $request
-     * @url /register (POST)
-     */
-    public function newRegistration(Request $request)
-    {
-        $request->validate([
-            'name'                 => 'required|min:2',
-            'official_email'       => 'required|email|unique:App\Models\User,email',
-            'password'             => 'required|confirmed|min:4',
-            'type_of_subscription' => 'required|in:yearly,monthly'
-        ]);
-
-        # Insert client in the database
-        $new_client = new Client();
-        $new_client->name = $request->name;
-        $new_client->official_email = $request->official_email;
-        $new_client->name = $request->name;
-        # Setting default values
-        $new_client->ntn_number = '';
-        $new_client->avatar = '';
-        $new_client->license = '';
-        $new_client->website = '';
-        $new_client->overview = '';
-
-        $saved = $new_client->save();
-
-        # Checks if client was inserted in the database
-        if (!$saved)
-            return redirect()->back()->with('error', 'Company not registered!');
-
-        $client_id = $new_client->id;
-
-        # Insert user in the database
-        $new_user = new User();
-        $new_user->client_id = $client_id;
-        $new_user->email     = $request->official_email;
-        $new_user->username  = $request->name .Str::random(5);
-        $new_user->password  = Hash::make($request->password);
-        $new_user->user_role = 'client';
-        $new_user->created_by = 0;
-
-        $saved = $new_user->save();
-
-        # Subscription Plan Details
-
-        $subscription = new Subscription();
-        $subscription->client_id = $client_id;
-        $subscription->next_payment_date = $request->type_of_subscription == 'yearly'?Carbon::today()->addYear():Carbon::today()->addMonth();
-        $subscription->last_payment_date = Carbon::today();
-        $subscription->type_of_subscription = $request->type_of_subscription;
-        $subscription->receipt = $this->uploadReceipt($request->file('receipt'));
-        $subscription->approved = 2;
-        $subscribed = $subscription->save();
-
-        $data = [
-            'title' => 'Pending'
-        ];
-        # If everything went well
-        return view('billing.pending-verification',$data);
     }
 
     public function logout()

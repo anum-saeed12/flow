@@ -43,7 +43,7 @@ class  DashboardController extends Controller
             'title'         => 'Dashboard',
             'user'          => $user
         ];
-        return view("admin.dashboard", $data);
+        return view("employee.dashboard", $data);
     }
 
 }

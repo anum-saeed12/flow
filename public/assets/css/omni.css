@@ -62,6 +62,8 @@ label.normal {margin-bottom:5px!important;color:#666;line-height:normal;font-wei
 .list-container .list .task-container.empty:before {white-space:normal;display:block;content:"This project has no tasks. You can create new tasks by clicking on the button.";font-style:italic;font-weight:200;font-size:.8rem;margin-bottom:2rem;}
 .list-container .list .task-container.count-0.empty:before {content:"There is no project, You can create a new project by clicking the button below.";}
 .list-container .list .task-container *.task {display:block;border:1px solid #ccc;border-radius:4px;text-decoration:none;color:inherit;}
+.list-container .list .task-container *.task.task-completed {border:1px solid #cff3cf;}
+.list-container .list .task-container *.task.task-completed:hover {background: #f2fdf2;}
 .list-container .list .task-container *.task:not(:first-child) {margin-top:10px;}
 .list-container .list .task-container *.task:hover {background: #dcebf1;}
 .list-container .list .task-container *.task h6 {padding:3px 8px;margin:0;}

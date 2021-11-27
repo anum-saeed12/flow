@@ -48,7 +48,9 @@ class TaskController extends Controller
             'title' => 'required|max:150',
             'description' => 'required|max:300',
             'points' => 'required|numeric',
-            'project_id' => 'required|exists:App\Models\Project,id'
+            'project_id' => 'required|exists:App\Models\Project,id',
+            'start_date'=> 'required',
+            'end_date'=> 'required',
         ]);
 
         $new_task = new Task();
