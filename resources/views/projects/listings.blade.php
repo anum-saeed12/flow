@@ -4,15 +4,19 @@
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
+
                 <div class="col-sm-6">
                     <h1>
                         {{ucfirst($title)}}
+                        @admin
                         <a href="#" class="btn btn-primary btn-sm text-left ml-2" data-toggle="modal" data-target="#newListModal">
                             <i class="fa fa-plus mr-1"></i>
                             Create New Project
                         </a>
+                        @endadmin
                     </h1>
                 </div>
+
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard.admin') }}">Home</a></li>
@@ -21,6 +25,7 @@
                 </div>
             </div>
         </div><!-- /.container-fluid -->
+        @admin
         <div id="newListModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-md">
                 <div class="modal-content">
@@ -64,6 +69,7 @@
                 </div>
             </div>
         </div>
+        @endadmin
     </section>
 @stop
 
