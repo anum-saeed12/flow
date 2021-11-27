@@ -21,6 +21,7 @@
                         </p>
                     </a>
                 </li>
+                @endadmin
                 <li class="nav-item has-treeview">
                     <a href="{{ route(auth()->user()->user_role . '.project.index') }}" class="nav-link">
                         <i class="fas fa-file-archive nav-icon"></i>
@@ -29,7 +30,6 @@
                         </p>
                     </a>
                 </li>
-                @endadmin
 
                 <li class="nav-item mb-5">
                     <a href="{{ route('logout') }}" class="nav-link">

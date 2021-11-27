@@ -32,5 +32,18 @@ class  DashboardController extends Controller
         ];
         return view("admin.dashboard", $data);
     }
+    public function employee()
+    {
+        $user = Auth::user();
+
+        $data = [
+            'class' => [
+                'body' => ' sidebar-mini layout-fixed'
+            ],
+            'title'         => 'Dashboard',
+            'user'          => $user
+        ];
+        return view("admin.dashboard", $data);
+    }
 
 }

@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Employee;
 
 use App\Http\Controllers\Controller;
 use App\Models\Project;
+use App\Models\ProjectUser;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class ListController extends Controller
+class ProjectController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,19 +17,21 @@ class ListController extends Controller
      */
     public function index()
     {
-        $listings = [
+        $projects = [
             (Object) ['id' => 1, 'title' => 'Backlog', 'description' => 'Backlog description', 'tasks' => []],
             (Object) ['id' => 2, 'title' => 'In Progress', 'description' => '', 'tasks' => []],
             (Object) ['id' => 3, 'title' => 'Completed', 'description' => 'Yo bro', 'tasks' => []],
             (Object) ['id' => 4, 'title' => 'Bugs & Issues', 'description' => '', 'tasks' => []],
             (Object) ['id' => 5, 'title' => 'Testing', 'description' => '', 'tasks' => []],
         ];
-        $listings = Project::with('tasks')->get();
+        $projects = Project::with('tasks')->get();
+          $users = User::all();
         $data = [
-            'title'  => 'Tasks',
-            'listings' => $listings
+            'title'  => 'Project & Tasks',
+            'projects' => $projects,
+            'users' => $users
         ];
-        return view('lists.listings', $data);
+        return view('projects.listings', $data);
     }
 
     /**
@@ -47,13 +51,13 @@ class ListController extends Controller
             'description' => 'required|max:300'
         ]);
 
-        $new_list = new Project();
-        $new_list->title = $request->input('title');
-        $new_list->description = $request->input('description');
-        $new_list->created_by = Auth::id();
-        $new_list->save();
+        $new_project = new Project();
+        $new_project->title = $request->input('title');
+        $new_project->description = $request->input('description');
+        $new_project->created_by = Auth::id();
+        $new_project->save();
 
-        return redirect()->back()->with('success', 'List has been created');
+        return redirect()->back()->with('success', 'Project has been created');
     }
 
     /**
@@ -91,13 +95,13 @@ class ListController extends Controller
             'description' => 'required|max:300'
         ]);
 
-        $updated_list = Project::find($id);
-        $updated_list->title = $request->input('title');
-        $updated_list->description = $request->input('description');
-        $updated_list->updated_by = Auth::id();
-        $updated_list->save();
+        $updated_project = Project::find($id);
+        $updated_project->title = $request->input('title');
+        $updated_project->description = $request->input('description');
+        $updated_project->updated_by = Auth::id();
+        $updated_project->save();
 
-        return redirect()->back()->with('success', 'List has been updated');
+        return redirect()->back()->with('success', 'Project has been updated');
     }
 
     /**
@@ -107,9 +111,9 @@ class ListController extends Controller
      */
     public function destroy($id)
     {
-        $list = Project::find($id);
-        $list->delete();
+        $project = Project::find($id);
+        $project->delete();
 
-        return redirect()->back()->with('success', 'List has been deleted');
+        return redirect()->back()->with('success', 'Project has been deleted');
     }
 }

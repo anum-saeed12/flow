@@ -6,7 +6,7 @@
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1>
-                        {{$title}}
+                        {{ucfirst($title)}}
                         <a href="#" class="btn btn-primary btn-sm text-left ml-2" data-toggle="modal" data-target="#newListModal">
                             <i class="fa fa-plus mr-1"></i>
                             Create New Project
@@ -16,7 +16,7 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard.admin') }}">Home</a></li>
-                        <li class="breadcrumb-item active">{{$title}}</li>
+                        <li class="breadcrumb-item active">{{ucfirst($title)}}</li>
                     </ol>
                 </div>
             </div>

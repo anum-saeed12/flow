@@ -53,7 +53,7 @@ Route::middleware('employee')->group(function() {
     # Dashboard
     Route::get('/', '\App\Http\Controllers\DashboardController@employee')->name('dashboard.employee');
 
-    Route::resource('/list', \App\Http\Controllers\Employee\ListController::class, ['as' => 'employee']);
+    Route::resource('/project', \App\Http\Controllers\Employee\ProjectController::class, ['as' => 'employee']);
     Route::resource('/task', \App\Http\Controllers\Employee\TaskController::class, ['as' => 'employee']);
     Route::resource('/assignment', \App\Http\Controllers\Employee\AssignmentController::class, ['as' => 'employee']);
 });

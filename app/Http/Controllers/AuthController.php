@@ -29,7 +29,7 @@ class AuthController extends Controller
     private $homepage = [
         # Middleware    =>     Route name
         'admin'    => 'dashboard.admin',
-        'employee' => 'dashboard.sale',
+        'employee' => 'dashboard.admin',
     ];
     /**
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View

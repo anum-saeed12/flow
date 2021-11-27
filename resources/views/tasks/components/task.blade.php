@@ -26,7 +26,13 @@
                         <input name="points" type="number" class="form-control" placeholder="Points" value="{{ $task->points }}">
                     </div>
                     <div class="form-group">
-                        <input class="form-control" type="text" value="List: {{ $list->title }}" disabled>
+                        <input name="start_date" type="date" class="form-control" placeholder="Start Date" value="{{ $task->start_date }}">
+                    </div>
+                    <div class="form-group">
+                        <input name="end_date" type="date" class="form-control" placeholder="End Date" value="{{ $task->end_date }}">
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" type="text" value="Project: {{ $list->title }}" disabled>
                     </div>
                     <div class="form-group">
                         <input  class="form-control" type="text" placeholder="Quick find...">

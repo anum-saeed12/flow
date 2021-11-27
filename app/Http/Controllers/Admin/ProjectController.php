@@ -20,7 +20,7 @@ class ProjectController extends Controller
         $projects = Project::with('tasks')->get();
         $users = User::all();
         $data = [
-            'title'  => 'Projects',
+            'title'  => 'Projects & Tasks',
             'projects' => $projects,
             'users' => $users
         ];

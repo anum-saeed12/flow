@@ -1,6 +1,6 @@
 <div class="list">
     <div class="title">
-        <h6>{{ $project->title }}</h6><div class="actions">
+        <h6>{{ ucwords($project->title) }}</h6><div class="actions">
             <button class="more btn-more" type="button" data-target="#m{{ md5($project->id) }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fa fa-ellipsis-h"></i>
             </button>
@@ -45,8 +45,22 @@
                             <div class="form-group">
                                 <input name="points" type="number" class="form-control" placeholder="Points" value="1">
                             </div>
+                            <div class="row">
+                                <div class="col">
+                                    <label>Start Date:</label>
+                                    <div class="form-group">
+                                        <input name="start_date" type="date" class="form-control" placeholder="Start Date" >
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <label>End Date:</label>
+                                    <div class="form-group">
+                                        <input name="end_date" type="date" class="form-control" placeholder="End Date" >
+                                    </div>
+                                </div>
+                            </div>
                             <div class="form-group">
-                                <input class="form-control" type="text" value="Porject: {{ $project->title }}" disabled>
+                                <input class="form-control" type="text" value="Project: {{ $project->title }}" disabled>
                             </div>
                             <h6>Members</h6>
                             <div class="form-group">
@@ -58,7 +72,7 @@
                                         <div class="col-6">
                                             <label for="ntu{{ $user->id }}">
                                                 <input id="ntu{{ $user->id }}" type="checkbox" name="members[]" value="{{ $user->id }}" class="mr-2">
-                                                {{ $user->username }}
+                                                {{ ucfirst($user->username) }}
                                             </label>
                                         </div>
                                     @endforeach
@@ -93,7 +107,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <input class="form-control" type="text" value="Project: {{ $project->title }}" disabled>
+                                <input class="form-control" type="text" value="Project: {{ ucfirst($project->title) }}" disabled>
                             </div>
                             <div class="text-right">
                                 <button type="button" class="btn btn-outline-danger mr-2" data-dismiss="modal">Cancel</button>
@@ -140,7 +154,7 @@
                             </div>
                             <div class="text-right">
                                 <button type="button" class="btn btn-outline-danger mr-2" data-dismiss="modal">Cancel</button>
-                                <button type="button" class="btn btn-primary"><i class="fa fa-plus mr-2"></i>Create</button>
+                                <button type="button" class="btn btn-primary"><i class="fa fa-plus mr-2"></i>Save</button>
                             </div>
                         </form>
                     </div>
