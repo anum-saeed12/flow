@@ -27,7 +27,10 @@
                         <div class="small-box bg-white">
                             <div class="inner">
                                 <h3>{{ $user->points }}</h3>
-                                <p>{{ $user->username }}</p>
+                                <p>
+                                    <span style="font-size:.8rem;margin-top:-.8rem;position:relative;display:block;color:#999;">Points</span>
+                                    {{ $user->username }}
+                                </p>
                             </div>
                             <div class="icon">
                                 <i class="fas fa-users nav-icon text-danger"></i>
