@@ -74,3 +74,11 @@ if (!function_exists('tasks'))
         return $tasks->groupBy('tasks.project_id')->get();
     }
 }
+
+if (!function_exists('alerts'))
+{
+    function alerts($limit=null)
+    {
+        return \App\Models\Alert::instantiate();
+    }
+}

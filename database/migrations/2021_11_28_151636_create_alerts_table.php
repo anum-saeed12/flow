@@ -16,13 +16,14 @@ class CreateAlertsTable extends Migration
         Schema::create('alerts', function (Blueprint $table) {
             $table->id();
             $table->string('message')->nullable();
+            $table->string('action')->nullable(); # added/updated/removed/assigned
             $table->bigInteger('subject_id')->nullable();
             $table->enum('type',['task','project'])->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users');
             $table->boolean('seen')->default(0);
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

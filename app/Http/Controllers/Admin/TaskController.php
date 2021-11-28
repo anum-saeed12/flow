@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Alert;
 use App\Models\Task;
 use App\Models\TaskUser;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -65,6 +67,8 @@ class TaskController extends Controller
 
         $new_task->save();
 
+        $alerts = [];
+
         # If members are provided, add members to the newly created project
         if ($request->input('members')) {
             foreach($request->input('members') as $member) {
@@ -74,8 +78,19 @@ class TaskController extends Controller
                 $new_member->points = 0;
                 $new_member->created_by = Auth::id();
                 $new_member->save();
+                # Creates an array of alert
+                $alerts[] = [
+                    'message' => 'Assigned to the task',
+                    'action' => 'assigned',
+                    'type' => 'task',
+                    'user_id' => $member,
+                    'seen' => 0,
+                    'created_at' => Carbon::now()
+                ];
             }
         }
+
+        Alert::insert($alerts);
 
         return redirect()->back()->with('success', 'Task has been added');
     }
