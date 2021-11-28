@@ -21,8 +21,9 @@ class ProjectController extends Controller
         $project = (new Project())->getTable();
         $select = [
             "{$project}.id",
-            "{$project}.name",
-            "{$project}.project_description",
+            "{$project}.title",
+            "{$project}.description",
+            "{$project}.sorting_order",
             "{$project}.created_by",
             "{$project}.updated_by",
         ];
