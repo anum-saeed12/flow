@@ -46,7 +46,6 @@
                     <div class="form-group">
                         <input  class="form-control" type="text" placeholder="Quick find...">
                     </div>
-                    @endadmin
                     <div class="form-group">
                         <div class="row">
                             @foreach($users as $user)
@@ -59,6 +58,17 @@
                             @endforeach
                         </div>
                     </div>
+                    @endadmin
+
+                    @employee
+                    <div class="form-group">
+                        <ul>
+                        @foreach(members($task->id,'task',false) as $member)
+                            <li>{!! auth()->id() == $member->id ? "You ({$member->username})":$member->username !!}</li>
+                        @endforeach
+                        </ul>
+                    </div>
+                    @endemployee
                     <div class="text-right">
                        {{-- <label class="completed-container mr-3">
                             <input type="checkbox" @if($task->completed=='1')checked="checked"@endif>

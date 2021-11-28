@@ -6,7 +6,7 @@ use App\Models\ProjectUser;
 
 if (!function_exists('members'))
 {
-    function members($id, $type='task')
+    function members($id, $type='task',$all=true)
     {
         $model = $type=='task'?'TaskUser':'ProjectUser';
 
@@ -32,10 +32,13 @@ if (!function_exists('members'))
                 ->where("{$table}.project_id", $id)
                 ->get();
 
-        $user_ids = [];
-        foreach($members as $member) $user_ids[] = $member->id;
+        if ($all) {
+            $user_ids = [];
+            foreach ($members as $member) $user_ids[] = $member->id;
 
-        return $user_ids;
+            return $user_ids;
+        }
+        return $members;
     }
 }
 
