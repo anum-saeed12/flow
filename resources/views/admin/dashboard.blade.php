@@ -22,18 +22,20 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-                {{--<div class="col-lg-3 col-6">
-                    <div class="small-box bg-white">
-                        <div class="inner">
-                            <h3></h3>
-                            <p>Employees</p>
+                @foreach($users as $user)
+                    <div class="col-lg-3 col-6">
+                        <div class="small-box bg-white">
+                            <div class="inner">
+                                <h3>{{ $user->points }}</h3>
+                                <p>{{ $user->username }}</p>
+                            </div>
+                            <div class="icon">
+                                <i class="fas fa-users nav-icon text-danger"></i>
+                            </div>
+                            <a href="{{ route('user.edit.admin', $user->id) }}" class="small-box-footer bg-danger" style="color:white!important;">Edit {{ $user->username }}<i class="fas fa-arrow-circle-right ml-2"></i></a>
                         </div>
-                        <div class="icon">
-                            <i class="fas fa-users nav-icon text-danger"></i>
-                        </div>
-                        <a href="#" class="small-box-footer bg-danger" style="color:white!important;">View Employees <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
-                </div>--}}
+                @endforeach
             </div>
         </div>
     </section>
