@@ -17,15 +17,21 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = [
-            (Object) ['id' => 1, 'title' => 'Backlog', 'description' => 'Backlog description', 'tasks' => []],
-            (Object) ['id' => 2, 'title' => 'In Progress', 'description' => '', 'tasks' => []],
-            (Object) ['id' => 3, 'title' => 'Completed', 'description' => 'Yo bro', 'tasks' => []],
-            (Object) ['id' => 4, 'title' => 'Bugs & Issues', 'description' => '', 'tasks' => []],
-            (Object) ['id' => 5, 'title' => 'Testing', 'description' => '', 'tasks' => []],
+        $project_user = (new ProjectUser())->getTable();
+        $project = (new Project())->getTable();
+        $select = [
+            "{$project}.id",
+            "{$project}.name",
+            "{$project}.project_description",
+            "{$project}.created_by",
+            "{$project}.updated_by",
         ];
-        $projects = Project::get();
-          $users = User::all();
+        $projects = ProjectUser::select($select)
+            ->join($project, "{$project}.id", "=", "{$project_user}.project_id")
+            ->where("{$project_user}.user_id", Auth::id())
+            ->get();
+
+        $users = User::all();
         $data = [
             'title'  => 'Project & Tasks',
             'projects' => $projects,
@@ -41,23 +47,7 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        # Expected parameters
-        # 1. List Title
-        # 2. Description
-        # 3. Members (array)
-
-        $request->validate([
-            'title'       => 'required|max:150',
-            'description' => 'required|max:300'
-        ]);
-
-        $new_project = new Project();
-        $new_project->title = $request->input('title');
-        $new_project->description = $request->input('description');
-        $new_project->created_by = Auth::id();
-        $new_project->save();
-
-        return redirect()->back()->with('success', 'Project has been created');
+        //
     }
 
     /**
@@ -90,18 +80,7 @@ class ProjectController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'title' => 'required|max:150',
-            'description' => 'required|max:300'
-        ]);
-
-        $updated_project = Project::find($id);
-        $updated_project->title = $request->input('title');
-        $updated_project->description = $request->input('description');
-        $updated_project->updated_by = Auth::id();
-        $updated_project->save();
-
-        return redirect()->back()->with('success', 'Project has been updated');
+        //
     }
 
     /**
@@ -111,9 +90,6 @@ class ProjectController extends Controller
      */
     public function destroy($id)
     {
-        $project = Project::find($id);
-        $project->delete();
-
-        return redirect()->back()->with('success', 'Project has been deleted');
+        //
     }
 }
