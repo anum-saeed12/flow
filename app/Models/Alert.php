@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Alert extends Model
 {
     use HasFactory;
+    protected $table = 'alerts';
+    protected $fillable = [
+        'message',
+        'subject_id',
+        'type',
+        'user_id',
+        'seen'
+    ];
 }
