@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProjectUsersTable extends Migration
+class CreateAlertsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,16 @@ class CreateProjectUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('project_users', function (Blueprint $table) {
+        Schema::create('alerts', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('project_id')->nullable();
+            $table->string('message')->nullable();
+            $table->bigInteger('subject_id')->nullable();
+            $table->enum('type',['task','project'])->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
-            $table->foreign('project_id')->references('id')->on('projects')->nullable();
-            $table->foreign('user_id')->references('id')->on('users')->nullable();
-            $table->timestamps();
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->boolean('seen')->default(0);
             $table->softDeletes();
+            $table->timestamps();
         });
     }
 
@@ -31,6 +33,6 @@ class CreateProjectUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('project_users');
+        Schema::dropIfExists('alerts');
     }
 }

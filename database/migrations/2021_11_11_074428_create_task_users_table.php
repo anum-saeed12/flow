@@ -26,6 +26,7 @@ class CreateTaskUsersTable extends Migration
             $table->foreign('updated_by')->references('id')->on('users')->nullable();
             $table->timestamp('deleted_at')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

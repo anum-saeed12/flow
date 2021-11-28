@@ -54,7 +54,7 @@
                                         <div class="col-6">
                                             <label for="nlu{{ $user->id }}">
                                                 <input id="nlu{{ $user->id }}" type="checkbox" name="members[]" value="{{ $user->id }}" class="mr-2">
-                                                {{ $user->username }}
+                                                {{ ucwords($user->username) }}
                                             </label>
                                         </div>
                                     @endforeach

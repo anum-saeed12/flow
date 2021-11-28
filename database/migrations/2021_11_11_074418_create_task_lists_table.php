@@ -20,6 +20,7 @@ class CreateTaskListsTable extends Migration
             $table->foreign('project_id')->references('id')->on('projects')->nullable();
             $table->foreign('task_id')->references('id')->on('tasks')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

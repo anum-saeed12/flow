@@ -19,6 +19,7 @@ class CreateTaskStatusesTable extends Migration
             $table->foreign('task_id')->references('id')->on('tasks')->nullable();
             $table->string('status')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

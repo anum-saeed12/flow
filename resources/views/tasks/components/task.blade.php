@@ -1,6 +1,6 @@
 <a href="#" class="task{!! $task->completed==1 ? ' task-completed' :'' !!}" data-toggle="modal" data-target="#taskEditModal{{ $task->id }}">
-    <h6>{{ $task->title }}</h6>
-    <p>{{ crop($task->description) }}</p>
+    <h6>{{ ucwords($task->title) }}</h6>
+    <p>{{ ucwords(crop($task->description)) }}</p>
 </a>
 <div id="taskEditModal{{ $task->id }}" class="modal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-md">
@@ -17,10 +17,10 @@
                     @method('patch')
                     <input type="hidden" name="project_id" value="{{ $project->id }}">
                     <div class="form-group">
-                        <input name="title" type="text" class="form-control" placeholder="Task" value="{{ $task->title }}"@employee disabled @endemployee>
+                        <input name="title" type="text" class="form-control" placeholder="Task" value="{{ ucwords($task->title) }}"@employee disabled @endemployee>
                     </div>
                     <div class="form-group">
-                        <textarea name="description" class="form-control" placeholder="Description" @employee disabled @endemployee>{{ $task->description }}</textarea>
+                        <textarea name="description" class="form-control" placeholder="Description" @employee disabled @endemployee>{{ ucfirst($task->description) }}</textarea>
                     </div>
                     <div class="form-group">
                         <input name="points" type="number" class="form-control" placeholder="Points" value="{{ $task->points }}" @employee disabled @endemployee>
@@ -40,7 +40,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <input class="form-control" type="text" value="Project: {{ $project->title }}" disabled>
+                        <input class="form-control" type="text" value="Project: {{ ucwords($project->title) }}" disabled>
                     </div>
                     @admin
                     <div class="form-group">

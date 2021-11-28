@@ -23,6 +23,7 @@ class CreateProjectsTable extends Migration
             $table->foreign('created_by')->references('id')->on('users')->nullable();
             $table->foreign('updated_by')->references('id')->on('users')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

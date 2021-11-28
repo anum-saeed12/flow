@@ -29,7 +29,7 @@
                                 <h3>{{ $user->points }}</h3>
                                 <p>
                                     <span style="font-size:.8rem;margin-top:-.8rem;position:relative;display:block;color:#999;">Points</span>
-                                    {{ $user->username }}
+                                    {{ ucfirst($user->username) }}
                                 </p>
                             </div>
                             <div class="icon">
