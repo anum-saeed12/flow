@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Employee;
 use App\Http\Controllers\Controller;
 use App\Models\Project;
 use App\Models\ProjectUser;
+use App\Models\Task;
+use App\Models\TaskUser;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,8 +19,9 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $project_user = (new ProjectUser())->getTable();
+        $task_user = (new TaskUser())->getTable();
         $project = (new Project())->getTable();
+        $task = (new Task())->getTable();
         $select = [
             "{$project}.id",
             "{$project}.title",
@@ -27,9 +30,11 @@ class ProjectController extends Controller
             "{$project}.created_by",
             "{$project}.updated_by",
         ];
-        $projects = ProjectUser::select($select)
-            ->join($project, "{$project}.id", "=", "{$project_user}.project_id")
-            ->where("{$project_user}.user_id", Auth::id())
+        $projects = TaskUser::select($select)
+            ->join($task, "{$task}.id","=","{$task_user}.task_id")
+            ->leftJoin($project, "{$project}.id", "=", "{$task}.project_id")
+            ->where("{$task_user}.user_id", Auth::id())
+            ->groupBy("{$task}.project_id")
             ->get();
 
         $users = User::all();
