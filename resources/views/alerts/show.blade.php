@@ -69,26 +69,20 @@
                                 <div class="row">
                                     <div class="col">
                                         <h2>
-                                            <b>Task:</b>
-                                            {{ $alert->subject_title }}
+                                            <b>Project:</b>
+                                            {{ $alert->project_title }}
                                         </h2>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col"><b>Description:</b><br/>
-                                        <p>{!! $alert->subject_description !!}</p>
+                                        <p>{!! $alert->project_description !!}</p>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col">
-                                        <b>Start Date:</b>
-                                        {{ \Carbon\Carbon::parse($alert->subject_start_date)->format('d-M-Y') }}
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col">
-                                        <b>End Date:</b>
-                                        {{ \Carbon\Carbon::parse($alert->subject_end_date)->format('d-M-Y') }}
+                                        <b>Creation Date:</b>
+                                        {{ \Carbon\Carbon::parse($alert->project_creation_date)->format('d-M-Y') }}
                                     </div>
                                 </div>
                             @endif

@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Alert;
 use App\Models\Project;
 use App\Models\ProjectUser;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -57,7 +59,19 @@ class ProjectController extends Controller
                 $new_member->user_id = $member;
                 $new_member->project_id = $new_project->id;
                 $new_member->save();
+
+                $alerts[] = [
+                    'message' => "New project has been assigned to you. Project: <b>{$new_project->title}</b>",
+                    'action' => 'assigned',
+                    'subject_id' => $new_project->id,
+                    'type' => 'project',
+                    'user_id' => $member,
+                    'seen' => 0,
+                    'created_at' => Carbon::now()
+                ];
             }
+            # Generates alerts for all members
+            Alert::insert($alerts);
         }
 
         return redirect()->back()->with('success', 'Project has been created');

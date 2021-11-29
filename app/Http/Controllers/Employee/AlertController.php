@@ -95,6 +95,7 @@ class AlertController extends Controller
                 # Project info
                 "projects.title as project_title",
                 "projects.description as project_description",
+                "projects.created_at as project_creation_date",
             ];
             $alert = Alert::select($select)
                 ->join('users', 'users.id', '=', 'alerts.user_id')
@@ -118,6 +119,7 @@ class AlertController extends Controller
                 # Project info
                 "projects.title as project_title",
                 "projects.description as project_description",
+                "projects.created_at as project_creation_date",
             ];
             $alert = Alert::select($select)
                 ->join('users', 'users.id', '=', 'alerts.user_id')

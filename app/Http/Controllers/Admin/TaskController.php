@@ -92,10 +92,10 @@ class TaskController extends Controller
                     'created_at' => Carbon::now()
                 ];
             }
+            # Generates alerts for all members
+            Alert::insert($alerts);
         }
-        # Generates alerts for all members
-        Alert::insert($alerts);
-
+        
         return redirect()->back()->with('success', 'Task has been added');
     }
 
