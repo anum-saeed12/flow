@@ -87,7 +87,7 @@
                         </div>
                     </div>
                     <div class="d-flex flex-row-reverse">
-                        {!! $alerts->links('pagination::bootstrap-4') !!}
+                        {!! $alerts->appends($_GET)->links('pagination::bootstrap-4') !!}
                     </div>
                 </div>
             </div>
