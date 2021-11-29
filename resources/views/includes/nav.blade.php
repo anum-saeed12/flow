@@ -14,7 +14,7 @@
                 @if(alerts()->count()>0)<span class="badge badge-warning navbar-badge">{{ alerts()->count() }}</span>@endif
             </a>
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                @forelse(alerts()->fetch() as $item)
+                @forelse(alerts()->fetch(false,10) as $item)
                 <a href="{{ route(auth()->user()->user_role . ".alerts.show", $item->id) }}" class="dropdown-item">
                     <!-- Message Start -->
                     <div class="media">
