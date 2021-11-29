@@ -44,22 +44,6 @@
                             <div class="form-group">
                                 <textarea name="description" class="form-control" placeholder="Description"></textarea>
                             </div>
-                            <h6>Members</h6>
-                            <div class="form-group">
-                                <input  class="form-control" type="text" placeholder="Quick find...">
-                            </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    @foreach($users as $user)
-                                        <div class="col-6">
-                                            <label for="nlu{{ $user->id }}">
-                                                <input id="nlu{{ $user->id }}" type="checkbox" name="members[]" value="{{ $user->id }}" class="mr-2">
-                                                {{ ucwords($user->username) }}
-                                            </label>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
                             <div class="text-right">
                                 <button type="button" class="btn btn-outline-danger mr-2" data-dismiss="modal">Cancel</button>
                                 <button type="submit" class="btn btn-primary"><i class="fa fa-plus mr-2"></i>Create</button>

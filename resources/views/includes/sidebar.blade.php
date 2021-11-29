@@ -6,14 +6,14 @@
 
         <nav class="mt-4">
             <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent" data-widget='treeview' role="menu" data-accordion="false">
+                @admin()
                 <li class="nav-item">
                     <a href="{{ route('dashboard.' . auth()->user()->user_role) }}" class="nav-link">
                         <i class="nav-icon fas fa-th"></i>
                         <p>Dashboard</p>
                     </a>
                 </li>
-                @admin()
-                <li class="nav-item has-treeview">
+                <li class="nav-item ">
                     <a href="{{ route('user.list.' . auth()->user()->user_role) }}" class="nav-link">
                         <i class="fas fa-users nav-icon"></i>
                         <p>
@@ -22,7 +22,7 @@
                     </a>
                 </li>
                 @endadmin
-                <li class="nav-item has-treeview">
+                <li class="nav-item">
                     <a href="{{ route(auth()->user()->user_role . '.project.index') }}" class="nav-link">
                         <i class="fas fa-file-archive nav-icon"></i>
                         <p>

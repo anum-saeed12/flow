@@ -49,25 +49,25 @@
                             @csrf
                             <input type="hidden" name="project_id" value="{{ $project->id }}">
                             <div class="form-group">
-                                <input name="title" type="text" class="form-control" placeholder="Task">
+                                <input name="title" type="text" class="form-control" placeholder="Task" required>
                             </div>
                             <div class="form-group">
-                                <textarea name="description" class="form-control" placeholder="Description"></textarea>
+                                <textarea name="description" class="form-control" placeholder="Description" required></textarea>
                             </div>
                             <div class="form-group">
-                                <input name="points" type="number" class="form-control" placeholder="Points" value="1">
+                                <input name="points" type="number" class="form-control" placeholder="Points" value="1" >
                             </div>
                             <div class="row">
                                 <div class="col">
                                     <label>Start Date:</label>
                                     <div class="form-group">
-                                        <input name="start_date" type="date" class="form-control" placeholder="Start Date" >
+                                        <input name="start_date" type="date" class="form-control" placeholder="Start Date" required>
                                     </div>
                                 </div>
                                 <div class="col">
                                     <label>End Date:</label>
                                     <div class="form-group">
-                                        <input name="end_date" type="date" class="form-control" placeholder="End Date" >
+                                        <input name="end_date" type="date" class="form-control" placeholder="End Date" required>
                                     </div>
                                 </div>
                             </div>
