@@ -16,13 +16,16 @@ class AlertController extends Controller
     public function index()
     {
         $select = [
-            "users.id",
+            # User info
             "users.username",
+            # Alert info
+            "alerts.id",
             "alerts.message",
             "alerts.action",
             "alerts.subject_id",
             "alerts.type",
             "alerts.seen",
+            "alerts.user_id",
             "alerts.created_at",
         ];
         $alerts = Alert::select($select)
@@ -68,21 +71,19 @@ class AlertController extends Controller
     {
         $find = Alert::find($id);
         if (!$find) return redirect()->back()->with('error', 'Not found');
-        # Mark as seen
-        $find->seen = 1;
-        $find->save();
 
         if ($find->type == 'task') {
             $select = [
                 # User info
-                "users.id",
                 "users.username",
                 # Alert info
+                "alerts.id",
                 "alerts.message",
                 "alerts.action",
                 "alerts.subject_id",
                 "alerts.type",
                 "alerts.seen",
+                "alerts.user_id",
                 "alerts.created_at",
                 # Task info
                 "tasks.title as subject_title",
@@ -103,13 +104,16 @@ class AlertController extends Controller
                 ->first();
         } else {
             $select = [
-                "users.id",
+                # User info
                 "users.username",
+                # Alert info
+                "alerts.id",
                 "alerts.message",
                 "alerts.action",
                 "alerts.subject_id",
                 "alerts.type",
                 "alerts.seen",
+                "alerts.user_id",
                 "alerts.created_at",
                 # Project info
                 "projects.title as project_title",
@@ -125,6 +129,10 @@ class AlertController extends Controller
             'title' => 'All Alerts',
             'alert' => $alert
         ];
+
+        # Mark as seen
+        $find->seen = 1;
+        $find->save();
 
         return view('alerts.show', $data);
     }

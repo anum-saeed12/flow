@@ -25,14 +25,47 @@
         <div class="container">
             <div class="row">
                 <div class="col">
+                    @if($alert->seen == 0)
                     <div class="callout callout-success" style="color:green">
                         {!! $alert->message !!}
                     </div>
+                    @else
+                        <div class="callout callout-secondary">
+                            {!! $alert->message !!}
+                        </div>
+                    @endif
                 </div>
                 <div class="col-md-12">
                     <div class="card card-info">
                         <div class="card-body pt-2 mt-2">
                             @if($alert->type == 'task')
+                                <div class="row">
+                                    <div class="col">
+                                        <h2>
+                                            <b>Task:</b>
+                                            {{ $alert->subject_title }}
+                                        </h2>
+                                        <div style="margin-top:-.9rem;margin-bottom:.9rem;">({{ $alert->project_title }})</div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col"><b>Description:</b><br/>
+                                        <p>{!! $alert->subject_description !!}</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <b>Start Date:</b>
+                                        {{ \Carbon\Carbon::parse($alert->subject_start_date)->format('d-M-Y') }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <b>End Date:</b>
+                                        {{ \Carbon\Carbon::parse($alert->subject_end_date)->format('d-M-Y') }}
+                                    </div>
+                                </div>
+                            @else
                                 <div class="row">
                                     <div class="col">
                                         <h2>
@@ -58,8 +91,6 @@
                                         {{ \Carbon\Carbon::parse($alert->subject_end_date)->format('d-M-Y') }}
                                     </div>
                                 </div>
-                            @else
-
                             @endif
                         </div>
                     </div>
