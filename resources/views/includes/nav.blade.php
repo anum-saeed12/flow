@@ -30,7 +30,7 @@
                                     You have been removed from a {{ $item->type }}
                                 @endif
                             </h3>
-                            <p class="text-sm">{{ crop($item->message) }}</p>
+                            <p class="text-sm">{{ crop(strip_tags($item->message), 100) }}</p>
                             <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> {{ $item->created_at->diffForHumans() }}</p>
                         </div>
                     </div>

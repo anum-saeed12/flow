@@ -50,39 +50,24 @@
                                     </select>
                                 </form>
                             </div>
-                            <div class="col-md-6 text-right pr-md-4">
-                                <form method="Get" action="" style="display:inline-block;vertical-align:top;" class="mr-2">
-                                    <div class="input-group">
-                                        <input type="text" id="myInput" onkeyup="myFunction()" placeholder=" Search" class="form-control"
-                                               aria-label="Search">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-secondary" type="submit"><i
-                                                    class="fas fa-search"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
-                                <a href="{{ route('user.add.admin') }}" class="btn btn-success"><i class="fa fa-plus-circle mr-1"></i> Add New</a>
-
-                            </div>
                         </div>
                         <div class="card-body table-responsive p-0">
                             <table class="table table-hover text-nowrap table-compact">
                                 <thead>
                                 <tr>
-                                    <th>Sr.No.</th>
-                                    <th class="pl-0">Message</th>
+                                    <th>&nbsp</th>
                                     <th class="pl-0">Action</th>
+                                    <th class="pl-0">Message</th>
                                     <th class="pl-0">Time</th>
                                 </tr>
                                 </thead>
                                 <tbody id="myTable">
-                                @forelse($users as $user)
+                                @forelse($alerts as $alert)
                                     <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ ucfirst($user->username) }}</td>
-                                        <td>{{ ucfirst($user->email) }}</td>
-                                        <td>{{ $user->user_role == 'admin' ? 'Admin' : '' }}{{ $user->user_role == 'employee' ? 'Employee' : '' }}</td>
+                                        <td><a href="#">{!! $alert->seen == 0 ? '<i class="fa fa-circle" style="color:green;"></i>' : '' !!}</a></td>
+                                        <td><a href="#">{{ ucfirst($alert->action) }}</a></td>
+                                        <td><a href="#">{!! crop(strip_tags($alert->message),100) !!}</a></td>
+                                        <td><a href="#">{{ $alert->created_at->diffForHumans() }}</a></td>
                                     </tr>
                                     @empty
                                         <tr>
@@ -94,7 +79,7 @@
                         </div>
                     </div>
                     <div class="d-flex flex-row-reverse">
-                        {!! $users->links('pagination::bootstrap-4') !!}
+                        {!! $alerts->links('pagination::bootstrap-4') !!}
                     </div>
                 </div>
             </div>

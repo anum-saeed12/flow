@@ -44,18 +44,21 @@ class Alert extends Model
     public function fetch($paginate=false,$limit=null)
     {
         $select = [
-            "users.id",
             "users.username",
+            "alerts.id",
             "alerts.message",
+            "alerts.action",
             "alerts.subject_id",
             "alerts.type",
             "alerts.seen",
+            "alerts.user_id",
             "alerts.created_at",
         ];
         $alerts = Alert::select($select)
             ->join('users','users.id','=','alerts.user_id')
             ->where('alerts.user_id',$this->user_id)
-            ->where('alerts.seen','0');
+            ->where('alerts.seen','0')
+            ->orderBy('alerts.id', 'DESC');
         if (is_null($limit) && !$paginate) $alerts = $alerts->limit($limit);
         if (!$paginate)
             return $alerts->get();
