@@ -83,7 +83,7 @@ class TaskController extends Controller
                 $new_member->save();
                 # Creates an array of alert
                 $alerts[] = [
-                    'message' => "New task added and assigned to you for <b>{$project->title}</b>",
+                    'message' => "New task has been added and assigned to you for <b>{$project->title}</b>",
                     'action' => 'assigned',
                     'subject_id' => $new_task->id,
                     'type' => 'task',
@@ -162,7 +162,7 @@ class TaskController extends Controller
         $old_members = TaskUser::select(DB::raw('GROUP_CONCAT(user_id) as members'))->where('task_id', $id)->first();
         $old_members = explode(',', $old_members->members);
         # Remove previous records for members
-        $delete_old_members = TaskUser::where('project_id', $id)->delete();
+        $delete_old_members = TaskUser::where('task_id', $id)->delete();
 
         # If members are provided, add members to the project
         if ($request->input('members')) {
@@ -180,7 +180,7 @@ class TaskController extends Controller
                 } else {
                     # Creates an array of alert
                     $alerts[] = [
-                        'message' => "A task assigned to you for <b>{$project->title}</b>",
+                        'message' => "A task has been assigned to you for <b>{$project->title}</b>",
                         'action' => 'assigned',
                         'subject_id' => $updated_task->id,
                         'type' => 'task',
