@@ -102,7 +102,8 @@ class AlertController extends Controller
                 ->leftJoin('tasks', 'tasks.id', '=', 'alerts.subject_id')
                 ->leftJoin('projects', 'projects.id', '=', 'tasks.project_id')
                 ->where('alerts.user_id', Auth::id())
-                ->where('task_id', $id)
+                ->where('alerts.id', $id)
+                ->groupBy('alerts.id')
                 ->first();
         } else {
             $select = [
@@ -126,7 +127,8 @@ class AlertController extends Controller
                 ->join('users', 'users.id', '=', 'alerts.user_id')
                 ->leftJoin('projects', 'projects.id', '=', 'alerts.subject_id')
                 ->where('alerts.user_id', Auth::id())
-                ->where('task_id', $id)
+                ->where('alerts.id', $id)
+                ->groupBy('alerts.id')
                 ->first();
         }
         $data = [
