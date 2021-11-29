@@ -43,7 +43,7 @@
                         <div class="media">
                             <div class="media-body">
                                 <h3 class="dropdown-item-title text-center py-3">
-                                    No new notifications
+                                    No new alerts
                                 </h3>
                             </div>
                         </div>
