@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Employee;
 
 use App\Http\Controllers\Controller;
+use App\Models\Alert;
+use App\Models\Project;
 use App\Models\Task;
 use App\Models\TaskUser;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -49,9 +52,52 @@ class TaskController extends Controller
         $update_points = TaskUser::where('task_id', $task_id)
             ->where('user_id', Auth::id())
             ->update(['points' => $task->points]);
-
         $task->completed = 1;
         $task->save();
+        $alerts = [];
+        # Fetch username
+        $username = Auth::user()->username;
+        # Fetch project details
+        $project = Project::find($task->project_id);
+        # Fetch all members of the task
+        $members = TaskUser::where('task_id', $task_id)->get();
+        foreach($members as $member) {
+            if ($member->user_id == Auth::id()) {
+                # Creates an array of alert
+                $alerts[] = [
+                    'message' => "You have been awarded <b>{$task->points} points</b> for completing the task for project <b>{$project->title}</b>",
+                    'action' => 'completed',
+                    'subject_id' => $task_id,
+                    'type' => 'task',
+                    'user_id' => Auth::id(),
+                    'seen' => 0,
+                    'created_at' => Carbon::now()
+                ];
+                continue;
+            }
+            # Creates an array of alert
+            $alerts[] = [
+                'message' => "Task has been marked as completed by <b>{$username}</b> for project <b>{$project->title}</b>",
+                'action' => 'completed',
+                'subject_id' => $task_id,
+                'type' => 'task',
+                'user_id' => $member->user_id,
+                'seen' => 0,
+                'created_at' => Carbon::now()
+            ];
+        }
+        # Creates an array of alert
+        $alerts[] = [
+            'message' => ucfirst(Auth::user()->user_role)." was awarded <b>{$task->points} points</b> for completing a task for <b>{$project->title}</b>",
+            'action' => 'completed',
+            'subject_id' => $task_id,
+            'type' => 'task',
+            'user_id' => $project->created_by,
+            'seen' => 0,
+            'created_at' => Carbon::now()
+        ];
+        # Generates alerts for all members
+        Alert::insert($alerts);
 
         if ($request->wantsJson()) return showSuccessMessage("Task has been marked as completed");
 
