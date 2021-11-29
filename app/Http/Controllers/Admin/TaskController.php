@@ -218,7 +218,7 @@ class TaskController extends Controller
     {
         $project = Task::find($id);
         # Remove members
-        $remove_members = TaskUser::where('project_id', $id)->delete();
+        $remove_members = TaskUser::where('task_id', $id)->delete();
         $project->delete();
 
         return redirect()->back()->with('success', 'Task has been deleted');

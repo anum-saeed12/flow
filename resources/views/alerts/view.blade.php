@@ -65,7 +65,15 @@
                                 @forelse($alerts as $alert)
                                     <tr>
                                         <td><a href="{{ route(auth()->user()->user_role . '.alerts.show', $alert->id) }}">{!! $alert->seen == 0 ? '<i class="fa fa-circle" style="color:green;"></i>' : '' !!}</a></td>
-                                        <td><a href="{{ route(auth()->user()->user_role . '.alerts.show', $alert->id) }}">{{ ucfirst($alert->action) }}</a></td>
+                                        <td><a href="{{ route(auth()->user()->user_role . '.alerts.show', $alert->id) }}">
+                                                @if($alert->action == 'assigned' || $alert->action == 'added')
+                                                    {{ ucfirst($alert->action) }} to {{ ucfirst($alert->type) }}
+                                                @elseif($alert->action == 'removed')
+                                                    {{ ucfirst($alert->action) }} from {{ ucfirst($alert->type) }}
+                                                @else
+                                                    {{ ucfirst($alert->type) }} {{ ucfirst($alert->action) }}
+                                                @endif
+                                            </a></td>
                                         <td><a href="{{ route(auth()->user()->user_role . '.alerts.show', $alert->id) }}">{!! crop(strip_tags($alert->message),100) !!}</a></td>
                                         <td><a href="{{ route(auth()->user()->user_role . '.alerts.show', $alert->id) }}">{{ $alert->created_at->diffForHumans() }}</a></td>
                                     </tr>
