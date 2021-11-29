@@ -95,7 +95,7 @@ class TaskController extends Controller
             # Generates alerts for all members
             Alert::insert($alerts);
         }
-        
+
         return redirect()->back()->with('success', 'Task has been added');
     }
 
@@ -148,19 +148,20 @@ class TaskController extends Controller
         # Checks if the task has been completed
         if ($updated_task->completed == 1) return redirect()->back()->with('error', 'Task has already been completed!');
 
-//        $updated_task->title = $request->input('title');
-//        $updated_task->description = $request->input('description');
-//        $updated_task->points = $request->input('points');
-//        $updated_task->project_id = $request->input('project_id');
-//        $request->start_date && $updated_task->start_date = $request->input('start_date');
-//        $request->end_date && $updated_task->end_date = $request->input('end_date');
-//        $updated_task->created_by = Auth::id();
-//        $updated_task->save();
+        $updated_task->title = $request->input('title');
+        $updated_task->description = $request->input('description');
+        $updated_task->points = $request->input('points');
+        $updated_task->project_id = $request->input('project_id');
+        $request->start_date && $updated_task->start_date = $request->input('start_date');
+        $request->end_date && $updated_task->end_date = $request->input('end_date');
+        $updated_task->created_by = Auth::id();
+        $updated_task->save();
 
+        $project = Project::find($request->input('project_id'));
+        # Fetch old members
+        $old_members = TaskUser::select(DB::raw('GROUP_CONCAT(user_id) as members'))->where('task_id', $id)->first();
+        $old_members = explode(',', $old_members->members);
         # Remove previous records for members
-        $old_members = TaskUser::select(DB::raw('GROUP_CONCAT(user_id) as members'))->where('project_id', $id)->first();
-
-        dd($old_members);
         $delete_old_members = TaskUser::where('project_id', $id)->delete();
 
         # If members are provided, add members to the project
@@ -172,7 +173,37 @@ class TaskController extends Controller
                 $new_member->points = 0;
                 $new_member->created_by = Auth::id();
                 $new_member->save();
+
+                if (in_array($member, $old_members)) {
+                    $key = array_search('2', $old_members);
+                    unset($old_members[$key]);
+                } else {
+                    # Creates an array of alert
+                    $alerts[] = [
+                        'message' => "A task assigned to you for <b>{$project->title}</b>",
+                        'action' => 'assigned',
+                        'subject_id' => $updated_task->id,
+                        'type' => 'task',
+                        'user_id' => $member,
+                        'seen' => 0,
+                        'created_at' => Carbon::now()
+                    ];
+                }
             }
+            foreach($old_members as $removed_member) {
+                # Creates an array of alert
+                $alerts[] = [
+                    'message' => "You have been removed from a task for <b>{$project->title}</b>",
+                    'action' => 'removed',
+                    'subject_id' => $updated_task->id,
+                    'type' => 'task',
+                    'user_id' => $removed_member,
+                    'seen' => 0,
+                    'created_at' => Carbon::now()
+                ];
+            }
+            # Generates alerts for all members
+            Alert::insert($alerts);
         }
 
         return redirect()->back()->with('success', 'Task has been updated');

@@ -74,12 +74,18 @@
                             <input type="checkbox" @if($task->completed=='1')checked="checked"@endif>
                             <span class="completed" data-toggle="tooltip" data-placement="top" title="Tooltip on top">Complete</span>
                         </label>--}}
+                        @employee
                         @if($task->completed!='1')
                             <a href="{{ route('employee.task.completed',$task->id)}}" class="btn btn-outline-success mr-2">Complete</a>
                         @else
                             <a href="#" class="btn btn-success mr-2">Completed</a>
                         @endif
+                        @endemployee
+
                         <button type="button" class="btn btn-outline-primary mr-2" data-dismiss="modal">Close</button>
+                        @admin
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-check-circle mr-2"></i>Update</button>
+                        @endadmin
                         {{--<button type="submit" class="btn btn-outeline-primary"><i class="fa fa-plus mr-2"></i>Create</button>--}}
                     </div>
                 </form>
